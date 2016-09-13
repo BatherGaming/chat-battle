@@ -1,0 +1,58 @@
+Main idea:
+  Game consists of battles.
+  Each battle is a chat with 1 leader and N players. 
+  Leader's task is to choose one of them and each kekker wants to be chosen. 
+  Winning improves your game state (eg. rating, game currency) and losing worsens it.
+  Round time is limited. (min/max)
+
+Possible features:
+  1) Two game modes
+       Regular chat
+       Leader asks M questions; players answer; leader chooses best answer for each; a guy with most best answers wins
+  2) Rating
+       Winning increases it
+       Losing decreases
+       Leader's rating doesn't change
+  3) Experience (winner gets more/everebody gets the same amount)
+  4) Game currency (gold)
+       Fixed battle entrance fee for players and for leader(?)
+       Bets (???)
+  5) Achievments
+    Things that give you exp and gold
+    You can get them multiple times, but first one is the most valuable
+    Examples: 
+      Win 2 girls 
+      Win round within 10 seconds after lower bound
+      Win with only one message
+  6) Chat features
+       Stickers
+       Smiles
+       Whiteboard: 
+         Common 
+         One for each player
+         You can hand draw a picture and post it to the chat
+  7) Battlemaker
+       You can choose parameters (gender, age, ...) of leader and/or other players. (requires clever algorithm)
+       You can search a battle with friends.
+  8) Profile
+       Gender
+       Age
+       Country
+       Expirience
+       Rating
+       ...
+  9) Leader's buttons
+       Choose
+       Mute for X seconds
+       Kick
+       Report
+       Express sympathy (?)
+  10) Spectators
+        You can spectate anyone's match
+        You can make your battles closed for spectating
+        Separate spectator chat
+        Spectators' choice prize
+        Spectators' bets
+  11) Other features
+        Login with Facebook/Google/VK
+        Hall of Fame
