@@ -2,7 +2,7 @@ Main idea:
   Game consists of battles.
   Each battle is a chat with 1 leader and N players. 
   Leader's task is to choose one of them and each kekker wants to be chosen. 
-  Winning improves your game state (eg. rating, game currency) and losing worsens it.
+  Winning improves your game state (e.g. rating, game currency) and losing worsens it.
   Round time is limited. (min/max)
 
 Possible features:
