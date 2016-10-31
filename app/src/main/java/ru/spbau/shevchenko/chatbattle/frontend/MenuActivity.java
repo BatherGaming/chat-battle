@@ -1,10 +1,12 @@
-package ru.spbau.shevchenko.chatbattle;
+package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import ru.spbau.shevchenko.chatbattle.R;
 
 public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
 
