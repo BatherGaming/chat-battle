@@ -46,7 +46,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        Log.e("My app", "gg");
         postMessage(view);
     }
 }
