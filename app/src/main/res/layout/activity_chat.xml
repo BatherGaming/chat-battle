@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="ru.spbau.shevchenko.chatbattle.ChatActivity">
+    tools:context="ru.spbau.shevchenko.chatbattle.frontend.ChatActivity">
 
     <ListView
         android:layout_marginTop="10dp"

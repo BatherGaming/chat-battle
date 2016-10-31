@@ -1,6 +1,5 @@
-package ru.spbau.shevchenko.chatbattle;
+package ru.spbau.shevchenko.chatbattle.frontend;
 
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,9 +9,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
-
+import ru.spbau.shevchenko.chatbattle.backend.Chatter;
+import ru.spbau.shevchenko.chatbattle.Message;
+import ru.spbau.shevchenko.chatbattle.R;
 
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {

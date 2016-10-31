@@ -1,4 +1,4 @@
-package ru.spbau.shevchenko.chatbattle;
+package ru.spbau.shevchenko.chatbattle.frontend;
 
 
 import android.app.Activity;
@@ -12,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import ru.spbau.shevchenko.chatbattle.Message;
+import ru.spbau.shevchenko.chatbattle.R;
 
 /**
  * Created by Nikolay on 31.10.16.
@@ -61,7 +64,6 @@ public class MessageAdapter extends BaseAdapter {
     }
 
     public void add(Message message) {
-        Log.e("My app", "add");
         messages.add(message);
         notifyDataSetChanged();
     }

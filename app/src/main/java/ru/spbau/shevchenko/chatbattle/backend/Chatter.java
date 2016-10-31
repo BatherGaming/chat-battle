@@ -1,8 +1,8 @@
-package ru.spbau.shevchenko.chatbattle;
+package ru.spbau.shevchenko.chatbattle.backend;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import ru.spbau.shevchenko.chatbattle.Message;
+import ru.spbau.shevchenko.chatbattle.frontend.ChatActivity;
 
 /**
  * Created by Nikolay on 28.10.16.
