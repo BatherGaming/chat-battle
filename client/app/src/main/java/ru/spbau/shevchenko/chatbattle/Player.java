@@ -5,10 +5,27 @@ package ru.spbau.shevchenko.chatbattle;
  */
 
 public class Player {
-    public enum Sex{
-        MALE, FEMALE
+    public Player(String login, int age, Sex sex) {
+        this.login = login;
+        this.age = age;
+        this.sex = sex;
     }
-    String name;
-    Sex sex;
-    int age;
+
+    public enum Sex{
+        MALE, FEMALE;
+        public String toString(){
+            switch (this){
+                case MALE: return "Male";
+                case FEMALE: return "Female";
+            }
+            return "Queer";
+        }
+
+        public static Sex fromString(String sex) {
+            return (sex.toLowerCase().equals("male") ? MALE : FEMALE);
+        }
+    }
+    public String login;
+    public Sex sex;
+    public int age;
 }

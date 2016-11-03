@@ -9,8 +9,41 @@
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <TextView
+        android:id="@+id/login_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Vasiliy"/>
+        android:text="@string/login_view"/>
+    <TextView
+        android:id="@+id/login_value_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/not_loaded"
+        android:layout_toRightOf="@+id/login_text_view"/>
+    <TextView
+        android:id="@+id/age_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_text_view"
+        android:text="@string/age_view"/>
+    <TextView
+        android:id="@+id/age_value_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/age_text_view"
+        android:layout_below="@+id/login_value_view"
+        android:text="@string/not_loaded"/>
+    <TextView
+        android:id="@+id/sex_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/age_text_view"
+        android:text="@string/sex_view"/>
+    <TextView
+        android:id="@+id/sex_value_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/sex_text_view"
+        android:layout_below="@+id/age_value_view"
+        android:text="@string/not_loaded"/>
 
 </RelativeLayout>

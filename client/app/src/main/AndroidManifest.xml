@@ -20,4 +20,5 @@
         <activity android:name=".frontend.ChatActivity" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

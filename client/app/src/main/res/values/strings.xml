@@ -4,4 +4,8 @@
     <string name="menu_play_button">Play!</string>
     <string name="menu_profile_button">Profile</string>
     <string name="search_screen_search_button">Search</string>
+    <string name="not_loaded">Not loaded</string>
+    <string name="login_view">Login:</string>
+    <string name="age_view">Age:</string>
+    <string name="sex_view">Sex:</string>
 </resources>

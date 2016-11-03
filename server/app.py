@@ -1,39 +1,36 @@
-#!bin/python3.4
+#!/usr/bin/python3.4
 from flask import Flask
 from flask import jsonify
 from flask import abort
 from flask import make_response
 from flask import request
 
+import profile_manager
+
 app = Flask(__name__)
+
+def process(response):
+    if response[1] // 100 == 4:
+        abort(response[1])
+    return jsonify(response[0]), response[1]
 
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
-@app.route('/users', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': tasks})
+@app.route('/players', methods=['GET'])
+def get_players():
+    return process(profile_manager.get_players())
 
-@app.route('/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
-    task = list(filter(lambda t: t['id'] == task_id, tasks))
-    if len(task) == 0:
-        abort(404)
-    return jsonify({'task': task[0]})
+@app.route('/players/<int:player_id>', methods=['GET'])
+def get_player(player_id):
+    return process(profile_manager.get_player(player_id))
 
-@app.route('/tasks', methods=['POST'])
-def create_task():
-    if not request.json or not 'title' in request.json:
-        abort(400)
-    task = {
-        'id': tasks[-1]['id'] + 1,
-        'title': request.json['title'],
-        'description': request.json.get('description', ""),
-        'done': False
-    }
-    tasks.append(task)
-    return jsonify({'task': task}), 201
+@app.route('/players', methods=['POST'])
+def add_player():
+    return process(profile_manager.add_player(request.json))
+
+
 
 if __name__ == '__main__':
-	app.run(debug=False)
+	app.run(debug=True)
