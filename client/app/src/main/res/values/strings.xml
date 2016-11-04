@@ -8,4 +8,10 @@
     <string name="login_view">Login:</string>
     <string name="age_view">Age:</string>
     <string name="sex_view">Sex:</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="login_button">Sign in</string>
+    <string name="signin_button">Sign in</string>
+    <string name="signup_button">Sign up</string>
+    <string name="signin_in">Signing in...</string>
 </resources>

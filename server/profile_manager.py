@@ -15,14 +15,15 @@ def get_player(player_id):
 
 def add_player(json):
     if not json or not 'login' in json\
-            or not 'sex' in json:
+            or not 'sex' in json\
+            or not 'password' in json\
+            or json["login"] == ""\
+            or json["password"] == "":
         return {}, 400
 
     if session.query(Player).filter_by(login=json['login']).first():
         return {}, 422 # Unprocessible entity
 
-    if json["login"] == "":
-        return {}, 400
     password = json.get("password", "")
     password_hash = hashlib.md5(password.encode("utf-8")).hexdigest()
 
@@ -35,3 +36,10 @@ def add_player(json):
     session.add(player)
     session.commit()
     return player.map_repr(), 201
+
+def signin(login, password):
+    password_hash = hashlib.md5(password.encode("utf-8")).hexdigest()
+    player = session.query(Player).filter_by(login=login).first()
+    if not player or player.password_hash != password_hash:
+        return {"error": "Wrong login or password. Try again."}, 401
+    return player.map_repr(), 200

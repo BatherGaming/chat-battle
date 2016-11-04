@@ -26,6 +26,10 @@ def get_players():
 def get_player(player_id):
     return process(profile_manager.get_player(player_id))
 
+@app.route('/signin/<login>/<password>', methods=['GET'])
+def signin(login, password):
+    return process(profile_manager.signin(login, password))
+
 @app.route('/players', methods=['POST'])
 def add_player():
     return process(profile_manager.add_player(request.json))

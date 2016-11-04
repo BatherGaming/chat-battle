@@ -16,7 +16,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         // Display profile info
-        Player player = ProfileManager.getPlayerInfo();
+        Player player = ProfileManager.getPlayer();
         TextView login_view = (TextView) findViewById(R.id.login_value_view);
         login_view.setText(player.login);
         TextView age_view = (TextView) findViewById(R.id.age_value_view);

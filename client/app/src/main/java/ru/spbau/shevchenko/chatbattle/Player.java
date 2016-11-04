@@ -5,7 +5,8 @@ package ru.spbau.shevchenko.chatbattle;
  */
 
 public class Player {
-    public Player(String login, int age, Sex sex) {
+    public Player(int id, String login, int age, Sex sex) {
+        this.id = id;
         this.login = login;
         this.age = age;
         this.sex = sex;
@@ -25,6 +26,7 @@ public class Player {
             return (sex.toLowerCase().equals("male") ? MALE : FEMALE);
         }
     }
+    public int id;
     public String login;
     public Sex sex;
     public int age;

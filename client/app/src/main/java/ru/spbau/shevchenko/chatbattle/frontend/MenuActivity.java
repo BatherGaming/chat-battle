@@ -23,18 +23,6 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         playButton.setOnClickListener(this);
         Button profileButton = (Button)findViewById(R.id.profileButton);
         profileButton.setOnClickListener(this);
-
-        // TODO: move it to ProfileActivity
-        // TODO: handle different ids
-        RequestMaker.sendRequest("http://qwsafex.pythonanywhere.com/players/1", "",
-                RequestMaker.Method.GET,
-                new RequestCallback() {
-            @Override
-            public void run(String response) {
-                ProfileManager.onServerResponse(response);
-            }
-        });
-
     }
 
     public void onClick(View view){
