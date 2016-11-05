@@ -10,8 +10,6 @@ import profile_manager
 app = Flask(__name__)
 
 def process(response):
-    if response[1] // 100 == 4:
-        abort(response[1])
     return jsonify(response[0]), response[1]
 
 @app.errorhandler(404)
