@@ -2,10 +2,7 @@ package ru.spbau.shevchenko.chatbattle.backend;
 
 import android.util.Log;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.frontend.LoginActivity;
@@ -17,14 +14,12 @@ import ru.spbau.shevchenko.chatbattle.frontend.LoginActivity;
 public class ProfileManager {
     private static Player currentPlayer = null;
     public static void signin(String login, String password, final LoginActivity loginActivity){
-        RequestMaker.sendRequest("http://qwsafex.pythonanywhere.com/signin/"+login+"/"+password, "",
-                RequestMaker.Method.GET,
-                new RequestCallback() {
-                    @Override
-                    public void run(String response) {
-                        ProfileManager.onLoginResponse(response, loginActivity);
-                    }
-                });
+        RequestMaker.sendRequest("http://qwsafex.pythonanywhere.com/signin/"+login+"/"+password, RequestMaker.Method.GET, new RequestCallback() {
+            @Override
+            public void run(String response) {
+                ProfileManager.onLoginResponse(response, loginActivity);
+            }
+        });
     }
     public static Player getPlayer() {
         // TODO: deal with possible null values
