@@ -93,8 +93,10 @@ public class RequestMaker {
                 HttpClient client = new DefaultHttpClient();
                 HttpPost post = new HttpPost(url[0]);
                 StringBuilder plainResponse = new StringBuilder();
+                Log.d("sendRequest()", "Data: " + data);
                 try {
                     StringEntity dataEntity = new StringEntity(data);
+                    post.setHeader("Content-Type", "application/json");
                     post.setEntity(dataEntity);
                     HttpResponse response = client.execute(post);
                     InputStream inputStream = response.getEntity().getContent();
