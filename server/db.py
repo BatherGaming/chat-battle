@@ -29,7 +29,7 @@ class Message(Base):
         return {
             "id": self.id,
             "text": self.text,
-            "author_id": self.author_id,
+            "authorId": self.author_id,
             "time": str(self.time)
         }
 
