@@ -14,7 +14,8 @@ import ru.spbau.shevchenko.chatbattle.frontend.LoginActivity;
 public class ProfileManager {
     private static Player currentPlayer = null;
     public static void signin(String login, String password, final LoginActivity loginActivity){
-        RequestMaker.sendRequest("http://qwsafex.pythonanywhere.com/signin/"+login+"/"+password, RequestMaker.Method.GET, new RequestCallback() {
+        RequestMaker.sendRequest("http://qwsafex.pythonanywhere.com/signin/"+login+"/"+password,
+                RequestMaker.Method.GET, new RequestCallback() {
             @Override
             public void run(String response) {
                 ProfileManager.onLoginResponse(response, loginActivity);
@@ -25,7 +26,7 @@ public class ProfileManager {
         // TODO: deal with possible null values
         return currentPlayer;
     }
-    public static void onLoginResponse(String response, LoginActivity loginActivity){
+    private static void onLoginResponse(String response, LoginActivity loginActivity){
         try {
             JSONObject playerObject = new JSONObject(response);
             if (playerObject.has("error")) {

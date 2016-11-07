@@ -18,25 +18,26 @@ import ru.spbau.shevchenko.chatbattle.R;
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText messageInput;
-    Button sendButton;
     MessageAdapter messageAdapter;
+    Chatter chatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         messageInput = (EditText)findViewById(R.id.message_input);
-        sendButton = (Button)findViewById(R.id.send_button);
+        Button sendButton = (Button)findViewById(R.id.send_button);
         sendButton.setOnClickListener(this);
         messageAdapter = new MessageAdapter(this, new ArrayList<Message>());
         final ListView messagesView = (ListView) findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
 
+        chatter = new Chatter(0, this); // TODO: insert correct chat id
     }
 
     public void postMessage(View view)  {
         String message = messageInput.getText().toString();
-        Chatter.sendMessage(this, message);
+        chatter.sendMessage(message);
     }
 
     public void update(Message message) {
