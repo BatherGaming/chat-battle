@@ -21,7 +21,7 @@ class Message(Base):
     time = Column(sqlalchemy.types.DateTime)
     
     chat_id = Column(Integer, ForeignKey('chats.id'))
-    sender_id = Column(Integer, ForeignKey('players.id'))
+    author_id = Column(Integer, ForeignKey('players.id'))
 
    
 
@@ -29,7 +29,7 @@ class Message(Base):
         return {
             "id": self.id,
             "text": self.text,
-            "sender_id": self.sender_id,
+            "author_id": self.author_id,
             "time": str(self.time)
         }
 

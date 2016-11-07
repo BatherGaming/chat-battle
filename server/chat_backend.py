@@ -27,21 +27,21 @@ def close_chat(chat_id):
     return {}, 200
 
 def send_message(json):
-    if not json or not 'autorId' in json\
+    if not json or not 'authorId' in json\
         	or not 'text' in json\
             or not 'chatId' in json\
             or not str(json["chatId"]).isdigit()\
-            or not str(json["autorId"]).isdigit()\
+            or not str(json["authorId"]).isdigit()\
             or json["text"] == "":
         return {}, 400
-    player = session.query(Player).filter_by(id=int(json["autorId"])).first()
+    player = session.query(Player).filter_by(id=int(json["authorId"])).first()
     chat = session.query(Chat).filter_by(id=int(json["chatId"])).first()
     if player == None \
             or chat == None\
             or chat.is_closed\
             or player not in chat.players:
         return {}, 422
-    message = Message(chat_id=chat.id, text=json["text"], sender_id=player.id, time=datetime.datetime.now())
+    message = Message(chat_id=chat.id, text=json["text"], author_id=player.id, time=datetime.datetime.now())
     session.add(message)
     session.commit()
     return message.map_repr(), 200
