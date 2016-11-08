@@ -17,9 +17,9 @@ import ru.spbau.shevchenko.chatbattle.R;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText messageInput;
-    Button sendButton;
-    MessageAdapter messageAdapter;
+    private EditText messageInput;
+    private Button sendButton;
+    private MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public void postMessage(View view)  {
         String message = messageInput.getText().toString();
         Chatter.sendMessage(this, message);
+        messageInput.setText("");
     }
 
     public void update(Message message) {

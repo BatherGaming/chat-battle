@@ -7,10 +7,10 @@ import android.view.View;
  */
 
 public class BattleSearcher {
-    public void findBattle(){
+    public void findBattle() {
         // TODO: fill
     }
-    void onServerResponse(String response){
+    void onServerResponse(String response) {
         // TODO: fill
     }
 

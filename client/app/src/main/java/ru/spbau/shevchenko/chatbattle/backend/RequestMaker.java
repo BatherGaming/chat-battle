@@ -30,7 +30,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
 public class RequestMaker {
-    public enum Method{
+
+    public static final String domainName = "http://qwsafex.pythonanywhere.com";
+
+    public enum Method {
         GET, POST, PUT, DELETE
     }
 

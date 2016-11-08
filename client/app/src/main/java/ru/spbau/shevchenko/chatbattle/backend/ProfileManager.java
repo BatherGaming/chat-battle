@@ -14,10 +14,9 @@ import ru.spbau.shevchenko.chatbattle.frontend.SignupActivity;
  */
 
 public class ProfileManager {
-    private static final String domainName = "http://qwsafex.pythonanywhere.com";
     private static Player currentPlayer = null;
     public static void signin(String login, String password, final LoginActivity loginActivity){
-        RequestMaker.sendRequest(domainName + "/signin/" + login + "/" + password, RequestMaker.Method.GET, new RequestCallback() {
+        RequestMaker.sendRequest(RequestMaker.domainName + "/signin/" + login + "/" + password, RequestMaker.Method.GET, new RequestCallback() {
             @Override
             public void run(String response) {
                 onSigninResponse(response, loginActivity);
@@ -36,7 +35,7 @@ public class ProfileManager {
             Log.e("signup()", e.getMessage()); // TODO: handle this
             return;
         }
-        RequestMaker.sendRequest(domainName + "/players", RequestMaker.Method.POST, new RequestCallback() {
+        RequestMaker.sendRequest(RequestMaker.domainName + "/players", RequestMaker.Method.POST, new RequestCallback() {
             @Override
             public void run(String response) {
                 onSignupResponse(response, signupActivity);

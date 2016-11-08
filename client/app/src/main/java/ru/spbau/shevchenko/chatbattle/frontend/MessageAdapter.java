@@ -21,8 +21,8 @@ import ru.spbau.shevchenko.chatbattle.R;
  */
 
 public class MessageAdapter extends BaseAdapter {
-    Context context;
-    ArrayList<Message> messages;
+    private Context context;
+    private ArrayList<Message> messages;
 
     MessageAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
