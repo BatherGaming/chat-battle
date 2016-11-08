@@ -21,6 +21,7 @@
         <activity android:name=".frontend.ProfileActivity" />
         <activity android:name=".frontend.ChatActivity" />
         <activity android:name=".frontend.MenuActivity" />
+        <activity android:name=".frontend.SignupActivity"></activity>
     </application>
 
 </manifest>

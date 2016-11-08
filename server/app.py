@@ -1,7 +1,6 @@
-#!/usr/bin/python3.4
+#!/usr/bin/python3
 from flask import Flask
 from flask import jsonify
-from flask import abort
 from flask import make_response
 from flask import request
 
@@ -30,9 +29,11 @@ def signin(login, password):
 
 @app.route('/players', methods=['POST'])
 def add_player():
-    return process(profile_manager.add_player(request.json))
+    if not request.get_json(silent=True):
+        return process(({"error": "Please, provide JSON."}, 400))
+    return process(profile_manager.add_player(request.get_json()))
 
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+    app.run(debug=True)

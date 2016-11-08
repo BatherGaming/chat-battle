@@ -14,4 +14,10 @@
     <string name="signin_button">Sign in</string>
     <string name="signup_button">Sign up</string>
     <string name="signin_in">Signing in...</string>
+    <string name="age">Age</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="password_dont_match">Passwords do not match</string>
+    <string name="signin_up">Signing up...</string>
 </resources>

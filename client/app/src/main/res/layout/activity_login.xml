@@ -14,13 +14,16 @@
         android:id="@+id/login_edit"
         android:hint="@string/login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inputType="text"/>
     <EditText
         android:id="@+id/password_edit"
         android:hint="@string/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_edit"/>
+        android:layout_below="@+id/login_edit"
+        android:inputType="textPassword"
+        android:fontFamily="sans-serif"/>
     <LinearLayout
         android:id="@+id/signin_layout"
         android:layout_width="match_parent"
