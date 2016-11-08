@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import text
+from sqlalchemy.types import Boolean, DateTime
 
 
 # DB classes
@@ -18,7 +19,7 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True)
     text = Column(String, nullable=False)
-    time = Column(sqlalchemy.types.DateTime)
+    time = Column(DateTime)
     
     chat_id = Column(Integer, ForeignKey('chats.id'))
     author_id = Column(Integer, ForeignKey('players.id'))
@@ -59,9 +60,9 @@ class Chat(Base):
     __tablename__ = 'chats'
 
     id = Column(Integer, primary_key=True)
-    creation_time = Column(sqlalchemy.types.DateTime)
+    creation_time = Column(DateTime)
     type = Column(Integer)
-    is_closed = Column(sqlalchemy.types.Boolean)
+    is_closed = Column(Boolean)
 
     messages = relationship("Message", backref="chat")
     players = relationship("Player", backref="chat")

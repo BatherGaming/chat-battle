@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import func
 
 def create_chat(json):
     #temporary for testing
-    type = json.get("type")
+    type = json["type"]
     playersId = json["playersId"]
     
     chat = Chat(type=type, creation_time=datetime.datetime.now(), is_closed=False)
