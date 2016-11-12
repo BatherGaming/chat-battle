@@ -7,14 +7,10 @@ import org.json.JSONObject;
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.frontend.LoginActivity;
 
-/**
- * Created by ilya on 11/1/16.
- */
-
 public class ProfileManager {
     private static Player currentPlayer = null;
     public static void signin(String login, String password, final LoginActivity loginActivity){
-        RequestMaker.sendRequest("http://qwsafex.pythonanywhere.com/signin/"+login+"/"+password,
+        RequestMaker.sendRequest(RequestMaker.domainName + "/signin/"+login+"/"+password,
                 RequestMaker.Method.GET, new RequestCallback() {
             @Override
             public void run(String response) {

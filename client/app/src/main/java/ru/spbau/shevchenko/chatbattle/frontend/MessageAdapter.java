@@ -16,13 +16,10 @@ import java.util.ArrayList;
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
 
-/**
- * Created by Nikolay on 31.10.16.
- */
 
 public class MessageAdapter extends BaseAdapter {
-    Context context;
-    ArrayList<Message> messages;
+    private Context context;
+    private ArrayList<Message> messages;
 
     MessageAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
@@ -58,8 +55,8 @@ public class MessageAdapter extends BaseAdapter {
             holder = (MessageViewHolder)convertView.getTag();
         }
         Message message = messages.get(position);
-        holder.textView.setText(message.getText());
-        holder.senderView.setText(message.getSender());
+        holder.textView.setText(message.text);
+        holder.senderView.setText(Integer.valueOf(message.authorId).toString());
         return convertView;
     }
 

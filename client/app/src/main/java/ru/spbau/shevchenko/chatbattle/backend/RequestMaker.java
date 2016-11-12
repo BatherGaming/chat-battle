@@ -1,10 +1,6 @@
 package ru.spbau.shevchenko.chatbattle.backend;
 
 
-/**
- * Created by ilya on 11/1/16.
- */
-
 import android.os.AsyncTask;
 import android.renderscript.ScriptGroup;
 import android.util.JsonWriter;

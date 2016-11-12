@@ -1,8 +1,12 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,16 +14,27 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import ru.spbau.shevchenko.chatbattle.backend.Chatter;
+import ru.spbau.shevchenko.chatbattle.backend.ChatService;
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
 
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
+    private ServiceConnection chatServiceConection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            chatService = ((ChatService.ChatBinder) service).getChatService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            chatService = null;
+        }
+    };
+    private ChatService chatService = null;
 
     EditText messageInput;
     MessageAdapter messageAdapter;
-    Chatter chatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +47,19 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         final ListView messagesView = (ListView) findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
 
-        chatter = new Chatter(0, this); // TODO: insert correct chat id
+        Intent intent = new Intent(this, ChatService.class);
+        bindService(intent, chatServiceConection, Context.BIND_AUTO_CREATE);
     }
 
     public void postMessage(View view)  {
         String message = messageInput.getText().toString();
-        chatter.sendMessage(message);
+        chatService.sendMessage(message);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 
     public void update(Message message) {
@@ -49,4 +71,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         postMessage(view);
     }
+
+
 }
