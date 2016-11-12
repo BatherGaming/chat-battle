@@ -3,11 +3,7 @@ import db
 from db import session, Message, Player, Chat, datetime
 from sqlalchemy.sql.expression import func
 
-def create_chat(json):
-    #temporary for testing
-    type = json["type"]
-    playersId = json["playersId"]
-    
+def create_chat(type, playersId):
     chat = Chat(type=type, creation_time=datetime.datetime.now(), is_closed=False)
     session.add(chat)
     session.commit()
