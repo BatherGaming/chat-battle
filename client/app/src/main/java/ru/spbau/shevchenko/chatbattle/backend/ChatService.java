@@ -13,12 +13,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.util.ArrayList;
+
 import ru.spbau.shevchenko.chatbattle.Message;
 
 public class ChatService extends Service {
     private static final long UPDATE_DELAY = 1000; // milliseconds
     private int chatId = -1;
     private int messageCount;
+    private ArrayList<Message> messages;
 
     private static Handler handler;
     private static Runnable getMessagesRunnable;
@@ -31,7 +34,7 @@ public class ChatService extends Service {
         }
     }
 
-    private void getMessages() {
+    private void pullMessages() {
         RequestMaker.sendRequest(RequestMaker.domainName + "/chat/get/" + chatId + "/" + messageCount,
                 RequestMaker.Method.GET,
                 new RequestCallback() {
@@ -52,18 +55,22 @@ public class ChatService extends Service {
                     }
                 });
     }
+    public ArrayList<Message> getMessages(){
+        return messages;
+    }
 
     private void onServerResponse(String response){
         try {
-            JSONArray messages = new JSONArray(response);
+            JSONArray jsonMessages = new JSONArray(response);
             // TODO: complete
-            for (int i = 0; i < messages.length(); i++) {
-                JSONObject jsonMessage = messages.getJSONObject(i);
+            for (int i = 0; i < jsonMessages.length(); i++) {
+                JSONObject jsonMessage = jsonMessages.getJSONObject(i);
                 Message message = new Message(jsonMessage.getString("text"),
                                               jsonMessage.getInt("authorId"),
                                               chatId);
+                messages.add(message);
             }
-            messageCount += messages.length();
+            messageCount += jsonMessages.length();
 
             // Schedule next chat messages update
             handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
@@ -87,7 +94,7 @@ public class ChatService extends Service {
         getMessagesRunnable = new Runnable() {
             @Override
             public void run() {
-                getMessages();
+                pullMessages();
             }
         };
         // Schedule first chat messages update
