@@ -39,6 +39,18 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        int chatId = intent.getIntExtra("chatId", -1);
+        if (chatId == -1) {
+            throw new RuntimeException("Created ChatActivity without providing chat id.");
+        }
+
+        Intent chatServiceIntent = new Intent(this, ChatService.class);
+        chatServiceIntent.putExtra("chatId", chatId);
+        bindService(intent, chatServiceConection, Context.BIND_AUTO_CREATE);
+
+
         setContentView(R.layout.activity_chat);
         messageInput = (EditText)findViewById(R.id.message_input);
         Button sendButton = (Button)findViewById(R.id.send_button);
@@ -47,8 +59,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         final ListView messagesView = (ListView) findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
 
-        Intent intent = new Intent(this, ChatService.class);
-        bindService(intent, chatServiceConection, Context.BIND_AUTO_CREATE);
     }
 
     public void postMessage(View view)  {
@@ -59,7 +69,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        unbindService(chatServiceConection);
     }
 
     public void update(Message message) {

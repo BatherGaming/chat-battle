@@ -19,9 +19,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         search_button.setOnClickListener(this);
 
     }
-    public void onBattleFound(int battleId){
-        // TODO: fill
-    }
 
     @Override
     public void onClick(View view) {

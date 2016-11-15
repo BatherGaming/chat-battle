@@ -6,6 +6,7 @@ from flask import make_response
 from flask import request
 
 import profile_manager
+import battlemaker
 
 app = Flask(__name__)
 
@@ -31,6 +32,16 @@ def signin(login, password):
 @app.route('/players', methods=['POST'])
 def add_player():
     return process(profile_manager.add_player(request.json))
+
+
+@app.route('/battlemaker/<int:player_id>', methods=['POST'])
+def add_player_to_queue(player_id)
+    return process(battlemaker.add_player_to_queue(player_id))
+
+
+@app.route('/battlemaker/<int:player_id>', methods=['DELETE'])
+def del_player_from_queue(player_id)
+    return process(battlemaker.del_player_from_queue(player_id))
 
 
 

@@ -87,7 +87,10 @@ public class ChatService extends Service {
         if (!intent.hasExtra("chatId")) {
             throw new RuntimeException("Binding to ChatService without providin chat id.");
         }
-        chatId = intent.getIntExtra("chatId", 0);
+        chatId = intent.getIntExtra("chatId", -1);
+        if (chatId == -1) {
+            throw new RuntimeException("Binded to ChatService without providing chat id.");
+        }
 
         messageCount = 0;
 
