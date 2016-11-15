@@ -2,7 +2,7 @@ from db import Player, session
 from chat_backend import create_chat
 
 queue_filename = "queue.txt"
-player_amount = 3
+player_amount = 2
 
 # Make sure file is present
 open(queue_filename, "a").close()

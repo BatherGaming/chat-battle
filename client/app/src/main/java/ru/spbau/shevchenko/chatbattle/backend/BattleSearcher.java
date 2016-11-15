@@ -15,7 +15,7 @@ public class BattleSearcher {
 
     public static void findBattle(final SearchActivity searchActivity) {
         final int id = ProfileManager.getPlayer().id;
-        RequestMaker.sendRequest(RequestMaker.domainName + "/battlesearch/" + Integer.toString(id), RequestMaker.Method.POST, new RequestCallback() {
+        RequestMaker.sendRequest(RequestMaker.domainName + "/battlemaker/" + Integer.toString(id), RequestMaker.Method.POST, new RequestCallback() {
             @Override
             public void run(String response) {}
         });
