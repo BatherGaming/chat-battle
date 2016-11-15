@@ -9,10 +9,8 @@ def create_chat(type, playersId):
     session.commit()
     for playerId in playersId:
         player = session.query(Player).filter_by(id=playerId).first()
-        if player.chat_id != None:
-            return {}, 422
         player.chat_id = chat.id
-    return chat.id, 200
+    return chat.id
 
 def close_chat(chat_id):
     chat = session.query(Chat).filter_by(id=chat_id).first()

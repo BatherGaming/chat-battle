@@ -13,18 +13,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
-import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
-import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
@@ -51,7 +46,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private Runnable getMessagesRunnable = new Runnable() {
         @Override
         public void run() {
-            List<Message> messages = Chatter.getMessages();
+            List<Message> messages = chatService.getMessages();
             for (Message message : messages.subList(alreadyRead, messages.size())) {
                 update(message);
             }

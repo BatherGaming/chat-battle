@@ -1,4 +1,4 @@
-#!/usr//local/bin/python3
+#!/usr/bin/python3
 from flask import Flask
 from flask import jsonify
 from flask import make_response
@@ -37,7 +37,6 @@ def signin(login, password):
 
 @app.route('/players', methods=['POST'])
 def add_player():
-    print('ee boy')
     if not request.get_json(silent=True):
         return process(({"error": "Please, provide JSON."}, 400))
     return process(profile_manager.add_player(request.get_json()))
@@ -54,10 +53,6 @@ def get_messages(chat_id, num):
 
 #temporary functions for testing
 
-@app.route('/chat/battlesearch/<int:player_id>')
-def battle_search(player_id):
-    return process(battle_maker.battle_search(player_id))
-
 @app.route('/chat/create', methods=['POST'])
 def create_chat():
     return process(chat_backend.create_chat(request.json))
@@ -69,12 +64,12 @@ def close_chat(chat_id):
 
 
 @app.route('/battlemaker/<int:player_id>', methods=['POST'])
-def add_player_to_queue(player_id)
+def add_player_to_queue(player_id):
     return process(battlemaker.add_player_to_queue(player_id))
 
 
 @app.route('/battlemaker/<int:player_id>', methods=['DELETE'])
-def del_player_from_queue(player_id)
+def del_player_from_queue(player_id):
     return process(battlemaker.del_player_from_queue(player_id))
 
 
