@@ -23,6 +23,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     public void onBattleFound(int battleId){
         Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("chatId", battleId);
         startActivity(intent);
     }
 

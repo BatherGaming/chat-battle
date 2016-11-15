@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private ServiceConnection chatServiceConection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Toast.makeText(ChatActivity.this, "ChatService connected!",
+                    Toast.LENGTH_LONG).show();
             chatService = ((ChatService.ChatBinder) service).getChatService();
         }
 
@@ -46,11 +49,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private Runnable getMessagesRunnable = new Runnable() {
         @Override
         public void run() {
-            List<Message> messages = chatService.getMessages();
-            for (Message message : messages.subList(alreadyRead, messages.size())) {
-                update(message);
+            if (chatService != null) {
+                List<Message> messages = chatService.getMessages();
+                for (Message message : messages.subList(alreadyRead, messages.size())) {
+                    update(message);
+                }
+                alreadyRead = messages.size();
             }
-            alreadyRead = messages.size();
             handler.postDelayed(this, HANDLER_DELAY);
         }
     };

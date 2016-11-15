@@ -23,6 +23,7 @@
         <activity android:name=".frontend.ChatActivity" />
         <activity android:name=".frontend.MenuActivity" />
         <activity android:name=".frontend.SignupActivity" />
+        <service android:name=".backend.ChatService" android:enabled="true" />
     </application>
 
 </manifest>
