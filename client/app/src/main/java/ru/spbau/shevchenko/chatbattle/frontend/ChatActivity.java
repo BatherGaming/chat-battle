@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,6 +52,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         public void run() {
             if (chatService != null) {
                 List<Message> messages = chatService.getMessages();
+                StringBuilder messagesString = new StringBuilder();
+                for (Message message : messages) {
+                    messagesString.append(message.text);
+                }
+                Log.d("getMessagesRunnable", messagesString.toString());
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     update(message);
                 }
@@ -94,6 +100,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("onDestroy()", "called");
+        handler.removeCallbacks(getMessagesRunnable);
         unbindService(chatServiceConection);
     }
 

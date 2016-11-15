@@ -27,18 +27,14 @@ public class BattleSearcher {
                 RequestMaker.sendRequest(RequestMaker.domainName + "/players/" + Integer.toString(id), RequestMaker.Method.GET, new RequestCallback() {
                     @Override
                     public void run(String response) {
-                        final String logTag = "findBattle.handler.run";
                         try {
-                            Log.d(logTag, response);
                             JSONObject playerObject = new JSONObject(response);
                             if (playerObject.has("error")) {
                                 // TODO : do smth
                                 return;
                             }
                             String chatId = playerObject.getString("chatId");
-                            Log.d(logTag, chatId);
                             if (!chatId.equals("null")) {
-                                Log.d(logTag, "1");
                                 searchActivity.onBattleFound(Integer.valueOf(chatId));
 //                                onServerResponse(Integer.getInteger(chatId), searchActivity);
                             } else {
@@ -57,9 +53,8 @@ public class BattleSearcher {
     }
 
     private static void onServerResponse(int chatId, SearchActivity searchActivity) {
-        Log.d("onServerResponse()", "2");
+        handler.removeCallbacks(checkBattle);
         searchActivity.onBattleFound(chatId);
-        Log.d("onServerResponse()", "3");
     }
 
 }

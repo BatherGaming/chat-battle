@@ -22,6 +22,7 @@ public class ChatService extends Service {
     private int chatId = -1;
     private int messageCount;
     private ArrayList<Message> messages;
+    private boolean unbinded = false;
 
     private static Handler handler;
     private static Runnable getMessagesRunnable;
@@ -106,6 +107,8 @@ public class ChatService extends Service {
         getMessagesRunnable = new Runnable() {
             @Override
             public void run() {
+                if (unbinded)
+                    return;
                 pullMessages();
             }
         };
@@ -114,5 +117,12 @@ public class ChatService extends Service {
         handler.postDelayed(getMessagesRunnable, UPDATE_DELAY );
 
         return chatBinder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        unbinded = true;
+        handler.removeCallbacks(getMessagesRunnable);
+        return false;
     }
 }
