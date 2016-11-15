@@ -42,7 +42,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private EditText messageInput;
     private MessageAdapter messageAdapter;
 
-    private final static long HANDLER_DELAY = 2000;
+    private final static long HANDLER_DELAY = 100;
     private int alreadyRead = 0;
 
     private Handler handler = new Handler();
@@ -72,7 +72,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent chatServiceIntent = new Intent(this, ChatService.class);
         chatServiceIntent.putExtra("chatId", chatId);
-        bindService(intent, chatServiceConection, Context.BIND_AUTO_CREATE);
+        bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
 
 
         setContentView(R.layout.activity_chat);
@@ -87,6 +87,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     public void postMessage(View view)  {
         String message = messageInput.getText().toString();
+        messageInput.setText("");
         chatService.sendMessage(message);
     }
 

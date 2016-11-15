@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import ru.spbau.shevchenko.chatbattle.Message;
 
 public class ChatService extends Service {
-    private static final long UPDATE_DELAY = 1000; // milliseconds
+    private static final long UPDATE_DELAY = 100; // milliseconds
     private int chatId = -1;
     private int messageCount;
     private ArrayList<Message> messages;
@@ -46,14 +46,23 @@ public class ChatService extends Service {
     }
 
     public void sendMessage(String messageText) {
-        Message message = new Message(messageText, ProfileManager.getPlayer().id, chatId);
+        JSONObject jsonMessage;
+        try {
+            jsonMessage = new JSONObject().put("authorId", ProfileManager.getPlayer().id)
+                                          .put("text", messageText)
+                                          .put("chatId", chatId);
+        }
+        catch (JSONException e) {
+            Log.e("sendMessage()", e.getMessage()); // TODO: handle this
+            return;
+        }
         RequestMaker.sendRequest(RequestMaker.domainName + "/chat/send", RequestMaker.Method.POST,
                 new RequestCallback() {
                     @Override
                     public void run(String response) {
                         // TODO: fill this
                     }
-                });
+                }, jsonMessage.toString());
     }
     public ArrayList<Message> getMessages(){
         return messages;
@@ -93,7 +102,7 @@ public class ChatService extends Service {
         }
 
         messageCount = 0;
-
+        messages = new ArrayList<>();
         getMessagesRunnable = new Runnable() {
             @Override
             public void run() {
