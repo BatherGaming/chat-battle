@@ -29,7 +29,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.search_button: {
-                BattleSearcher.findBattle(this);
+                Intent intent = new Intent(this, ChatActivity.class);
+                startActivity(intent);
+
+                //BattleSearcher.findBattle(this);
                 break;
             }
         }
