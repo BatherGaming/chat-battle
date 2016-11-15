@@ -33,8 +33,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     };
     private ChatService chatService = null;
 
-    EditText messageInput;
-    MessageAdapter messageAdapter;
+    private EditText messageInput;
+    private MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

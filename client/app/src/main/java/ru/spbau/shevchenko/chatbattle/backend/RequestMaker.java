@@ -26,9 +26,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
 public class RequestMaker {
-    public static String domainName = "http://qwsafex.pythonanywhere.com";
+    public static final String domainName = "http://qwsafex.pythonanywhere.com";
 
-    public enum Method{
+    public enum Method {
         GET, POST, PUT, DELETE
     }
 
@@ -91,8 +91,10 @@ public class RequestMaker {
                 HttpClient client = new DefaultHttpClient();
                 HttpPost post = new HttpPost(url[0]);
                 StringBuilder plainResponse = new StringBuilder();
+                Log.d("sendRequest()", "Data: " + data);
                 try {
                     StringEntity dataEntity = new StringEntity(data);
+                    post.setHeader("Content-Type", "application/json");
                     post.setEntity(dataEntity);
                     HttpResponse response = client.execute(post);
                     InputStream inputStream = response.getEntity().getContent();

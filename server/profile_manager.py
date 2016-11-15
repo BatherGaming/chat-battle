@@ -1,7 +1,7 @@
-import db
+import hashlib
+
 from db import session, Player
 
-import hashlib
 
 def get_players():
     players = session.query(Player).all()
@@ -19,10 +19,10 @@ def add_player(json):
             or not 'password' in json\
             or json["login"] == ""\
             or json["password"] == "":
-        return {}, 400
+        return {"error": "Something's wrong with provided JSON data."}, 400
 
     if session.query(Player).filter_by(login=json['login']).first():
-        return {}, 422 # Unprocessible entity
+        return {"error": "Login is taken."}, 422 # Unprocessible entity
 
     password = json.get("password", "")
     password_hash = hashlib.md5(password.encode("utf-8")).hexdigest()
@@ -32,7 +32,7 @@ def add_player(json):
                     sex=json["sex"],
                     password_hash=password_hash,
                     age=json.get("age", 0)
-                    )
+                   )
     session.add(player)
     session.commit()
     return player.map_repr(), 201
