@@ -52,11 +52,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         public void run() {
             if (chatService != null) {
                 List<Message> messages = chatService.getMessages();
-                StringBuilder messagesString = new StringBuilder();
-                for (Message message : messages) {
-                    messagesString.append(message.text);
-                }
-                Log.d("getMessagesRunnable", messagesString.toString());
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     update(message);
                 }

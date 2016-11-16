@@ -51,7 +51,8 @@ def send_message():
 def get_messages(chat_id, num):
     return process(chat_backend.get_messages(chat_id, num))
 
-#temporary functions for testing
+# temporary functions for testing
+
 
 @app.route('/chat/create', methods=['POST'])
 def create_chat():
