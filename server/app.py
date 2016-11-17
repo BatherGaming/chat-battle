@@ -5,6 +5,7 @@ from flask import make_response
 from flask import request
 
 import profile_manager
+import battlemaker
 import chat_backend
 
 app = Flask(__name__)
@@ -50,7 +51,8 @@ def send_message():
 def get_messages(chat_id, num):
     return process(chat_backend.get_messages(chat_id, num))
 
-#temporary functions for testing
+# temporary functions for testing
+
 
 @app.route('/chat/create', methods=['POST'])
 def create_chat():
@@ -60,6 +62,17 @@ def create_chat():
 @app.route('/chat/close/<int:chat_id>', methods=['POST'])
 def close_chat(chat_id):
     return process(chat_backend.close_chat(chat_id))
+
+
+@app.route('/battlemaker/<int:player_id>', methods=['POST'])
+def add_player_to_queue(player_id):
+    return process(battlemaker.add_player_to_queue(player_id))
+
+
+@app.route('/battlemaker/<int:player_id>', methods=['DELETE'])
+def del_player_from_queue(player_id):
+    return process(battlemaker.del_player_from_queue(player_id))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

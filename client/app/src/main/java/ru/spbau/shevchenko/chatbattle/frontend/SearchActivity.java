@@ -7,9 +7,10 @@ import android.view.View;
 import android.widget.Button;
 
 import ru.spbau.shevchenko.chatbattle.R;
+import ru.spbau.shevchenko.chatbattle.backend.BattleSearcher;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener {
-    Button search_button;
+    private Button search_button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,16 +20,18 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         search_button.setOnClickListener(this);
 
     }
+
     public void onBattleFound(int battleId){
-        // TODO: fill
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("chatId", battleId);
+        startActivity(intent);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.search_button: {
-                Intent intent = new Intent(this, ChatActivity.class);
-                startActivity(intent);
+            case R.id.search_button: {              
+                BattleSearcher.findBattle(this);
                 break;
             }
         }

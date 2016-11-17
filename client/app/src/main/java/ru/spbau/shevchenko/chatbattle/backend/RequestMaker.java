@@ -1,10 +1,6 @@
 package ru.spbau.shevchenko.chatbattle.backend;
 
 
-/**
- * Created by ilya on 11/1/16.
- */
-
 import android.os.AsyncTask;
 import android.renderscript.ScriptGroup;
 import android.util.JsonWriter;
@@ -30,7 +26,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
 public class RequestMaker {
-
     public static final String domainName = "http://qwsafex.pythonanywhere.com";
 
     public enum Method {

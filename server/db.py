@@ -13,17 +13,16 @@ from sqlalchemy.types import Boolean, DateTime
 engine = create_engine('sqlite:///chat-battle.db')
 Base = declarative_base()
 
+
 class Message(Base):
     __tablename__ = 'messages'
 
     id = Column(Integer, primary_key=True)
     text = Column(String, nullable=False)
     time = Column(DateTime)
-    
+
     chat_id = Column(Integer, ForeignKey('chats.id'))
     author_id = Column(Integer, ForeignKey('players.id'))
-
-   
 
     def map_repr(self):
         return {
@@ -32,6 +31,7 @@ class Message(Base):
             "authorId": self.author_id,
             "time": str(self.time)
         }
+
 
 class Player(Base):
     __tablename__ = 'players'
@@ -45,14 +45,12 @@ class Player(Base):
 
     messages = relationship("Message", backref="sender")
 
-
     def map_repr(self):
         return {"id": self.id,
                 "login": self.login,
                 "sex": self.sex,
                 "age": self.age,
                 "chatId": self.chat_id}
-
 
 
 class Chat(Base):

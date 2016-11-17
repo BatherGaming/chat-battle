@@ -1,13 +1,12 @@
 package ru.spbau.shevchenko.chatbattle;
 
 public class Message {
-    private String sender;
-    private String text;
-
-    public Message(String sender, String text) {
-        this.sender = sender;
+    public String text;
+    public int authorId;
+    public int chatId;
+    public Message(String text, int authorId, int chatId){
         this.text = text;
+        this.authorId = authorId;
+        this.chatId = chatId;
     }
-    public String getSender() { return sender; }
-    public String getText() { return text; }
 }

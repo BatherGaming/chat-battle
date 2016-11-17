@@ -9,21 +9,18 @@ import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.frontend.LoginActivity;
 import ru.spbau.shevchenko.chatbattle.frontend.SignupActivity;
 
-/**
- * Created by ilya on 11/1/16.
- */
-
 public class ProfileManager {
     private static Player currentPlayer = null;
-    public static void signin(String login, String password, final LoginActivity loginActivity){
-        RequestMaker.sendRequest(RequestMaker.domainName + "/signin/" + login + "/" + password, RequestMaker.Method.GET, new RequestCallback() {
-            @Override
-            public void run(String response) {
-                onSigninResponse(response, loginActivity);
-            }
-        });
+    public static void signin(String login, String password, final LoginActivity loginActivity) {
+        RequestMaker.sendRequest(RequestMaker.domainName + "/signin/" + login + "/" + password, RequestMaker.Method.GET, 
+            new RequestCallback() {
+                @Override
+                public void run(String response) {
+                    onSigninResponse(response, loginActivity);
+                }
+            });
     }
-    public static void signup(Player newPlayer, String password, final SignupActivity signupActivity){
+    public static void signup(Player newPlayer, String password, final SignupActivity signupActivity) {
         JSONObject jsonPlayer;
         try {
             jsonPlayer = new JSONObject().put("login", newPlayer.login)
@@ -68,7 +65,7 @@ public class ProfileManager {
         // TODO: deal with possible null values
         return currentPlayer;
     }
-    public static void onSigninResponse(String response, LoginActivity loginActivity){
+    public static void onSigninResponse(String response, LoginActivity loginActivity) {
         try {
             JSONObject playerObject = new JSONObject(response);
             if (playerObject.has("error")) {
