@@ -16,12 +16,18 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
+import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
+import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
+import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
@@ -38,16 +44,18 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             chatService = null;
         }
     };
-    private ChatService chatService = null;
+    protected ChatService chatService = null;
 
-    private EditText messageInput;
-    private MessageAdapter messageAdapter;
+    private int chatId;
 
-    private final static long HANDLER_DELAY = 100;
+    protected EditText messageInput;
+    protected MessageAdapter messageAdapter;
+
+    protected final static long HANDLER_DELAY = 100;
     private int alreadyRead = 0;
 
-    private Handler handler = new Handler();
-    private Runnable getMessagesRunnable = new Runnable() {
+    protected Handler handler = new Handler();
+    protected Runnable getMessagesRunnable = new Runnable() {
         @Override
         public void run() {
             if (chatService != null) {
@@ -56,7 +64,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 for (Message message : messages) {
                     messagesString.append(message.text);
                 }
-                Log.d("getMessagesRunnable", messagesString.toString());
+                //Log.d("getMessagesRunnable", messagesString.toString());
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     update(message);
                 }
@@ -66,12 +74,43 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+    protected Handler isFinishedHandler = new Handler();
+    protected Runnable isFinishedRunnable = new Runnable() {
+        @Override
+        public void run() {
+            RequestMaker.sendRequest(RequestMaker.domainName + "/chat/isfinished/" + ProfileManager.getPlayer().id + "/" + chatId, RequestMaker.Method.GET, new RequestCallback() {
+                @Override
+                public void run(String response) {
+                    try {
+                        JSONObject playerObject = new JSONObject(response);
+                        if (playerObject.has("error")) {
+                            Log.d("ChatAct.iFHandler.run", playerObject.getString("error"));
+                            return;
+                        }
+                        String result = playerObject.getString("result");
+                        if (result.equals("running")) {
+                            isFinishedHandler.postDelayed(isFinishedRunnable, HANDLER_DELAY);
+                        } else {
+                            if (!result.equals("leader")) {
+                                Toast.makeText(ChatActivity.this, result, Toast.LENGTH_LONG).show();
+                            }
+                            finish();
+                        }
+                    } catch (JSONException e) {
+                        Log.e("ChatAct.iFHandler.run", e.getMessage());
+                    }
+                }
+            });
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        int chatId = intent.getIntExtra("chatId", -1);
+        chatId = intent.getIntExtra("chatId", -1);
         if (chatId == -1) {
             throw new RuntimeException("Created ChatActivity without providing chat id.");
         }
@@ -79,7 +118,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         Intent chatServiceIntent = new Intent(this, ChatService.class);
         chatServiceIntent.putExtra("chatId", chatId);
         bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
-
 
         setContentView(R.layout.activity_chat);
         messageInput = (EditText)findViewById(R.id.message_input);
@@ -89,6 +127,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         final ListView messagesView = (ListView) findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
         handler.postDelayed(getMessagesRunnable, HANDLER_DELAY);
+        isFinishedHandler.postDelayed(isFinishedRunnable, HANDLER_DELAY);
     }
 
     public void postMessage(View view)  {
@@ -101,10 +140,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         Log.d("onDestroy()", "called");
-        handler.removeCallbacks(getMessagesRunnable);
-        unbindService(chatServiceConection);
+        stopService();
     }
 
+    protected void stopService() {
+        handler.removeCallbacks(getMessagesRunnable);
+        isFinishedHandler.removeCallbacks(isFinishedRunnable);
+        unbindService(chatServiceConection);
+    }
 
     public void update(Message message) {
         messageAdapter.add(message);

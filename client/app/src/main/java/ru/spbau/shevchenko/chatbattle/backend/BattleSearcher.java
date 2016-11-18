@@ -6,6 +6,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.frontend.SearchActivity;
 
 public class BattleSearcher {
@@ -14,9 +15,10 @@ public class BattleSearcher {
     private static Handler handler;
     private static Runnable checkBattle;
 
-    public static void findBattle(final SearchActivity searchActivity) {
+    public static void findBattle(final SearchActivity searchActivity, final Player.Role role) {
         final int id = ProfileManager.getPlayer().id;
-        RequestMaker.sendRequest(RequestMaker.domainName + "/battlemaker/" + Integer.toString(id), RequestMaker.Method.POST, new RequestCallback() {
+        Log.d("battlesearcher", RequestMaker.domainName + "/battlemaker/" + role + "/" + Integer.toString(id));
+        RequestMaker.sendRequest(RequestMaker.domainName + "/battlemaker/" + role + "/" + Integer.toString(id), RequestMaker.Method.POST, new RequestCallback() {
             @Override
             public void run(String response) {}
         });
@@ -35,8 +37,7 @@ public class BattleSearcher {
                             }
                             String chatId = playerObject.getString("chatId");
                             if (!chatId.equals("null")) {
-                                searchActivity.onBattleFound(Integer.valueOf(chatId));
-//                                onServerResponse(Integer.getInteger(chatId), searchActivity);
+                                searchActivity.onBattleFound(Integer.valueOf(chatId), role);
                             } else {
                                 handler.postDelayed(checkBattle, HANDLER_DELAY);
                             }
@@ -48,13 +49,5 @@ public class BattleSearcher {
             }
         };
         handler.postDelayed(checkBattle, HANDLER_DELAY);
-
-
     }
-
-    private static void onServerResponse(int chatId, SearchActivity searchActivity) {
-        handler.removeCallbacks(checkBattle);
-        searchActivity.onBattleFound(chatId);
-    }
-
 }

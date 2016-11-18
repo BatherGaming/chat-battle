@@ -13,15 +13,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import ru.spbau.shevchenko.chatbattle.Message;
+import ru.spbau.shevchenko.chatbattle.Player;
 
 public class ChatService extends Service {
     private static final long UPDATE_DELAY = 100; // milliseconds
     private int chatId = -1;
     private int messageCount;
     private ArrayList<Message> messages;
+    private ArrayList<Integer> playersId = new ArrayList<>();
     private boolean unbinded = false;
 
     private static Handler handler;
@@ -68,6 +71,7 @@ public class ChatService extends Service {
     public ArrayList<Message> getMessages(){
         return messages;
     }
+    public ArrayList<Integer> getPlayersId() { return playersId; }
 
     private void onServerResponse(String response){
         try {
@@ -115,6 +119,22 @@ public class ChatService extends Service {
         // Schedule first chat messages update
         handler = new Handler();
         handler.postDelayed(getMessagesRunnable, UPDATE_DELAY );
+
+        RequestMaker.sendRequest(RequestMaker.domainName + "/profile_manager/players/" + chatId, RequestMaker.Method.GET, new RequestCallback() {
+            @Override
+            public void run(String response) {
+                try {
+                    JSONArray jsonMessages = new JSONArray(response);
+                    for (int i = 0; i < jsonMessages.length(); i++) {
+                        JSONObject jsonPlayer = jsonMessages.getJSONObject(i);
+                        playersId.add(jsonPlayer.getInt("id"));
+                    }
+                    handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
+                } catch (JSONException e) {
+                    Log.e("ChSe.getPlayersId", e.getMessage());
+                }
+            }
+        });
 
         return chatBinder;
     }

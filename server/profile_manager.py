@@ -1,11 +1,20 @@
 import hashlib
 
-from db import session, Player
+from db import session, Player, Chat
+from sqlalchemy import and_
 
 
 def get_players():
     players = session.query(Player).all()
     return list(map(Player.map_repr, players)), 200
+
+def get_chat_players(chat_id):
+    chat = session.query(Chat).filter_by(id=chat_id).first()
+    if not chat:
+        return {"error": "Chat doesn't exist"}, 400
+    players = session.query(Player).filter(and_(Player.chat_id == chat_id, Player.id != chat.leader_id)).all()
+    return list(map(Player.map_repr, players)), 200
+
 
 def get_player(player_id):
     player = session.query(Player).filter_by(id=player_id).first()

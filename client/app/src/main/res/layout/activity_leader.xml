@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_leader"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="ru.spbau.shevchenko.chatbattle.frontend.LeaderActivity">
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:id="@+id/leader_messages_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+         />
+
+    <LinearLayout
+        android:id="@+id/leader_input_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/leader_message_input"
+            android:layout_weight="0.91"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/leader_send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:text="Send"/>
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/leader_choose_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="11dp"
+        android:text="Choose"
+        android:layout_marginEnd="11dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

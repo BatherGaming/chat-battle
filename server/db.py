@@ -44,6 +44,7 @@ class Player(Base):
     chat_id = Column(Integer, ForeignKey('chats.id'))
 
     messages = relationship("Message", backref="sender")
+    #chats = relationship("Chat", backref="leader")  # TODO: not chats but chat
 
 
     def map_repr(self):
@@ -62,6 +63,8 @@ class Chat(Base):
     creation_time = Column(DateTime)
     type = Column(Integer)
     is_closed = Column(Boolean)
+    leader_id = Column(Integer)
+    winner_id = Column(Integer)
 
     messages = relationship("Message", backref="chat")
     players = relationship("Player", backref="chat")

@@ -3,7 +3,8 @@
     <string name="action_settings">Settings</string>
     <string name="menu_play_button">Play!</string>
     <string name="menu_profile_button">Profile</string>
-    <string name="search_screen_search_button">Search</string>
+    <string name="search_screen_search_as_player_button">Search as player</string>
+    <string name="search_screen_search_as_leader_button">Search as leader</string>
     <string name="not_loaded">Not loaded</string>
     <string name="login_view">Login:</string>
     <string name="age_view">Age:</string>
@@ -20,4 +21,7 @@
     <string name="female">Female</string>
     <string name="password_dont_match">Passwords do not match</string>
     <string name="signin_up">Signing up...</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

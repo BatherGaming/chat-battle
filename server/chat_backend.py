@@ -3,17 +3,22 @@ import db
 from db import session, Message, Player, Chat, datetime
 from sqlalchemy.sql.expression import func
 
-def create_chat(type, playersId):
-    chat = Chat(type=type, creation_time=datetime.datetime.now(), is_closed=False)
+def create_chat(type, playersId, leader_id):
+    chat = Chat(type=type, creation_time=datetime.datetime.now(), is_closed=False, leader_id=leader_id)
     session.add(chat)
     session.commit()
+    playersId.append(leader_id)
     for playerId in playersId:
         player = session.query(Player).filter_by(id=playerId).first()
         player.chat_id = chat.id
     return chat.id
 
-def close_chat(chat_id):
-    chat = session.query(Chat).filter_by(id=chat_id).first()
+def close_chat(leader_id, winner_id):
+    leader = session.query(Player).filter_by(id=leader_id).first()
+    chat = session.query(Chat).filter_by(id=leader.chat_id).first()
+    if chat.leader_id != leader_id:
+        return {"error":"You have to be a leader"}, 400
+    chat.winner_id = winner_id
     chat.is_closed = True
     for player in chat.players:
         player.chat_id = None
@@ -48,5 +53,28 @@ def get_messages(chat_id, num):
                         all()
 	return list(map(Message.map_repr, messages)), 200
 
+def is_finished(player_id, chat_id):
+    player = session.query(Player).filter_by(id=player_id).first()
+    chat = session.query(Chat).filter_by(id=chat_id).first()
+    if not chat:
+        return {"error": "Chat doesn't exist"}, 400
+    if not player:
+        return {"error": "Player doesn't exist"}, 400
+    if not chat.is_closed and player not in chat.players:
+        return {"error": "You are not in required chat"}, 400
+    if chat.is_closed:
+        if chat.leader_id == player.id:
+            return {"result": "leader"}, 200
+        elif chat.winner_id == player.id:
+            return {"result": "winner"}, 200
+        else:
+            return {"result": "loser"}, 200
+    else:
+        return {"result":"running"}, 200
+
+
+
+
+   
 
 

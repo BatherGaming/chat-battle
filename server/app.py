@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr//local/bin/python3
 from flask import Flask
 from flask import jsonify
 from flask import make_response
@@ -58,19 +58,27 @@ def create_chat():
     return process(chat_backend.create_chat(request.json))
 
 
-@app.route('/chat/close/<int:chat_id>', methods=['POST'])
-def close_chat(chat_id):
-    return process(chat_backend.close_chat(chat_id))
+@app.route('/chat/close/<int:leader_id>/<int:winner_id>', methods=['POST'])
+def close_chat(leader_id, winner_id):
+    return process(chat_backend.close_chat(leader_id, winner_id))
 
 
-@app.route('/battlemaker/<int:player_id>', methods=['POST'])
-def add_player_to_queue(player_id):
-    return process(battlemaker.add_player_to_queue(player_id))
+@app.route('/battlemaker/<role>/<int:player_id>', methods=['POST'])
+def add_player_to_queue(role, player_id):
+    return process(battlemaker.add_player_to_queue(role, player_id))
 
 
 @app.route('/battlemaker/<int:player_id>', methods=['DELETE'])
 def del_player_from_queue(player_id):
     return process(battlemaker.del_player_from_queue(player_id))
+
+@app.route('/chat/isfinished/<int:player_id>/<int:chat_id>', methods=['GET'])
+def is_finished(player_id, chat_id):
+    return process(chat_backend.is_finished(player_id, chat_id))
+
+@app.route('/profile_manager/players/<int:chat_id>', methods=['GET'])
+def get_chat_players(chat_id):
+    return process(profile_manager.get_chat_players(chat_id))
 
 
 if __name__ == '__main__':

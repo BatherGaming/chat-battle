@@ -26,6 +26,18 @@ public class Player {
             return (sex.toLowerCase().equals("male") ? MALE : FEMALE);
         }
     }
+
+    public enum Role {
+        PLAYER, LEADER;
+        public String toString() {
+            switch (this) {
+                case PLAYER: return "player";
+                case LEADER: return "leader";
+            }
+            return ""; // TODO: fill this
+        }
+    }
+
     public int id;
     public String login;
     public Sex sex;
