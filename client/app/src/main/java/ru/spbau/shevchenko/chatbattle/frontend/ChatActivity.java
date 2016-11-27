@@ -63,8 +63,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 StringBuilder messagesString = new StringBuilder();
                 for (Message message : messages) {
                     messagesString.append(message.text);
+                    messagesString.append("|");
                 }
-                //Log.d("getMessagesRunnable", messagesString.toString());
+                Log.d("getMessagesRunnable", messagesString.toString());
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     update(message);
                 }

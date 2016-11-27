@@ -51,7 +51,8 @@ public class ProfileManager {
             currentPlayer = new Player(playerObject.getInt("id"),
                     playerObject.getString("login"),
                     playerObject.getInt("age"),
-                    Player.Sex.fromString(playerObject.getString("sex"))
+                    Player.Sex.fromString(playerObject.getString("sex")),
+                    (Integer)playerObject.get("chatId")
             );
             signupActivity.completeSignup();
         }
@@ -75,7 +76,8 @@ public class ProfileManager {
             currentPlayer = new Player(playerObject.getInt("id"),
                                        playerObject.getString("login"),
                                        playerObject.getInt("age"),
-                                       Player.Sex.fromString(playerObject.getString("sex"))
+                                       Player.Sex.fromString(playerObject.getString("sex")),
+                                       (Integer) playerObject.get("chatId")
                                        );
             loginActivity.completeLogin();
         }
@@ -83,5 +85,9 @@ public class ProfileManager {
             Log.e("onSigninResponse()", e.getMessage());
             loginActivity.failedLogin(e.getMessage()); // TODO: change this somehow
         }
+    }
+
+    public static void setChatId(int chatId) {
+        currentPlayer.chatId = chatId;
     }
 }

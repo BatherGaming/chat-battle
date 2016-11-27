@@ -7,6 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
@@ -29,6 +33,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()){
             case R.id.playButton: {
                 Intent intent = new Intent(this, SearchActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
                 break;
             }

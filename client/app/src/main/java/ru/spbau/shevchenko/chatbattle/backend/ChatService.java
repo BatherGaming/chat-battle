@@ -27,8 +27,8 @@ public class ChatService extends Service {
     private ArrayList<Integer> playersId = new ArrayList<>();
     private boolean unbinded = false;
 
-    private static Handler handler;
-    private static Runnable getMessagesRunnable;
+    private Handler handler;
+    private Runnable getMessagesRunnable;
 
     private final IBinder chatBinder = new ChatBinder();
 
@@ -39,6 +39,7 @@ public class ChatService extends Service {
     }
 
     private void pullMessages() {
+        Log.d("getMRunnable", "pulling");
         RequestMaker.sendRequest(RequestMaker.domainName + "/chat/get/" + chatId + "/" + messageCount,
                 RequestMaker.Method.GET,
                 new RequestCallback() {
@@ -74,6 +75,7 @@ public class ChatService extends Service {
     public ArrayList<Integer> getPlayersId() { return playersId; }
 
     private void onServerResponse(String response){
+        Log.d("getMRunnable", "pulled");
         try {
             JSONArray jsonMessages = new JSONArray(response);
             // TODO: complete
@@ -111,6 +113,7 @@ public class ChatService extends Service {
         getMessagesRunnable = new Runnable() {
             @Override
             public void run() {
+                Log.d("getMRunnable", "running");
                 if (unbinded)
                     return;
                 pullMessages();
@@ -129,7 +132,6 @@ public class ChatService extends Service {
                         JSONObject jsonPlayer = jsonMessages.getJSONObject(i);
                         playersId.add(jsonPlayer.getInt("id"));
                     }
-                    handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
                 } catch (JSONException e) {
                     Log.e("ChSe.getPlayersId", e.getMessage());
                 }
@@ -141,6 +143,7 @@ public class ChatService extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
+        Log.d("onUnbind", "called");
         unbinded = true;
         handler.removeCallbacks(getMessagesRunnable);
         return false;
