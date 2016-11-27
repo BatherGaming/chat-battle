@@ -19,7 +19,9 @@
         android:id="@+id/messages_view"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:transcriptMode="alwaysScroll"
+        />
 
     <LinearLayout
         android:id="@+id/input_bar"
