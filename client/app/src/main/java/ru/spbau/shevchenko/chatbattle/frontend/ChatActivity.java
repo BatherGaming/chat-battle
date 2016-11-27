@@ -34,8 +34,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private ServiceConnection chatServiceConection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Toast.makeText(ChatActivity.this, "ChatService connected!",
-                    Toast.LENGTH_LONG).show();
             chatService = ((ChatService.ChatBinder) service).getChatService();
         }
 
