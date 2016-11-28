@@ -52,7 +52,7 @@ def add_player_to_queue(role, player_id):
 		players = []
 		for i in range(player_amount):
 			players.append(players_queue.pop(0))
-			create_chat(0, players, leaders_queue.pop(0))
+		create_chat(0, players, leaders_queue.pop(0))
 
 	
 	write_queues_in_file(players_queue, leaders_queue)

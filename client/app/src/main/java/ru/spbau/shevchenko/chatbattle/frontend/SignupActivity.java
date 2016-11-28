@@ -46,7 +46,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 // Set status
                 ((TextView) findViewById(R.id.status_view)).setText(R.string.signin_up);
                 // Sign up
-                ProfileManager.signup(new Player(0, login, age, sex, null), password, this);
+                ProfileManager.signup(new Player(0, login, age, sex), password, this);
                 break;
             }
 

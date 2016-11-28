@@ -39,7 +39,6 @@ public class BattleSearcher {
                             if (!chatId.equals("null")) {
                                 int chatIdInt = Integer.valueOf(chatId);
                                 searchActivity.onBattleFound(chatIdInt, role);
-                                ProfileManager.setChatId(chatIdInt);
                             } else {
                                 handler.postDelayed(checkBattle, HANDLER_DELAY);
                             }
