@@ -51,13 +51,6 @@ def send_message():
 def get_messages(chat_id, num):
     return process(chat_backend.get_messages(chat_id, num))
 
-#temporary functions for testing
-
-@app.route('/chat/create', methods=['POST'])
-def create_chat():
-    return process(chat_backend.create_chat(request.json))
-
-
 @app.route('/chat/close/<int:leader_id>/<int:winner_id>', methods=['POST'])
 def close_chat(leader_id, winner_id):
     return process(chat_backend.close_chat(leader_id, winner_id))
@@ -72,14 +65,20 @@ def add_player_to_queue(role, player_id):
 def del_player_from_queue(player_id):
     return process(battlemaker.del_player_from_queue(player_id))
 
-@app.route('/chat/isfinished/<int:player_id>/<int:chat_id>', methods=['GET'])
-def is_finished(player_id, chat_id):
-    return process(chat_backend.is_finished(player_id, chat_id))
+@app.route('/chat/chat_status/<int:player_id>/<int:chat_id>', methods=['GET'])
+def chat_status(player_id, chat_id):
+    return process(chat_backend.chat_status(player_id, chat_id))
 
 @app.route('/profile_manager/players/<int:chat_id>', methods=['GET'])
 def get_chat_players(chat_id):
     return process(profile_manager.get_chat_players(chat_id))
 
+
+#temporary functions for testing
+
+@app.route('/chat/create', methods=['POST'])
+def create_chat():
+    return process(chat_backend.create_chat(request.json))
 
 if __name__ == '__main__':
     app.run(debug=True)

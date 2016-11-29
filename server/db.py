@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy import create_engine
 
 from sqlalchemy.orm import sessionmaker, relationship
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import text
 from sqlalchemy.types import Boolean, DateTime
@@ -23,21 +23,26 @@ class Message(Base):
     chat_id = Column(Integer, ForeignKey('chats.id'))
     author_id = Column(Integer, ForeignKey('players.id'))
 
-   
+    def toDict(self):
+        return {"id": self.id,
+                "text": self.text,
+                "authorId": self.author_id,
+                "time": str(self.time)}
+    
+    @staticmethod
+    def fromDict(message_dict):
+        messeage = session.query(Message).filter_by(id=message_dict["id"]).first()
+        if not message:
+            messeage = Message(text=message_dict["text"], author_id=message_dict["authorId"], 
+                                time=datetime.datetime.strptime(message_dict["time"], '%Y-%m-%d %H:%M:%S.%f'))
+        return message
 
-    def map_repr(self):
-        return {
-            "id": self.id,
-            "text": self.text,
-            "authorId": self.author_id,
-            "time": str(self.time)
-        }
 
 class Player(Base):
     __tablename__ = 'players'
 
     id = Column(Integer, primary_key=True)
-    login = Column(String)
+    login = Column(String, nullable=False)
     age = Column(Integer)
     password_hash = Column(String)
     sex = Column(String)  # 'male'/'female'
@@ -46,13 +51,20 @@ class Player(Base):
     messages = relationship("Message", backref="sender")
     #chats = relationship("Chat", backref="leader")  # TODO: not chats but chat
 
-
-    def map_repr(self):
+    def toDict(self):
         return {"id": self.id,
                 "login": self.login,
                 "sex": self.sex,
                 "age": self.age,
                 "chatId": self.chat_id}
+
+    @staticmethod
+    def fromDict(player_dict):
+        player = session.query(Player).filter_by(id=message_dict["id"]).first()
+        if not player:
+            player = Player(login=message_dict["login"], sex=message_dict["sex"], 
+                                age=message_dict["age"], chat_id=message_dict["chatId"])
+        return player
 
 
 
