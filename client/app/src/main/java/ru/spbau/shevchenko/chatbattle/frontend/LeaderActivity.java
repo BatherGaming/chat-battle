@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
 
-public class LeaderActivity extends ChatActivity {
+public class LeaderActivity extends AbstractChat {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

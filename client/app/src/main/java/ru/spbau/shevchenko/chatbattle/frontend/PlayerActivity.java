@@ -12,7 +12,7 @@ import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
 
 
-public class ChatActivity extends AbstractChat {
+public class PlayerActivity extends AbstractChat {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class ChatActivity extends AbstractChat {
 
     @Override
     public void initLayout() {
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_player);
 
         final Button sendButton = (Button) findViewById(R.id.send_button);
         sendButton.setOnClickListener(this);
