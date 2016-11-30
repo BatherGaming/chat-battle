@@ -26,7 +26,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     public void onBattleFound(int battleId, Player.Role role) {
         Intent intent = role == Player.Role.PLAYER ?
-                new Intent(this, ChatActivity.class) :
+                new Intent(this, PlayerActivity.class) :
                 new Intent(this, LeaderActivity.class);
         intent.putExtra("chatId", battleId);
         startActivity(intent);
