@@ -90,7 +90,7 @@ public class ChatService extends Service {
             throw new RuntimeException("More than one client trying to bind to ChatService.");
         }
         if (!intent.hasExtra("chatId")) {
-            throw new RuntimeException("Binding to ChatService without providin chat id.");
+            throw new RuntimeException("Binding to ChatService without providing chat id.");
         }
         chatId = intent.getIntExtra("chatId", -1);
         if (chatId == -1) {
