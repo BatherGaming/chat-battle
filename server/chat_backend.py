@@ -1,15 +1,15 @@
 import db
-import intertools
+import itertools
 
 from db import session, Message, Player, Chat, datetime
 
 def create_chat(type, players_ids, leader_id):
     chat = Chat(type=type, creation_time=datetime.datetime.now(), is_closed=False, leader_id=leader_id)
     session.add(chat)
-    session.commit()
-    for playerId in itertools.chain(playersId, [leader_id]):
+    for playerId in itertools.chain(players_ids, [leader_id]):
         player = session.query(Player).filter_by(id=playerId).first()
         player.chat_id = chat.id
+    session.commit()
     return chat.id
 
 def close_chat(leader_id, winner_id):

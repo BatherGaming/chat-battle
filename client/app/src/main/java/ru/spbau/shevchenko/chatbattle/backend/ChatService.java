@@ -13,11 +13,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import ru.spbau.shevchenko.chatbattle.Message;
-import ru.spbau.shevchenko.chatbattle.Player;
 
 public class ChatService extends Service {
     private static final long UPDATE_DELAY = 100; // milliseconds
@@ -32,49 +30,40 @@ public class ChatService extends Service {
 
     private final IBinder chatBinder = new ChatBinder();
 
-    public class ChatBinder extends Binder{
-        public ChatService getChatService(){
+    public class ChatBinder extends Binder {
+        public ChatService getChatService() {
             return ChatService.this;
         }
     }
 
     private void pullMessages() {
         Log.d("getMRunnable", "pulling");
-        RequestMaker.sendRequest(RequestMaker.domainName + "/chat/get/" + chatId + "/" + messageCount,
-                RequestMaker.Method.GET,
-                new RequestCallback() {
-                    @Override
-                    public void run(String response) {
-                        onServerResponse(response);
-                    }
-                });
+        RequestMaker.pullMessages(chatId, messageCount, pullMessagesCallback);
     }
 
     public void sendMessage(String messageText) {
         JSONObject jsonMessage;
         try {
-            jsonMessage = new JSONObject().put("authorId", ProfileManager.getPlayer().id)
-                                          .put("text", messageText)
-                                          .put("chatId", chatId);
-        }
-        catch (JSONException e) {
+            jsonMessage = new JSONObject().put("authorId", ProfileManager.getPlayer().getId())
+                    .put("text", messageText)
+                    .put("chatId", chatId);
+        } catch (JSONException e) {
             Log.e("sendMessage()", e.getMessage()); // TODO: handle this
             return;
         }
-        RequestMaker.sendRequest(RequestMaker.domainName + "/chat/send", RequestMaker.Method.POST,
-                new RequestCallback() {
-                    @Override
-                    public void run(String response) {
-                        // TODO: fill this
-                    }
-                }, jsonMessage.toString());
+
+        RequestMaker.sendMessage(sendMessageCallback, jsonMessage.toString());
     }
-    public ArrayList<Message> getMessages(){
+
+    public ArrayList<Message> getMessages() {
         return messages;
     }
-    public ArrayList<Integer> getPlayersId() { return playersId; }
 
-    private void onServerResponse(String response){
+    public ArrayList<Integer> getPlayersId() {
+        return playersId;
+    }
+
+    private void onServerResponse(String response) {
         Log.d("getMRunnable", "pulled");
         try {
             JSONArray jsonMessages = new JSONArray(response);
@@ -82,8 +71,8 @@ public class ChatService extends Service {
             for (int i = 0; i < jsonMessages.length(); i++) {
                 JSONObject jsonMessage = jsonMessages.getJSONObject(i);
                 Message message = new Message(jsonMessage.getString("text"),
-                                              jsonMessage.getInt("authorId"),
-                                              chatId);
+                        jsonMessage.getInt("authorId"),
+                        chatId);
                 messages.add(message);
             }
             messageCount += jsonMessages.length();
@@ -97,7 +86,7 @@ public class ChatService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        if (chatId != -1){
+        if (chatId != -1) {
             throw new RuntimeException("More than one client trying to bind to ChatService.");
         }
         if (!intent.hasExtra("chatId")) {
@@ -121,23 +110,9 @@ public class ChatService extends Service {
         };
         // Schedule first chat messages update
         handler = new Handler();
-        handler.postDelayed(getMessagesRunnable, UPDATE_DELAY );
+        handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
 
-        RequestMaker.sendRequest(RequestMaker.domainName + "/profile_manager/players/" + chatId, RequestMaker.Method.GET, new RequestCallback() {
-            @Override
-            public void run(String response) {
-                try {
-                    JSONArray jsonMessages = new JSONArray(response);
-                    for (int i = 0; i < jsonMessages.length(); i++) {
-                        JSONObject jsonPlayer = jsonMessages.getJSONObject(i);
-                        playersId.add(jsonPlayer.getInt("id"));
-                    }
-                } catch (JSONException e) {
-                    Log.e("ChSe.getPlayersId", e.getMessage());
-                }
-            }
-        });
-
+        RequestMaker.getPlayersIds(getPlayersIdsCallback, chatId);
         return chatBinder;
     }
 
@@ -148,4 +123,33 @@ public class ChatService extends Service {
         handler.removeCallbacks(getMessagesRunnable);
         return false;
     }
+
+    final private RequestCallback pullMessagesCallback = new RequestCallback() {
+        @Override
+        public void run(String response) {
+            onServerResponse(response);
+        }
+    };
+
+    final private RequestCallback sendMessageCallback = new RequestCallback() {
+        @Override
+        public void run(String response) {
+            // TODO: fill this
+        }
+    };
+
+    final RequestCallback getPlayersIdsCallback = new RequestCallback() {
+        @Override
+        public void run(String response) {
+            try {
+                JSONArray jsonMessages = new JSONArray(response);
+                for (int i = 0; i < jsonMessages.length(); i++) {
+                    JSONObject jsonPlayer = jsonMessages.getJSONObject(i);
+                    playersId.add(jsonPlayer.getInt("id"));
+                }
+            } catch (JSONException e) {
+                Log.e("ChSe.getPlayersId", e.getMessage());
+            }
+        }
+    };
 }

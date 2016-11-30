@@ -31,11 +31,8 @@ class Message(Base):
     
     @staticmethod
     def fromDict(message_dict):
-        messeage = session.query(Message).filter_by(id=message_dict["id"]).first()
-        if not message:
-            messeage = Message(text=message_dict["text"], author_id=message_dict["authorId"], 
+        return Message(id=message_dict["id"], text=message_dict["text"], author_id=message_dict["authorId"], 
                                 time=datetime.datetime.strptime(message_dict["time"], '%Y-%m-%d %H:%M:%S.%f'))
-        return message
 
 
 class Player(Base):
@@ -45,7 +42,7 @@ class Player(Base):
     login = Column(String, nullable=False)
     age = Column(Integer)
     password_hash = Column(String)
-    sex = Column(String)  # 'male'/'female'
+    sex = Column(String)  # 'MALE'/'FEMALE'
     chat_id = Column(Integer, ForeignKey('chats.id'))
 
     messages = relationship("Message", backref="sender")
@@ -61,10 +58,8 @@ class Player(Base):
     @staticmethod
     def fromDict(player_dict):
         player = session.query(Player).filter_by(id=message_dict["id"]).first()
-        if not player:
-            player = Player(login=message_dict["login"], sex=message_dict["sex"], 
+        return Player(id=message_dict["id"], login=message_dict["login"], sex=message_dict["sex"], 
                                 age=message_dict["age"], chat_id=message_dict["chatId"])
-        return player
 
 
 

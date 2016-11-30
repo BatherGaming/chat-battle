@@ -41,7 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
-            android:text="Send"/>
+            android:layout_marginEnd="20dp"
+            android:text="@string/send_button"/>
 
 
     </LinearLayout>
@@ -51,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="11dp"
-        android:text="Choose"
+        android:text="@string/choose_button"
         android:layout_marginEnd="11dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

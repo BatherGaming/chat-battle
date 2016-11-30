@@ -11,38 +11,30 @@ import ru.spbau.shevchenko.chatbattle.frontend.SignupActivity;
 
 public class ProfileManager {
     private static Player currentPlayer = null;
-    public static void signin(String login, String password, final LoginActivity loginActivity) {
-        RequestMaker.sendRequest(RequestMaker.domainName + "/signin/" + login + "/" + password, RequestMaker.Method.GET, 
-            new RequestCallback() {
-                @Override
-                public void run(String response) {
-                    onSigninResponse(response, loginActivity);
-                }
-            });
-    }
-    public static void signup(Player newPlayer, String password, final SignupActivity signupActivity) {
-        JSONObject jsonPlayer;
-        try {
-            jsonPlayer = new JSONObject().put("login", newPlayer.login)
-                    .put("sex", newPlayer.sex.toString())
-                    .put("age", newPlayer.age)
-                    .put("password", password);
-        }
-        catch (JSONException e) {
-            Log.e("signup()", e.getMessage()); // TODO: handle this
-            return;
-        }
-        RequestMaker.sendRequest(RequestMaker.domainName + "/players", RequestMaker.Method.POST, new RequestCallback() {
-            @Override
-            public void run(String response) {
-                onSignupResponse(response, signupActivity);
-            }
-        }, jsonPlayer.toString());
+
+    public static void signIn(String login, String password, final LoginActivity loginActivity) {
+        RequestMaker.signIn(login, password, new SignInCallback(loginActivity));
     }
 
-    private static void onSignupResponse(String response, SignupActivity signupActivity) {
+    public static void signUp(Player newPlayer, String password, final SignupActivity signupActivity) {
+        JSONObject jsonPlayer;
         try {
-            Log.d("onSignupResponse()", response);
+            jsonPlayer = new JSONObject().put("login", newPlayer.getLogin())
+                    .put("sex", newPlayer.getSex().toString())
+                    .put("age", newPlayer.getAge())
+                    .put("password", password);
+        } catch (JSONException e) {
+            Log.e("signUp()", e.getMessage()); // TODO: handle this
+            return;
+        }
+
+
+        RequestMaker.singUp(new SignUpCallback(signupActivity), jsonPlayer.toString());
+    }
+
+    private static void onSignUpResponse(String response, SignupActivity signupActivity) {
+        try {
+            Log.d("onSignUpResponse()", response);
             JSONObject playerObject = new JSONObject(response);
             if (playerObject.has("error")) {
                 signupActivity.failedSignup(playerObject.getString("error"));
@@ -54,9 +46,8 @@ public class ProfileManager {
                     Player.Sex.fromString(playerObject.getString("sex"))
             );
             signupActivity.completeSignup();
-        }
-        catch (Exception e){
-            Log.e("onSignupResponse()", e.getMessage());
+        } catch (Exception e) {
+            Log.e("onSignUpResponse()", e.getMessage());
             signupActivity.failedSignup(e.getMessage()); // TODO: change this somehow
         }
     }
@@ -65,7 +56,8 @@ public class ProfileManager {
         // TODO: deal with possible null values
         return currentPlayer;
     }
-    public static void onSigninResponse(String response, LoginActivity loginActivity) {
+
+    public static void onSignInResponse(String response, LoginActivity loginActivity) {
         try {
             JSONObject playerObject = new JSONObject(response);
             if (playerObject.has("error")) {
@@ -73,15 +65,41 @@ public class ProfileManager {
                 return;
             }
             currentPlayer = new Player(playerObject.getInt("id"),
-                                       playerObject.getString("login"),
-                                       playerObject.getInt("age"),
-                                       Player.Sex.fromString(playerObject.getString("sex"))
-                                       );
+                    playerObject.getString("login"),
+                    playerObject.getInt("age"),
+                    Player.Sex.fromString(playerObject.getString("sex"))
+            );
             loginActivity.completeLogin();
-        }
-        catch (Exception e){
-            Log.e("onSigninResponse()", e.getMessage());
+        } catch (Exception e) {
+            Log.e("onSignInResponse()", e.getMessage());
             loginActivity.failedLogin(e.getMessage()); // TODO: change this somehow
         }
     }
+
+    static private class SignInCallback implements RequestCallback {
+        private LoginActivity loginActivity;
+
+        SignInCallback(LoginActivity loginActivity) {
+            this.loginActivity = loginActivity;
+        }
+
+        @Override
+        public void run(String response) {
+            onSignInResponse(response, loginActivity);
+        }
+    }
+
+    static private class SignUpCallback implements RequestCallback {
+        private SignupActivity signupActivity;
+
+        SignUpCallback(SignupActivity signupActivity) {
+            this.signupActivity = signupActivity;
+        }
+
+        @Override
+        public void run(String response) {
+            onSignUpResponse(response, signupActivity);
+        }
+    }
+
 }

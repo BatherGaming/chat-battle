@@ -18,7 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/not_loaded"
-        android:layout_toRightOf="@+id/login_text_view"/>
+        android:layout_toRightOf="@+id/login_text_view"
+        android:layout_toEndOf="@+id/login_text_view"/>
     <TextView
         android:id="@+id/age_text_view"
         android:layout_width="wrap_content"
@@ -30,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/age_text_view"
+        android:layout_toEndOf="@+id/age_text_view"
         android:layout_below="@+id/login_value_view"
         android:text="@string/not_loaded"/>
     <TextView
@@ -43,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/sex_text_view"
+        android:layout_toEndOf="@+id/sex_text_view"
         android:layout_below="@+id/age_value_view"
         android:text="@string/not_loaded"/>
 

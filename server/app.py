@@ -30,9 +30,9 @@ def get_player(player_id):
     return process(profile_manager.get_player(player_id))
 
 
-@app.route('/signin/<login>/<password>', methods=['GET'])
-def signin(login, password):
-    return process(profile_manager.signin(login, password))
+@app.route('/sign_in/<login>/<password>', methods=['GET'])
+def sign_in(login, password):
+    return process(profile_manager.sign_in(login, password))
 
 
 @app.route('/players', methods=['POST'])

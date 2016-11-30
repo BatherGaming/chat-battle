@@ -15,40 +15,52 @@ public class BattleSearcher {
     private static Handler handler;
     private static Runnable checkBattle;
 
+
     public static void findBattle(final SearchActivity searchActivity, final Player.Role role) {
-        final int id = ProfileManager.getPlayer().id;
-        Log.d("battlesearcher", RequestMaker.domainName + "/battlemaker/" + role + "/" + Integer.toString(id));
-        RequestMaker.sendRequest(RequestMaker.domainName + "/battlemaker/" + role + "/" + Integer.toString(id), RequestMaker.Method.POST, new RequestCallback() {
-            @Override
-            public void run(String response) {}
-        });
+        final int id = ProfileManager.getPlayer().getId();
+
+        RequestMaker.findBattle(role, id);
+
         handler = new Handler();
         checkBattle = new Runnable() {
             @Override
             public void run() {
-                RequestMaker.sendRequest(RequestMaker.domainName + "/players/" + Integer.toString(id), RequestMaker.Method.GET, new RequestCallback() {
-                    @Override
-                    public void run(String response) {
-                        try {
-                            JSONObject playerObject = new JSONObject(response);
-                            if (playerObject.has("error")) {
-                                // TODO : do smth
-                                return;
-                            }
-                            String chatId = playerObject.getString("chatId");
-                            if (!chatId.equals("null")) {
-                                int chatIdInt = Integer.valueOf(chatId);
-                                searchActivity.onBattleFound(chatIdInt, role);
-                            } else {
-                                handler.postDelayed(checkBattle, HANDLER_DELAY);
-                            }
-                        } catch (JSONException e) {
-                            Log.e("findBattle.handler.run", e.getMessage());
-                        }
-                    }
-                });
+                RequestMaker.checkIfFound(id, new checkIfFoundCallback(searchActivity, role));
             }
         };
         handler.postDelayed(checkBattle, HANDLER_DELAY);
     }
+
+    private static class checkIfFoundCallback implements RequestCallback {
+
+        private SearchActivity searchActivity;
+        private Player.Role role;
+
+        checkIfFoundCallback(SearchActivity searchActivity, Player.Role role) {
+            this.searchActivity = searchActivity;
+            this.role = role;
+        }
+
+        @Override
+        public void run(String response) {
+            try {
+                JSONObject playerObject = new JSONObject(response);
+                if (playerObject.has("error")) {
+                    // TODO : do smth
+                    return;
+                }
+                String chatId = playerObject.getString("chatId");
+                if (!chatId.equals("null")) {
+                    int chatIdInt = Integer.valueOf(chatId);
+                    searchActivity.onBattleFound(chatIdInt, role);
+                } else {
+                    handler.postDelayed(checkBattle, HANDLER_DELAY);
+                }
+            } catch (JSONException e) {
+                Log.e("findBattle.handler.run", e.getMessage());
+            }
+        }
+    }
+
+
 }

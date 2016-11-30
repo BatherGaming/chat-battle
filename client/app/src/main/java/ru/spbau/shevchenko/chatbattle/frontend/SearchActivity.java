@@ -11,25 +11,23 @@ import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.BattleSearcher;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button search_as_player_button;
-    private Button search_as_leader_button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        search_as_player_button = (Button)findViewById(R.id.search_as_player_button);
+        final Button search_as_player_button = (Button) findViewById(R.id.search_as_player_button);
         search_as_player_button.setOnClickListener(this);
 
-        search_as_leader_button = (Button)findViewById(R.id.search_as_leader_button);
+        final Button search_as_leader_button = (Button) findViewById(R.id.search_as_leader_button);
         search_as_leader_button.setOnClickListener(this);
 
     }
 
     public void onBattleFound(int battleId, Player.Role role) {
         Intent intent = role == Player.Role.PLAYER ?
-                        new Intent(this, ChatActivity.class) :
-                        new Intent(this, LeaderActivity.class);
+                new Intent(this, ChatActivity.class) :
+                new Intent(this, LeaderActivity.class);
         intent.putExtra("chatId", battleId);
         startActivity(intent);
     }

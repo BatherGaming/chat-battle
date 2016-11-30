@@ -24,11 +24,11 @@ def get_player(player_id):
 
 def add_player(json):
     if not json:
-        return { "error" : "JSON is null"}, 400
+        return { "error" : "JSON is null"}, 400         
     for parametr in ['login', 'sex', 'password']:
         if not parametr in json:
             return {"error" : "no " + parametr + " in JSON"}, 400
-    for parametr in ['logic', 'password']:
+    for parametr in ['login', 'password']:
         if json[parametr] == "":
             return {"error" : parametr + " should be not empty"}
 
@@ -48,7 +48,7 @@ def add_player(json):
     session.commit()
     return player.toDict(), 201
 
-def signin(login, password):
+def sign_in(login, password):
     password_hash = hashlib.md5(password.encode("utf-8")).hexdigest()
     player = session.query(Player).filter_by(login=login).first()
     if not player or player.password_hash != password_hash:

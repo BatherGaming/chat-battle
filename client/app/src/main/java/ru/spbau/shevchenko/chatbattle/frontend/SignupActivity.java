@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -27,12 +26,12 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.signup_button: {
                 // Getting all the data from form
                 String login = ((EditText) findViewById(R.id.login_edit)).getText().toString();
                 int age = Integer.valueOf(((EditText) findViewById(R.id.age_edit)).getText()
-                                                                                    .toString());
+                        .toString());
                 RadioGroup rg = (RadioGroup) findViewById(R.id.sex_radio_group);
                 Player.Sex sex = (rg.getCheckedRadioButtonId() == R.id.male_radio_button ? Player.Sex.MALE : Player.Sex.FEMALE);
                 String password = ((EditText) findViewById(R.id.password_edit)).getText().toString();
@@ -41,19 +40,19 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 // Check password equality
                 if (!password.equals(passwordConfirm)) {
                     ((TextView) findViewById(R.id.status_view)).setText(R.string.password_dont_match);
-                    return ;
+                    return;
                 }
                 // Set status
                 ((TextView) findViewById(R.id.status_view)).setText(R.string.signin_up);
                 // Sign up
-                ProfileManager.signup(new Player(0, login, age, sex), password, this);
+                ProfileManager.signUp(new Player(0, login, age, sex), password, this);
                 break;
             }
 
         }
     }
 
-    public void completeSignup(){
+    public void completeSignup() {
         ((TextView) findViewById(R.id.status_view)).setText("");
         ((EditText) findViewById(R.id.login_edit)).setText("");
         ((EditText) findViewById(R.id.age_edit)).setText("");
@@ -66,7 +65,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(intent);
     }
 
-    public void failedSignup(String reason){
+    public void failedSignup(String reason) {
         TextView statusView = (TextView) findViewById(R.id.status_view);
         statusView.setText(reason);
     }

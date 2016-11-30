@@ -28,7 +28,7 @@
             android:enabled="true" />
 
         <activity android:name=".frontend.LeaderActivity" />
-        <activity android:name=".frontend.WinnerPickActivity"></activity>
+        <activity android:name=".frontend.WinnerPickActivity" />
     </application>
 
 </manifest>
