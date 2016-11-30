@@ -8,11 +8,15 @@ def get_players():
     players = session.query(Player).all()
     return list(map(Player.toDict, players)), 200
 
+
 def get_chat_players(chat_id):
     chat = session.query(Chat).filter_by(id=chat_id).first()
     if not chat:
         return {"error": "Chat doesn't exist"}, 400
-    players = session.query(Player).filter(and_(Player.chat_id == chat_id, Player.id != chat.leader_id)).all()
+    players = session.query(Player)\
+                     .filter(and_(Player.chat_id == chat_id,
+                                  Player.id != chat.leader_id))\
+                     .all()
     return list(map(Player.toDict, players)), 200
 
 
@@ -22,23 +26,23 @@ def get_player(player_id):
         return {}, 404
     return player.toDict(), 200
 
+
 def add_player(json):
     if not json:
-        return { "error" : "JSON is null"}, 400         
+        return {"error": "JSON is null"}, 400
     for parametr in ['login', 'sex', 'password']:
-        if not parametr in json:
-            return {"error" : "no " + parametr + " in JSON"}, 400
+        if parametr not in json:
+            return {"error": "no " + parametr + " in JSON"}, 400
     for parametr in ['login', 'password']:
         if json[parametr] == "":
-            return {"error" : parametr + " should be not empty"}
+            return {"error": parametr + " should be not empty"}
 
     if session.query(Player).filter_by(login=json['login']).first():
-        return {"error": "Login is taken."}, 422 # Unprocessible entity
+        return {"error": "Login is taken."}, 422  # Unprocessible entity
 
     password = json.get("password", "")
     password_hash = hashlib.md5(password.encode("utf-8")).hexdigest()
 
-    
     player = Player(login=json["login"],
                     sex=json["sex"],
                     password_hash=password_hash,
@@ -47,6 +51,7 @@ def add_player(json):
     session.add(player)
     session.commit()
     return player.toDict(), 201
+
 
 def sign_in(login, password):
     password_hash = hashlib.md5(password.encode("utf-8")).hexdigest()

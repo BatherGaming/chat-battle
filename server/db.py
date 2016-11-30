@@ -13,13 +13,14 @@ from sqlalchemy.types import Boolean, DateTime
 engine = create_engine('sqlite:///chat-battle.db')
 Base = declarative_base()
 
+
 class Message(Base):
     __tablename__ = 'messages'
 
     id = Column(Integer, primary_key=True)
     text = Column(String, nullable=False)
     time = Column(DateTime)
-    
+
     chat_id = Column(Integer, ForeignKey('chats.id'))
     author_id = Column(Integer, ForeignKey('players.id'))
 
@@ -28,11 +29,13 @@ class Message(Base):
                 "text": self.text,
                 "authorId": self.author_id,
                 "time": str(self.time)}
-    
+
     @staticmethod
     def fromDict(message_dict):
-        return Message(id=message_dict["id"], text=message_dict["text"], author_id=message_dict["authorId"], 
-                                time=datetime.datetime.strptime(message_dict["time"], '%Y-%m-%d %H:%M:%S.%f'))
+        return Message(id=message_dict["id"], text=message_dict["text"],
+                       author_id=message_dict["authorId"],
+                       time=datetime.datetime.strptime(message_dict["time"],
+                                                       '%Y-%m-%d %H:%M:%S.%f'))
 
 
 class Player(Base):
@@ -46,7 +49,7 @@ class Player(Base):
     chat_id = Column(Integer, ForeignKey('chats.id'))
 
     messages = relationship("Message", backref="sender")
-    #chats = relationship("Chat", backref="leader")  # TODO: not chats but chat
+    # chats = relationship("Chat", backref="leader") # TODO: not chats but chat
 
     def toDict(self):
         return {"id": self.id,
@@ -58,9 +61,9 @@ class Player(Base):
     @staticmethod
     def fromDict(player_dict):
         player = session.query(Player).filter_by(id=message_dict["id"]).first()
-        return Player(id=message_dict["id"], login=message_dict["login"], sex=message_dict["sex"], 
-                                age=message_dict["age"], chat_id=message_dict["chatId"])
-
+        return Player(id=message_dict["id"], login=message_dict["login"],
+                      sex=message_dict["sex"], age=message_dict["age"],
+                      chat_id=message_dict["chatId"])
 
 
 class Chat(Base):
