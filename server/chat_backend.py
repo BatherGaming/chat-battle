@@ -11,6 +11,7 @@ def create_chat(type, players_ids, leader_id):
     for playerId in itertools.chain(players_ids, [leader_id]):
         player = session.query(Player).filter_by(id=playerId).first()
         player.chat_id = chat.id
+        player.status = "CHATTING_AS_LEADER" if player.id == leader_id else "CHATTING_AS_PLAYER"
     session.commit()
     return chat.id
 
@@ -22,10 +23,12 @@ def close_chat(leader_id, winner_id):
     chat = session.query(Chat).filter_by(id=leader.chat_id).first()
     if chat.leader_id != leader_id:
         return {"error": "You have to be a leader"}, 400
+    leader.status = "IDLE"
     chat.winner_id = winner_id
     chat.is_closed = True
     for player in chat.players:
         player.chat_id = None
+        player.status = "IDLE"
     session.commit()
     return {}, 200
 

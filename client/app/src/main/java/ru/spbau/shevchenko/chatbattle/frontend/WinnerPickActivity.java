@@ -1,7 +1,6 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +14,9 @@ import java.util.ArrayList;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 
-public class WinnerPickActivity extends AppCompatActivity implements View.OnClickListener {
+public class WinnerPickActivity extends BasicActivity implements View.OnClickListener {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_winner_pick);
         ViewGroup playersLayout = (ViewGroup) findViewById(R.id.players_radio_group);

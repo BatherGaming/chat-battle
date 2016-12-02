@@ -1,11 +1,12 @@
 package ru.spbau.shevchenko.chatbattle;
 
 public class Player {
-    public Player(int id, String login, int age, Sex sex) {
+    public Player(int id, String login, int age, Sex sex, int chatId) {
         this.id = id;
         this.login = login;
         this.age = age;
         this.sex = sex;
+        this.chatId = chatId;
     }
 
     public enum Sex {
@@ -24,6 +25,16 @@ public class Player {
     final private String login;
     final private Sex sex;
     final private int age;
+
+    public int getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
+    }
+
+    private int chatId;
 
     public int getId() {
         return id;

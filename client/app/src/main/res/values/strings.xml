@@ -26,6 +26,10 @@
     <string name="cancel_button">Cancel</string>
     <string name="ok_button">OK</string>
     <string name="choice_demand">Choose please</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="battle_found">Battle for you has been found</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

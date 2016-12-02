@@ -1,18 +1,18 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.BattleSearcher;
+import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 
-public class SearchActivity extends AppCompatActivity implements View.OnClickListener {
+public class SearchActivity extends BasicActivity implements View.OnClickListener {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
@@ -22,25 +22,36 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         final Button search_as_leader_button = (Button) findViewById(R.id.search_as_leader_button);
         search_as_leader_button.setOnClickListener(this);
 
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+        switch (ProfileManager.getPlayerStatus()) {
+            case IDLE: {
+                spinner.setVisibility(View.GONE);
+                break;
+            }
+            case IN_QUEUE_AS_PLAYER:
+            case IN_QUEUE_AS_LEADER: {
+                spinner.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
-    public void onBattleFound(int battleId, Player.Role role) {
-        Intent intent = role == Player.Role.PLAYER ?
-                new Intent(this, PlayerActivity.class) :
-                new Intent(this, LeaderActivity.class);
-        intent.putExtra("chatId", battleId);
-        startActivity(intent);
-    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.search_as_player_button: {
-                BattleSearcher.findBattle(this, Player.Role.PLAYER);
+                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER);
+                BattleSearcher.findBattle(Player.Role.PLAYER);
+                final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+                spinner.setVisibility(View.VISIBLE);
                 break;
             }
             case R.id.search_as_leader_button: {
-                BattleSearcher.findBattle(this, Player.Role.LEADER);
+                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER);
+                final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+                spinner.setVisibility(View.VISIBLE);
+                BattleSearcher.findBattle(Player.Role.LEADER);
+                break;
             }
         }
     }

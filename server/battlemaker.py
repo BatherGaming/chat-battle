@@ -40,12 +40,14 @@ def add_player_to_queue(role, player_id):
         if player_id in leaders_queue:
             leaders_queue.remove(player_id)
         players_queue.append(player_id)
+        player.status = "IN_QUEUE_AS_PLAYER"
     elif role == "leader":
         if player_id in leaders_queue:
             return {"error": "Player's already in queue"}, 400
         if player_id in players_queue:
             players_queue.remove(player_id)
         leaders_queue.append(player_id)
+        player.status = "IN_QUEUE_AS_LEADER"
     else:
         return {"error": "Can't parse role"}, 400
 
@@ -66,6 +68,9 @@ def del_player_from_queue(player_id):
 
     players_queue, leaders_queue = read_queues_from_file()
 
+    player = session.query(Player).filter_by(id=player_id).first()
+    player.status = "IDLE"
+    
     for queue in [players_queue, leaders_queue]:
         queue = list(filter(lambda x: x != player_id, queue))
 

@@ -46,7 +46,8 @@ def add_player(json):
     player = Player(login=json["login"],
                     sex=json["sex"],
                     password_hash=password_hash,
-                    age=json.get("age", 0))
+                    age=json.get("age", 0),
+                    status="IDLE")
 
     session.add(player)
     session.commit()

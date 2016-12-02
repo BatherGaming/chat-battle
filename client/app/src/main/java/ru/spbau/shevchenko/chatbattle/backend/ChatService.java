@@ -19,7 +19,6 @@ import ru.spbau.shevchenko.chatbattle.Message;
 
 public class ChatService extends Service {
     private static final long UPDATE_DELAY = 100; // milliseconds
-    private int chatId = -1;
     private int messageCount;
     private ArrayList<Message> messages;
     private ArrayList<Integer> playersId = new ArrayList<>();
@@ -37,8 +36,8 @@ public class ChatService extends Service {
     }
 
     private void pullMessages() {
-        Log.d("getMRunnable", "pulling");
-        RequestMaker.pullMessages(chatId, messageCount, pullMessagesCallback);
+//        Log.d("getMRunnable", "pulling");
+        RequestMaker.pullMessages(ProfileManager.getPlayer().getChatId(), messageCount, pullMessagesCallback);
     }
 
     public void sendMessage(String messageText) {
@@ -46,7 +45,7 @@ public class ChatService extends Service {
         try {
             jsonMessage = new JSONObject().put("authorId", ProfileManager.getPlayer().getId())
                     .put("text", messageText)
-                    .put("chatId", chatId);
+                    .put("chatId", ProfileManager.getPlayer().getChatId());
         } catch (JSONException e) {
             Log.e("sendMessage()", e.getMessage()); // TODO: handle this
             return;
@@ -64,7 +63,7 @@ public class ChatService extends Service {
     }
 
     private void onServerResponse(String response) {
-        Log.d("getMRunnable", "pulled");
+//        Log.d("getMRunnable", "pulled");
         try {
             JSONArray jsonMessages = new JSONArray(response);
             // TODO: complete
@@ -72,7 +71,7 @@ public class ChatService extends Service {
                 JSONObject jsonMessage = jsonMessages.getJSONObject(i);
                 Message message = new Message(jsonMessage.getString("text"),
                         jsonMessage.getInt("authorId"),
-                        chatId);
+                        ProfileManager.getPlayer().getChatId());
                 messages.add(message);
             }
             messageCount += jsonMessages.length();
@@ -86,23 +85,13 @@ public class ChatService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        if (chatId != -1) {
-            throw new RuntimeException("More than one client trying to bind to ChatService.");
-        }
-        if (!intent.hasExtra("chatId")) {
-            throw new RuntimeException("Binding to ChatService without providing chat id.");
-        }
-        chatId = intent.getIntExtra("chatId", -1);
-        if (chatId == -1) {
-            throw new RuntimeException("Binded to ChatService without providing chat id.");
-        }
 
         messageCount = 0;
         messages = new ArrayList<>();
         getMessagesRunnable = new Runnable() {
             @Override
             public void run() {
-                Log.d("getMRunnable", "running");
+                //  Log.d("getMRunnable", "running");
                 if (unbinded)
                     return;
                 pullMessages();
@@ -112,7 +101,7 @@ public class ChatService extends Service {
         handler = new Handler();
         handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
 
-        RequestMaker.getPlayersIds(getPlayersIdsCallback, chatId);
+        RequestMaker.getPlayersIds(getPlayersIdsCallback, ProfileManager.getPlayer().getChatId());
         return chatBinder;
     }
 
