@@ -10,4 +10,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ru.spbau.shevchenko.chatbattle.frontend.TestActivity">
 
+    <Button
+        android:id="@+id/whiteboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/whiteboard" />
 </RelativeLayout>

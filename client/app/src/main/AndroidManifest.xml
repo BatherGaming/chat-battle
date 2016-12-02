@@ -11,11 +11,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".frontend.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".frontend.SearchActivity" />
         <activity android:name=".frontend.ProfileActivity" />
@@ -29,6 +24,14 @@
 
         <activity android:name=".frontend.LeaderActivity" />
         <activity android:name=".frontend.WinnerPickActivity" />
+        <activity android:name=".frontend.WhiteboardActivity" />
+        <activity android:name=".frontend.TestActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

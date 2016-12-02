@@ -52,7 +52,7 @@ public class ChatService extends Service {
             return;
         }
 
-        RequestMaker.sendMessage(sendMessageCallback, jsonMessage.toString());
+        RequestMaker.sendMessage(jsonMessage.toString(), sendMessageCallback);
     }
 
     public ArrayList<Message> getMessages() {
@@ -112,7 +112,7 @@ public class ChatService extends Service {
         handler = new Handler();
         handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
 
-        RequestMaker.getPlayersIds(getPlayersIdsCallback, chatId);
+        RequestMaker.getPlayersIds(chatId, getPlayersIdsCallback);
         return chatBinder;
     }
 

@@ -1,8 +1,6 @@
 Whiteboard creation:
   - Whiteboard button
-  - Activity
   - Generate URI
-  - Upload
 
 Whiteboard retrieval:
   - Display grey square
