@@ -6,7 +6,7 @@ from db import session, Message, Player, Chat, datetime
 
 def create_chat(type, players_ids, leader_id):
     chat = Chat(type=type, creation_time=datetime.datetime.now(),
-                is_closed=False, leader_id=leader_id)
+                is_closed=False, leader_id=leader_id, accepted=0)
     session.add(chat)
     for playerId in itertools.chain(players_ids, [leader_id]):
         player = session.query(Player).filter_by(id=playerId).first()
@@ -89,3 +89,12 @@ def chat_status(player_id, chat_id):
             return {"result": "loser"}, 200
     else:
         return {"result": "running"}, 200
+
+def accept(player_id):
+    player = session.query(Player).filter_by(id=player_id).first()
+    if not player:
+        return {"error": "Player doesn't exist"}, 400
+    if not player.chat_id:
+        return {"error": "Player is not in chat"}, 400
+    chat = session.query(Chat).filter_by(id=player.chat_id).first()
+    

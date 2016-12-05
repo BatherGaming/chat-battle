@@ -74,9 +74,13 @@ class Chat(Base):
     id = Column(Integer, primary_key=True)
     creation_time = Column(DateTime)
     type = Column(Integer)
+
+    is_started = Column(Boolean)
     is_closed = Column(Boolean)
     leader_id = Column(Integer)
     winner_id = Column(Integer)
+    accepted = Column(Integer)
+
 
     messages = relationship("Message", backref="chat")
     players = relationship("Player", backref="chat")

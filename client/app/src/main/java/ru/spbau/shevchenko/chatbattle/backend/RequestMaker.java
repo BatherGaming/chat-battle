@@ -154,4 +154,12 @@ public class RequestMaker {
     static public void chatStatus(int chatId, RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/chat_status/" + ProfileManager.getPlayer().getId() + "/" + chatId, RequestMaker.Method.GET, callback);
     }
+
+    static public void deleteFromQueue(int id) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + id, RequestMaker.Method.DELETE, new RequestCallback() {
+            @Override
+            public void run(String response) {
+            }
+        });
+    }
 }

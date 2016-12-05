@@ -71,9 +71,8 @@ def del_player_from_queue(player_id):
     player = session.query(Player).filter_by(id=player_id).first()
     player.status = "IDLE"
     
-    for queue in [players_queue, leaders_queue]:
-        queue = list(filter(lambda x: x != player_id, queue))
+    queues = [list(filter(lambda x: x != player_id, queue)) for queue in [players_queue, leaders_queue]]
 
-    write_queues_in_file(players_queue, leaders_queue)
+    write_queues_in_file(queues[0], queues[1])
 
     return {}, 200

@@ -29,7 +29,9 @@
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
     <string name="battle_found">Battle for you has been found</string>
-
+    <string name="search_as_player">You are searching as player</string>
+    <string name="search_as_leader">You are searching as leader</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_screen_stop_searching_button">Stop searching</string>
 </resources>

@@ -1,14 +1,17 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.BattleSearcher;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
+import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 
 public class SearchActivity extends BasicActivity implements View.OnClickListener {
     @Override
@@ -22,15 +25,21 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         final Button search_as_leader_button = (Button) findViewById(R.id.search_as_leader_button);
         search_as_leader_button.setOnClickListener(this);
 
-        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+        final Button stop_searching_button = (Button) findViewById(R.id.stop_searching_button);
+        stop_searching_button.setOnClickListener(this);
+
         switch (ProfileManager.getPlayerStatus()) {
             case IDLE: {
-                spinner.setVisibility(View.GONE);
+                stop_searching();
                 break;
             }
-            case IN_QUEUE_AS_PLAYER:
+            case IN_QUEUE_AS_PLAYER: {
+                search_as(Player.Role.PLAYER);
+                break;
+            }
             case IN_QUEUE_AS_LEADER: {
-                spinner.setVisibility(View.VISIBLE);
+                search_as(Player.Role.LEADER);
+                break;
             }
         }
     }
@@ -42,17 +51,41 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
             case R.id.search_as_player_button: {
                 ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER);
                 BattleSearcher.findBattle(Player.Role.PLAYER);
-                final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
-                spinner.setVisibility(View.VISIBLE);
+                search_as(Player.Role.PLAYER);
                 break;
             }
             case R.id.search_as_leader_button: {
                 ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER);
-                final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
-                spinner.setVisibility(View.VISIBLE);
                 BattleSearcher.findBattle(Player.Role.LEADER);
+                search_as(Player.Role.LEADER);
+                break;
+            }
+            case R.id.stop_searching_button: {
+                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
+                RequestMaker.deleteFromQueue(ProfileManager.getPlayer().getId());
+                stop_searching();
                 break;
             }
         }
+    }
+
+    private void stop_searching() {
+        final Button stop_searching = (Button) findViewById(R.id.stop_searching_button);
+        final TextView textView = (TextView) findViewById(R.id.queueing_status_text);
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
+        stop_searching.setVisibility(View.GONE);
+        textView.setVisibility(View.GONE);
+    }
+
+    private void search_as(Player.Role role) {
+        final Button stop_searching = (Button) findViewById(R.id.stop_searching_button);
+        final TextView textView = (TextView) findViewById(R.id.queueing_status_text);
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+        String text = "You are searching as " + role;
+        textView.setText(text);
+        textView.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.VISIBLE);
+        stop_searching.setVisibility(View.VISIBLE);
     }
 }
