@@ -36,7 +36,6 @@ public class ChatService extends Service {
     }
 
     private void pullMessages() {
-//        Log.d("getMRunnable", "pulling");
         RequestMaker.pullMessages(ProfileManager.getPlayer().getChatId(), messageCount, pullMessagesCallback);
     }
 
@@ -63,7 +62,6 @@ public class ChatService extends Service {
     }
 
     private void onServerResponse(String response) {
-//        Log.d("getMRunnable", "pulled");
         try {
             JSONArray jsonMessages = new JSONArray(response);
             // TODO: complete

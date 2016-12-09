@@ -23,7 +23,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import ru.spbau.shevchenko.chatbattle.Player;
 
 public class RequestMaker {
-    public static final String DOMAIN_NAME = "http://qwsafex.pythonanywhere.com";
+    public static final String DOMAIN_NAME = "http://ZhNV.pythonanywhere.com";
 
     public enum Method {
         GET, POST, PUT, DELETE
@@ -110,11 +110,8 @@ public class RequestMaker {
     }
 
     static public void findBattle(Player.Role role, int id) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + role.toString().toLowerCase() + "/" + Integer.toString(id), RequestMaker.Method.POST, new RequestCallback() {
-            @Override
-            public void run(String response) {
-            }
-        });
+        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + role.toString().toLowerCase() + "/" + Integer.toString(id),
+                RequestMaker.Method.POST, RequestCallback.DO_NOTHING);
     }
 
     static public void checkIfFound(int id, RequestCallback callback) {
@@ -136,11 +133,8 @@ public class RequestMaker {
     }
 
     static public void chooseWinner(int chosen) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/close/" + ProfileManager.getPlayer().getId() + "/" + chosen, RequestMaker.Method.POST, new RequestCallback() {
-            @Override
-            public void run(String response) {
-            }
-        });
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/close/" + ProfileManager.getPlayer().getId() + "/" + chosen,
+                RequestMaker.Method.POST, RequestCallback.DO_NOTHING);
     }
 
     static public void signIn(String login, String password, RequestCallback callback) {
@@ -151,15 +145,20 @@ public class RequestMaker {
         sendRequest(RequestMaker.DOMAIN_NAME + "/players", RequestMaker.Method.POST, callback, player_data);
     }
 
-    static public void chatStatus(int chatId, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/chat_status/" + ProfileManager.getPlayer().getId() + "/" + chatId, RequestMaker.Method.GET, callback);
+    static public void chatStatus(int id, int chatId, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/chat_status/" + id + "/" + chatId,
+                RequestMaker.Method.GET, callback);
     }
 
     static public void deleteFromQueue(int id) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + id, RequestMaker.Method.DELETE, new RequestCallback() {
-            @Override
-            public void run(String response) {
-            }
-        });
+        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + id, Method.DELETE, RequestCallback.DO_NOTHING);
+    }
+
+    static public void accept(int id) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/accept/" + id, Method.POST, RequestCallback.DO_NOTHING);
+    }
+
+    static public void decline(int id) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/decline/" + id, Method.POST, RequestCallback.DO_NOTHING);
     }
 }

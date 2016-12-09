@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
+import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 
 public class BasicActivity extends AppCompatActivity {
     protected MyApplication myApplication;
@@ -60,6 +61,7 @@ public class BasicActivity extends AppCompatActivity {
             DialogFragment dialogFragment = new BattleFoundDialogFragment();
             Bundle bundle = new Bundle();
             bundle.putString("role", role.toString());
+            bundle.putInt("chatId", ProfileManager.getPlayer().getChatId());
             dialogFragment.setArguments(bundle);
             dialogFragment.show(fragmentManager, "");
         }

@@ -72,7 +72,8 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
     final protected Runnable chatStatusRunnable = new Runnable() {
         @Override
         public void run() {
-            RequestMaker.chatStatus(ProfileManager.getPlayer().getChatId(), chatStatusCallback);
+            RequestMaker.chatStatus(ProfileManager.getPlayer().getId(),
+                    ProfileManager.getPlayer().getChatId(), chatStatusCallback);
         }
     };
 
@@ -140,6 +141,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
             }
         }
     };
+
 
 
 }

@@ -82,12 +82,17 @@ def get_leader(chat_id):
     return process(chat_backend.get_leader(chat_id))
 
 @app.route('/chat/accept/<int:player_id>', methods=['POST'])
-def accept(player_id);
+def accept(player_id):
     return process(chat_backend.accept(player_id))
 
 @app.route('/chat/decline/<int:player_id>', methods=['POST'])
-def decline(player_id);
+def decline(player_id):
     return process(chat_backend.decline(player_id))
+
+@app.route('/chat/<int:chat_id>', methods=['GET'])
+def get_chat(chat_id):
+    return process(chat_backend.get_chat(chat_id))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
