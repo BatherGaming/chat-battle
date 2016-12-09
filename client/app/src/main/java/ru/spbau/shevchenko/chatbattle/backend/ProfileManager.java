@@ -43,8 +43,10 @@ public class ProfileManager {
             currentPlayer = new Player(playerObject.getInt("id"),
                     playerObject.getString("login"),
                     playerObject.getInt("age"),
-                    Player.Sex.fromString(playerObject.getString("sex"))
+                    Player.Sex.fromString(playerObject.getString("sex")),
+                    playerObject.optInt("chatId", -1)
             );
+            playerStatus = PlayerStatus.valueOf(playerObject.getString("status"));
             signupActivity.completeSignup();
         } catch (Exception e) {
             Log.e("onSignUpResponse()", e.getMessage());
@@ -67,8 +69,10 @@ public class ProfileManager {
             currentPlayer = new Player(playerObject.getInt("id"),
                     playerObject.getString("login"),
                     playerObject.getInt("age"),
-                    Player.Sex.fromString(playerObject.getString("sex"))
+                    Player.Sex.fromString(playerObject.getString("sex")),
+                    playerObject.optInt("chatId", -1)
             );
+            playerStatus = PlayerStatus.valueOf(playerObject.getString("status"));
             loginActivity.completeLogin();
         } catch (Exception e) {
             Log.e("onSignInResponse()", e.getMessage());
@@ -101,5 +105,21 @@ public class ProfileManager {
             onSignUpResponse(response, signupActivity);
         }
     }
+
+
+    public enum PlayerStatus {
+        IDLE, IN_QUEUE_AS_LEADER, IN_QUEUE_AS_PLAYER, CHATTING_AS_LEADER, CHATTING_AS_PLAYER;
+    }
+
+    static private PlayerStatus playerStatus;
+
+    static public PlayerStatus getPlayerStatus() {
+        return playerStatus;
+    }
+
+    static public void setPlayerStatus(PlayerStatus newPlayerStatus) {
+        playerStatus = newPlayerStatus;
+    }
+
 
 }

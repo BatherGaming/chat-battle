@@ -8,7 +8,28 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     style="?android:attr/buttonBarStyle">
+
+    <TextView
+        android:id="@+id/queueing_status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/search_screen_stop_searching_button"
+        android:id="@+id/stop_searching_button"
+        style="?android:attr/buttonBarButtonStyle"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:progressDrawable="@drawable/waiting_circular_bar" />
+
 
 
     <Button

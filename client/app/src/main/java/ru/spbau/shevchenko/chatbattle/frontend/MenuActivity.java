@@ -2,16 +2,17 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
 import ru.spbau.shevchenko.chatbattle.R;
+import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
+import ru.spbau.shevchenko.chatbattle.backend.SearcherService;
 
-public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
+public class MenuActivity extends BasicActivity implements View.OnClickListener {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
@@ -19,14 +20,39 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         playButton.setOnClickListener(this);
         Button profileButton = (Button) findViewById(R.id.profileButton);
         profileButton.setOnClickListener(this);
+
+        if (!isServiceCreated) {
+            Intent intent = new Intent(this, SearcherService.class);
+            startService(intent);
+            isServiceCreated = true;
+        }
+
     }
+
+    private static boolean isServiceCreated = false;
 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.playButton: {
-                Intent intent = new Intent(this, SearchActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                startActivity(intent);
+                switch (ProfileManager.getPlayerStatus()) {
+                    case IN_QUEUE_AS_LEADER:
+                    case IN_QUEUE_AS_PLAYER:
+                    case IDLE: {
+                        Intent intent = new Intent(this, SearchActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        startActivity(intent);
+                        break;
+                    }
+                    case CHATTING_AS_LEADER: {
+                        Intent intent = new Intent(this, LeaderActivity.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    case CHATTING_AS_PLAYER: {
+                        Intent intent = new Intent(this, PlayerActivity.class);
+                        startActivity(intent);
+                    }
+                }
                 break;
             }
             case R.id.profileButton: {

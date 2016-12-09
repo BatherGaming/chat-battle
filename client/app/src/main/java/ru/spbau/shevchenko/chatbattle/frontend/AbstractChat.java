@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -20,10 +19,11 @@ import java.util.List;
 
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
+import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 
-public abstract class AbstractChat extends AppCompatActivity implements View.OnClickListener {
+public abstract class AbstractChat extends BasicActivity implements View.OnClickListener {
 
     //    abstract public void onClick(View view);
     abstract public void initLayout();
@@ -41,7 +41,6 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
     };
     protected ChatService chatService = null;
 
-    protected int chatId;
     protected EditText messageInput;
     protected MessageAdapter messageAdapter;
 
@@ -73,21 +72,19 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
     final protected Runnable chatStatusRunnable = new Runnable() {
         @Override
         public void run() {
-            RequestMaker.chatStatus(chatId, chatStatusCallback);
+            RequestMaker.chatStatus(ProfileManager.getPlayer().getChatId(), chatStatusCallback);
         }
     };
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-        chatId = intent.getIntExtra("chatId", -1);
-        if (chatId == -1) {
+
+        if (ProfileManager.getPlayer().getChatId() == -1) {
             throw new RuntimeException("Created Chat without providing chat id.");
         }
 
         Intent chatServiceIntent = new Intent(this, ChatService.class);
-        chatServiceIntent.putExtra("chatId", chatId);
         bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
 
         initLayout();
@@ -134,6 +131,8 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
                     if (!result.equals("leader")) {
                         Toast.makeText(AbstractChat.this, result, Toast.LENGTH_LONG).show();
                     }
+                    ProfileManager.getPlayer().setChatId(-1);
+                    ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
                     finish();
                 }
             } catch (JSONException e) {

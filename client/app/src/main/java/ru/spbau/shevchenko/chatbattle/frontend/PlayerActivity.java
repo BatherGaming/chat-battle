@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
+import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 
 
 public class PlayerActivity extends AbstractChat {
@@ -17,6 +18,7 @@ public class PlayerActivity extends AbstractChat {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_PLAYER);
     }
 
     @Override

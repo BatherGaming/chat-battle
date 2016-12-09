@@ -1,18 +1,21 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.BattleSearcher;
+import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
+import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 
-public class SearchActivity extends AppCompatActivity implements View.OnClickListener {
+public class SearchActivity extends BasicActivity implements View.OnClickListener {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
@@ -22,26 +25,67 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         final Button search_as_leader_button = (Button) findViewById(R.id.search_as_leader_button);
         search_as_leader_button.setOnClickListener(this);
 
+        final Button stop_searching_button = (Button) findViewById(R.id.stop_searching_button);
+        stop_searching_button.setOnClickListener(this);
+
+        switch (ProfileManager.getPlayerStatus()) {
+            case IDLE: {
+                stop_searching();
+                break;
+            }
+            case IN_QUEUE_AS_PLAYER: {
+                search_as(Player.Role.PLAYER);
+                break;
+            }
+            case IN_QUEUE_AS_LEADER: {
+                search_as(Player.Role.LEADER);
+                break;
+            }
+        }
     }
 
-    public void onBattleFound(int battleId, Player.Role role) {
-        Intent intent = role == Player.Role.PLAYER ?
-                new Intent(this, PlayerActivity.class) :
-                new Intent(this, LeaderActivity.class);
-        intent.putExtra("chatId", battleId);
-        startActivity(intent);
-    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.search_as_player_button: {
-                BattleSearcher.findBattle(this, Player.Role.PLAYER);
+                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER);
+                BattleSearcher.findBattle(Player.Role.PLAYER);
+                search_as(Player.Role.PLAYER);
                 break;
             }
             case R.id.search_as_leader_button: {
-                BattleSearcher.findBattle(this, Player.Role.LEADER);
+                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER);
+                BattleSearcher.findBattle(Player.Role.LEADER);
+                search_as(Player.Role.LEADER);
+                break;
+            }
+            case R.id.stop_searching_button: {
+                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
+                RequestMaker.deleteFromQueue(ProfileManager.getPlayer().getId());
+                stop_searching();
+                break;
             }
         }
+    }
+
+    private void stop_searching() {
+        final Button stop_searching = (Button) findViewById(R.id.stop_searching_button);
+        final TextView textView = (TextView) findViewById(R.id.queueing_status_text);
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
+        stop_searching.setVisibility(View.GONE);
+        textView.setVisibility(View.GONE);
+    }
+
+    private void search_as(Player.Role role) {
+        final Button stop_searching = (Button) findViewById(R.id.stop_searching_button);
+        final TextView textView = (TextView) findViewById(R.id.queueing_status_text);
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+        String text = "You are searching as " + role;
+        textView.setText(text);
+        textView.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.VISIBLE);
+        stop_searching.setVisibility(View.VISIBLE);
     }
 }
