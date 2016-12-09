@@ -3,6 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
+    //dexOptions {
+    //    preDexLibraries = false
+    //}
     defaultConfig {
         applicationId "ru.spbau.shevchenko.chatbattle"
         minSdkVersion 15

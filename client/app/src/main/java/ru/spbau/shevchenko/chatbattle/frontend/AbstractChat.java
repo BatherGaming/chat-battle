@@ -7,9 +7,11 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -18,12 +20,15 @@ import org.json.JSONObject;
 import java.util.List;
 
 import ru.spbau.shevchenko.chatbattle.Message;
+import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 
 public abstract class AbstractChat extends BasicActivity implements View.OnClickListener {
+
+    private static final int DRAW_WHITEBOARD = 1;
 
     //    abstract public void onClick(View view);
     abstract public void initLayout();
@@ -44,8 +49,12 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
     protected EditText messageInput;
     protected MessageAdapter messageAdapter;
 
+    protected ImageButton whiteboardBtn;
+
     protected final static long HANDLER_DELAY = 100;
     private int alreadyRead = 0;
+
+    private String whiteboardEncoded = "";
 
     final protected Handler handler = new Handler();
     final protected Runnable getMessagesRunnable = new Runnable() {
@@ -53,12 +62,12 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         public void run() {
             if (chatService != null) {
                 List<Message> messages = chatService.getMessages();
-                StringBuilder messagesString = new StringBuilder();
+/*                StringBuilder messagesString = new StringBuilder();
                 for (Message message : messages) {
                     messagesString.append(message.getText());
                     messagesString.append("|");
                 }
-                Log.d("getMessagesRunnable", messagesString.toString());
+                Log.d("getMessagesRunnable", messagesString.toString());*/
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     update(message);
                 }
@@ -78,6 +87,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initLayout();
 
 
         if (ProfileManager.getPlayer().getChatId() == -1) {
@@ -87,16 +97,20 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         Intent chatServiceIntent = new Intent(this, ChatService.class);
         bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
 
-        initLayout();
+        whiteboardBtn = (ImageButton) findViewById(R.id.whiteboard_btn);
+
 
         handler.postDelayed(getMessagesRunnable, HANDLER_DELAY);
         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
     }
 
-    public void postMessage(View view) {
+    public void postMessage() {
         String message = messageInput.getText().toString();
         messageInput.setText("");
-        chatService.sendMessage(message);
+        chatService.sendMessage(message, whiteboardEncoded);
+        whiteboardEncoded = "";
+        // Change to display that there's no whiteboard attached
+        whiteboardBtn.setImageResource(R.drawable.whiteboard);
     }
 
     protected void onDestroy() {
@@ -141,5 +155,36 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         }
     };
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == DRAW_WHITEBOARD) {
+            if (resultCode != RESULT_OK) {
+                return;
+            }
+
+            final byte[] whiteboardBytes = data.getByteArrayExtra("whiteboard");
+
+            whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
+
+            // Change it to display that whiteboard is attached
+            whiteboardBtn.setImageResource(R.mipmap.whiteboard_drawn);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.send_button: {
+                postMessage();
+                break;
+            }
+            case R.id.whiteboard_btn: {
+                Intent intent = new Intent(this, WhiteboardActivity.class);
+                startActivityForResult(intent, DRAW_WHITEBOARD);
+                break;
+            }
+        }
+    }
 
 }

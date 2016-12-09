@@ -18,8 +18,9 @@ class Message(Base):
     __tablename__ = 'messages'
 
     id = Column(Integer, primary_key=True)
-    text = Column(String, nullable=False)
+    text = Column(String)
     time = Column(DateTime)
+    whiteboard_tag = Column(String)
 
     chat_id = Column(Integer, ForeignKey('chats.id'))
     author_id = Column(Integer, ForeignKey('players.id'))
@@ -27,13 +28,17 @@ class Message(Base):
     def toDict(self):
         return {"id": self.id,
                 "text": self.text,
+                "whiteboardTag": self.whiteboard_tag,
                 "authorId": self.author_id,
-                "time": str(self.time)}
+                "time": str(self.time),
+                "chatId": str(self.chat_id)}
 
     @staticmethod
     def fromDict(message_dict):
         return Message(id=message_dict["id"], text=message_dict["text"],
+                       chat_id=message_dict["chatId"],
                        author_id=message_dict["authorId"],
+                       whiteboard_tag=message_dict["whiteboardTag"],
                        time=datetime.datetime.strptime(message_dict["time"],
                                                        '%Y-%m-%d %H:%M:%S.%f'))
 

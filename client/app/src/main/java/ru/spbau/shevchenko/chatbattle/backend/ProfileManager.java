@@ -13,7 +13,7 @@ public class ProfileManager {
     private static Player currentPlayer = null;
 
     public static void signIn(String login, String password, final LoginActivity loginActivity) {
-        RequestMaker.signIn(login, password, new SignInCallback(loginActivity));
+        RequestMaker.signIn(password, login, new SignInCallback(loginActivity));
     }
 
     public static void signUp(Player newPlayer, String password, final SignupActivity signupActivity) {
@@ -29,7 +29,7 @@ public class ProfileManager {
         }
 
 
-        RequestMaker.singUp(new SignUpCallback(signupActivity), jsonPlayer.toString());
+        RequestMaker.singUp(jsonPlayer.toString(), new SignUpCallback(signupActivity));
     }
 
     private static void onSignUpResponse(String response, SignupActivity signupActivity) {
@@ -59,7 +59,7 @@ public class ProfileManager {
         return currentPlayer;
     }
 
-    public static void onSignInResponse(String response, LoginActivity loginActivity) {
+    private static void onSignInResponse(String response, LoginActivity loginActivity) {
         try {
             JSONObject playerObject = new JSONObject(response);
             if (playerObject.has("error")) {

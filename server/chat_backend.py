@@ -1,8 +1,13 @@
 import db
+import uuid
 import itertools
+import base64
+import os
 
 from db import session, Message, Player, Chat, datetime
 
+WHITEBOARD_FOLDER = 'whiteboards'
+DOMAIN_NAME = "qwsafex.pythonanywhere.com"  
 
 def create_chat(type, players_ids, leader_id):
     chat = Chat(type=type, creation_time=datetime.datetime.now(),
@@ -33,14 +38,38 @@ def close_chat(leader_id, winner_id):
     return {}, 200
 
 
+def whiteboard_location(filename):
+    return os.path.join("mysite", WHITEBOARD_FOLDER, filename)
+
+def unique_filename():
+    base_filename = uuid.uuid4().hex[0:15]  # Which makes 2^64 different UUIDs
+    filename = whiteboard_location(base_filename)
+    while os.path.isfile(filename):
+        base_filename = uuid.uuid4().hex[0:15]
+        filename = whiteboard_location(base_filename)
+    return base_filename
+
+
+def save_whiteboard(whiteboard_body):
+    whiteboard_body = base64.b64decode(whiteboard_body)
+    base_filename = unique_filename()
+    filename = whiteboard_location(base_filename)
+    with open(filename, "wb") as file:
+        file.write(whiteboard_body)
+    return base_filename
+
+
 def send_message(json):
     if not json or 'authorId' not in json\
             or 'text' not in json\
             or 'chatId' not in json\
             or not str(json["chatId"]).isdigit()\
-            or not str(json["authorId"]).isdigit()\
-            or json["text"] == "":
+            or not str(json["authorId"]).isdigit():
         return {}, 400
+    if json["text"] == "" and ('whiteboard' not in json 
+                               or json['whiteboard'] == ""):
+        return {}, 400
+
     player = session.query(Player).filter_by(id=int(json["authorId"])).first()
     chat = session.query(Chat).filter_by(id=int(json["chatId"])).first()
     if player is None \
@@ -48,8 +77,13 @@ def send_message(json):
             or chat.is_closed\
             or player not in chat.players:
         return {}, 422
+
     message = Message(chat_id=chat.id, text=json["text"], author_id=player.id,
                       time=datetime.datetime.now())
+
+    if 'whiteboard' in json and json['whiteboard'] != "":
+        message.whiteboard_tag = save_whiteboard(json['whiteboard'])
+
     session.add(message)
     session.commit()
     return message.toDict(), 200
@@ -90,6 +124,7 @@ def chat_status(player_id, chat_id):
     else:
         return {"result": "running"}, 200
 
+
 def accept(player_id):
     player = session.query(Player).filter_by(id=player_id).first()
     if not player:
@@ -98,3 +133,10 @@ def accept(player_id):
         return {"error": "Player is not in chat"}, 400
     chat = session.query(Chat).filter_by(id=player.chat_id).first()
     
+
+def get_whiteboard(whiteboard_tag):
+    location = whiteboard_location(whiteboard_tag)
+    with open(location, "rb") as f:
+        whiteboard = f.read()
+        return base64.b64encode(whiteboard)
+    return ""
