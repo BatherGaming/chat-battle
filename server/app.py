@@ -102,6 +102,10 @@ def get_whiteboard(whiteboard_tag):
     # No process() needed because of raw return value
     return chat_backend.get_whiteboard(whiteboard_tag) 
 
+@app.route('/chat/<int:chat_id>', methods=['GET'])
+def get_chat(chat_id):
+    return process(chat_backend.get_chat(chat_id))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

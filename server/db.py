@@ -80,15 +80,25 @@ class Chat(Base):
     creation_time = Column(DateTime)
     type = Column(Integer)
 
-    is_started = Column(Boolean)
+    is_started = Column(Boolean, default=False)
     is_closed = Column(Boolean)
     leader_id = Column(Integer)
     winner_id = Column(Integer)
-    accepted = Column(Integer)
+    accepted = Column(Integer, default=0)
 
 
     messages = relationship("Message", backref="chat")
     players = relationship("Player", backref="chat")
+
+    def toDict(self):
+        return {"id": self.id,
+                "creation_time": self.creation_time,
+                "type": self.type,
+                "is_started": self.is_started,
+                "is_closed": self.is_closed,
+                "leader_id": self.leader_id,
+                "winner_id": self.winner_id,
+                "accepted": self.accepted}
 
 Base.metadata.create_all(engine)
 

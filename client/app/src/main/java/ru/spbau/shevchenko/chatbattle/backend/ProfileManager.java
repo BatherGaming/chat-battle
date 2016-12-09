@@ -108,7 +108,7 @@ public class ProfileManager {
 
 
     public enum PlayerStatus {
-        IDLE, IN_QUEUE_AS_LEADER, IN_QUEUE_AS_PLAYER, CHATTING_AS_LEADER, CHATTING_AS_PLAYER;
+        IDLE, IN_QUEUE_AS_LEADER, IN_QUEUE_AS_PLAYER, CHATTING_AS_LEADER, CHATTING_AS_PLAYER, WAITING;
     }
 
     static private PlayerStatus playerStatus;

@@ -27,7 +27,9 @@ public class SearcherService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         while (true) {
-            RequestMaker.checkIfFound(id, checkIfFoundCallback);
+            if (ProfileManager.getPlayerStatus() != ProfileManager.PlayerStatus.WAITING) {
+                RequestMaker.checkIfFound(id, checkIfFoundCallback);
+            }
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
@@ -56,6 +58,7 @@ public class SearcherService extends IntentService {
 
                 if (!chatId.equals("null")) {
                     int chatIdInt = Integer.valueOf(chatId);
+                    ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.WAITING);
                     ProfileManager.getPlayer().setChatId(chatIdInt);
                     BasicActivity currentActivity = ((MyApplication) getApplicationContext()).getCurrentActivity();
                     currentActivity.getBattleFoundHandler().postDelayed(

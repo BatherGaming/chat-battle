@@ -144,19 +144,23 @@ public class RequestMaker {
         sendRequest(RequestMaker.DOMAIN_NAME + "/players", Method.POST, callback, player_data);
     }
 
-    static public void chatStatus(int chatId, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/chat_status/" + ProfileManager.getPlayer().getId() + "/" + chatId, Method.GET, callback);
+    static public void chatStatus(int id, int chatId, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/chat_status/" + id + "/" + chatId,
+                RequestMaker.Method.GET, callback);
     }
-
     public static void getWhiteboard(String whiteboardTag, RequestCallback callback){
         sendRequest(RequestMaker.DOMAIN_NAME + "/whiteboards/" + whiteboardTag, Method.GET, callback);
     }
 
     static public void deleteFromQueue(int id) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + id, RequestMaker.Method.DELETE, new RequestCallback() {
-            @Override
-            public void run(String response) {
-            }
-        });
+        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + id, Method.DELETE, RequestCallback.DO_NOTHING);
+    }
+
+    static public void accept(int id) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/accept/" + id, Method.POST, RequestCallback.DO_NOTHING);
+    }
+
+    static public void decline(int id) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/decline/" + id, Method.POST, RequestCallback.DO_NOTHING);
     }
 }
