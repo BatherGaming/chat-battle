@@ -1,10 +1,13 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -22,10 +25,12 @@ public class LeaderActivity extends AbstractChat {
     public void initLayout() {
         setContentView(R.layout.activity_leader);
 
-        final Button sendButton = (Button) findViewById(R.id.leader_send_button);
+        final ImageButton sendButton = (ImageButton) findViewById(R.id.send_button);
+        final ImageButton whiteboardButton = (ImageButton) findViewById(R.id.whiteboard_btn);
         final Button chooseButton = (Button) findViewById(R.id.leader_choose_button);
         sendButton.setOnClickListener(this);
         chooseButton.setOnClickListener(this);
+        whiteboardButton.setOnClickListener(this);
 
         messageInput = (EditText) findViewById(R.id.leader_message_input);
         messageAdapter = new MessageAdapter(this, new ArrayList<Message>());
@@ -37,16 +42,14 @@ public class LeaderActivity extends AbstractChat {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.leader_send_button: {
-                String message = messageInput.getText().toString();
-                messageInput.setText("");
-                chatService.sendMessage(message);
-                break;
-            }
             case R.id.leader_choose_button: {
                 Intent intent = new Intent(this, WinnerPickActivity.class);
                 intent.putExtra("playersId", chatService.getPlayersId());
                 startActivity(intent);
+                break;
+            }
+            default: {
+                super.onClick(view);
             }
         }
     }

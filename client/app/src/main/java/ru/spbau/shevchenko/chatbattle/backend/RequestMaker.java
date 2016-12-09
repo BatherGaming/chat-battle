@@ -30,6 +30,7 @@ public class RequestMaker {
     }
 
     private static void sendRequest(String url, Method method, final RequestCallback callback) {
+        //Log.d("sendRequest", url);
         final HttpRequestBase request;
         if (method == Method.GET) {
             request = new HttpGet(url);
@@ -68,6 +69,7 @@ public class RequestMaker {
     }
 
     private static void sendRequest(final String url, Method method, final RequestCallback callback, final String data) {
+        //Log.d("sendRequest", url);
         final HttpEntityEnclosingRequestBase request;
         if (method == Method.POST) {
             request = new HttpPost(url);
@@ -122,8 +124,8 @@ public class RequestMaker {
                 callback);
     }
 
-    static public void sendMessage(String messageData, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, callback, messageData);
+    static public void sendMessage(String messageData) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, RequestCallback.DO_NOTHING, messageData);
     }
 
     static public void getPlayersIds(int chatId, RequestCallback callback) {
@@ -146,7 +148,7 @@ public class RequestMaker {
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/chat_status/" + ProfileManager.getPlayer().getId() + "/" + chatId, Method.GET, callback);
     }
 
-    public static void sendWhiteboard(String imageData, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/upload", Method.POST, callback, imageData);
+    public static void getWhiteboard(String whiteboardTag, RequestCallback callback){
+        sendRequest(RequestMaker.DOMAIN_NAME + "/whiteboards/" + whiteboardTag, Method.GET, callback);
     }
 }

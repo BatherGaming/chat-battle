@@ -23,12 +23,6 @@
             android:layout_gravity="center"
             android:orientation="horizontal" >
             <ImageButton
-                android:id="@+id/new_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:contentDescription="@string/start_new"
-                android:src="@drawable/new_pic" />
-            <ImageButton
                 android:id="@+id/draw_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
@@ -41,11 +35,11 @@
                 android:contentDescription="@string/erase"
                 android:src="@drawable/eraser" />
             <ImageButton
-                android:id="@+id/save_btn"
+                android:id="@+id/send_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:contentDescription="@string/save"
-                android:src="@drawable/save" />
+                android:contentDescription="@string/send"
+                android:src="@drawable/send" />
         </LinearLayout>
 
         <ru.spbau.shevchenko.chatbattle.frontend.DrawingView

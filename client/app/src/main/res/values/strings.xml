@@ -38,5 +38,6 @@
     <string name="med">Medium</string>
     <string name="lrg">Large</string>
     <string name="whiteboard">Whiteboard</string>
+    <string name="send">Send</string>
 
 </resources>

@@ -46,7 +46,7 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
 
         drawBtn = (ImageButton) findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
-        ImageButton saveBtn = (ImageButton) findViewById(R.id.save_btn);
+        ImageButton saveBtn = (ImageButton) findViewById(R.id.send_btn);
         saveBtn.setOnClickListener(this);
 
 
@@ -102,7 +102,7 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
             });
             brushDialog.show();
         }
-        if (view.getId() == R.id.save_btn) {
+        if (view.getId() == R.id.send_btn) {
 
             File whiteboardPng = new File(getFilesDir(), UUID.randomUUID().toString());
             try {

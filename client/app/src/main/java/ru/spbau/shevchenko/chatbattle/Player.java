@@ -1,6 +1,8 @@
 package ru.spbau.shevchenko.chatbattle;
 
 public class Player {
+    // TODO: add fromJSON
+
     public Player(int id, String login, int age, Sex sex) {
         this.id = id;
         this.login = login;

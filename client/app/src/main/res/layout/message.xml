@@ -16,8 +16,15 @@
         android:id="@+id/message_body"
         android:layout_below="@+id/message_sender"
         android:layout_alignStart="@+id/message_sender"
-        android:layout_alignLeft="@+id/message_sender"
-        />
+        android:layout_alignLeft="@+id/message_sender" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/message_image"
+        android:layout_below="@+id/message_body"
+        android:layout_alignStart="@+id/message_body"
+        android:layout_alignLeft="@+id/message_body" />
 
 
 </RelativeLayout>

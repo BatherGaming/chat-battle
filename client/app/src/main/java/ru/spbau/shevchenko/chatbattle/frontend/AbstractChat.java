@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -19,11 +20,13 @@ import org.json.JSONObject;
 import java.util.List;
 
 import ru.spbau.shevchenko.chatbattle.Message;
+import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 
 public abstract class AbstractChat extends AppCompatActivity implements View.OnClickListener {
+    protected static final int DRAW_WHITEBOARD = 1;
 
     //    abstract public void onClick(View view);
     abstract public void initLayout();
@@ -48,18 +51,20 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
     protected final static long HANDLER_DELAY = 100;
     private int alreadyRead = 0;
 
+    private String whiteboardEncoded = "";
+
     final protected Handler handler = new Handler();
     final protected Runnable getMessagesRunnable = new Runnable() {
         @Override
         public void run() {
             if (chatService != null) {
                 List<Message> messages = chatService.getMessages();
-                StringBuilder messagesString = new StringBuilder();
+/*                StringBuilder messagesString = new StringBuilder();
                 for (Message message : messages) {
                     messagesString.append(message.getText());
                     messagesString.append("|");
                 }
-                Log.d("getMessagesRunnable", messagesString.toString());
+                Log.d("getMessagesRunnable", messagesString.toString());*/
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     update(message);
                 }
@@ -96,10 +101,11 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
     }
 
-    public void postMessage(View view) {
+    public void postMessage() {
         String message = messageInput.getText().toString();
         messageInput.setText("");
-        chatService.sendMessage(message);
+        chatService.sendMessage(message, whiteboardEncoded);
+        whiteboardEncoded = "";
     }
 
     protected void onDestroy() {
@@ -142,5 +148,33 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
         }
     };
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == DRAW_WHITEBOARD) {
+            if (resultCode != RESULT_OK) {
+                return;
+            }
+            Log.d("onActRes", "Setting whiteboardEncoded");
+            final byte[] whiteboardBytes = data.getByteArrayExtra("whiteboard");
+
+            whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.send_button: {
+                postMessage();
+                break;
+            }
+            case R.id.whiteboard_btn: {
+                Intent intent = new Intent(this, WhiteboardActivity.class);
+                startActivityForResult(intent, DRAW_WHITEBOARD);
+                break;
+            }
+        }
+    }
 
 }
