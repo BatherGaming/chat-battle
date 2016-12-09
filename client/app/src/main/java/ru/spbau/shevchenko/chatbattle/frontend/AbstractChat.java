@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -47,6 +48,8 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
     protected int chatId;
     protected EditText messageInput;
     protected MessageAdapter messageAdapter;
+
+    protected ImageButton whiteboardBtn;
 
     protected final static long HANDLER_DELAY = 100;
     private int alreadyRead = 0;
@@ -84,6 +87,7 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initLayout();
 
         Intent intent = getIntent();
         chatId = intent.getIntExtra("chatId", -1);
@@ -95,7 +99,8 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
         chatServiceIntent.putExtra("chatId", chatId);
         bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
 
-        initLayout();
+        whiteboardBtn = (ImageButton) findViewById(R.id.whiteboard_btn);
+
 
         handler.postDelayed(getMessagesRunnable, HANDLER_DELAY);
         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
@@ -106,6 +111,8 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
         messageInput.setText("");
         chatService.sendMessage(message, whiteboardEncoded);
         whiteboardEncoded = "";
+        // Change to display that there's no whiteboard attached
+        whiteboardBtn.setImageResource(R.drawable.whiteboard);
     }
 
     protected void onDestroy() {
@@ -155,10 +162,13 @@ public abstract class AbstractChat extends AppCompatActivity implements View.OnC
             if (resultCode != RESULT_OK) {
                 return;
             }
-            Log.d("onActRes", "Setting whiteboardEncoded");
+
             final byte[] whiteboardBytes = data.getByteArrayExtra("whiteboard");
 
             whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
+
+            // Change it to display that whiteboard is attached
+            whiteboardBtn.setImageResource(R.mipmap.whiteboard_drawn);
         }
     }
 
