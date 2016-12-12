@@ -48,6 +48,8 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
         drawBtn.setOnClickListener(this);
         ImageButton saveBtn = (ImageButton) findViewById(R.id.send_btn);
         saveBtn.setOnClickListener(this);
+        ImageButton eraseBtn = (ImageButton)findViewById(R.id.erase_btn);
+        eraseBtn.setOnClickListener(this);
 
 
         drawView.setBrushSize(mediumBrush);
@@ -55,6 +57,10 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
 
     public void paintClicked(View view) {
         //use chosen color
+        if (drawView.isErase()){
+            drawView.setErase(false);
+            drawView.setBrushSize(drawView.getLastBrushSize());
+        }
         if (view != currPaint) {
             //update color
             ImageButton imgView = (ImageButton) view;
@@ -70,56 +76,98 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
     //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.draw_btn) {
-            //draw button clicked
-            final Dialog brushDialog = new Dialog(this);
-            brushDialog.setTitle("Brush size:");
-            brushDialog.setContentView(R.layout.brush_chooser);
-            ImageButton smallBtn = (ImageButton) brushDialog.findViewById(R.id.small_brush);
-            smallBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawView.setBrushSize(smallBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            ImageButton mediumBtn = (ImageButton) brushDialog.findViewById(R.id.medium_brush);
-            mediumBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawView.setBrushSize(mediumBrush);
-                    brushDialog.dismiss();
-                }
-            });
+        switch (view.getId()) {
+            case R.id.draw_btn: {
+                //draw button clicked
+                final Dialog brushDialog = new Dialog(this);
+                brushDialog.setTitle("Brush size:");
+                brushDialog.setContentView(R.layout.brush_chooser);
+                ImageButton smallBtn = (ImageButton) brushDialog.findViewById(R.id.small_brush);
+                smallBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        drawView.setErase(false);
+                        drawView.setBrushSize(smallBrush);
+                        brushDialog.dismiss();
+                    }
+                });
+                ImageButton mediumBtn = (ImageButton) brushDialog.findViewById(R.id.medium_brush);
+                mediumBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        drawView.setErase(false);
+                        drawView.setBrushSize(mediumBrush);
+                        brushDialog.dismiss();
+                    }
+                });
 
-            ImageButton largeBtn = (ImageButton) brushDialog.findViewById(R.id.large_brush);
-            largeBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawView.setBrushSize(largeBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            brushDialog.show();
-        }
-        if (view.getId() == R.id.send_btn) {
-
-            File whiteboardPng = new File(getFilesDir(), UUID.randomUUID().toString());
-            try {
-                whiteboardPng.createNewFile();
-            } catch (IOException e) {
-                Log.d("onClick", "Error while creating png file");
+                ImageButton largeBtn = (ImageButton) brushDialog.findViewById(R.id.large_brush);
+                largeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        drawView.setErase(false);
+                        drawView.setBrushSize(largeBrush);
+                        brushDialog.dismiss();
+                    }
+                });
+                brushDialog.show();
+                break;
             }
-            ByteArrayOutputStream pngOutStream = new ByteArrayOutputStream();
-            Bitmap bitmap = drawView.getCanvasBitmap();
-            //bitmap.setHeight(1);
-            //bitmap.setWidth(1);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, pngOutStream);
+            case R.id.send_btn: {
 
-            Intent intent = new Intent();
-            intent.putExtra("whiteboard", pngOutStream.toByteArray());
-            setResult(RESULT_OK, intent);
-            finish();
+                File whiteboardPng = new File(getFilesDir(), UUID.randomUUID().toString());
+                try {
+                    whiteboardPng.createNewFile();
+                } catch (IOException e) {
+                    Log.d("onClick", "Error while creating png file");
+                }
+                ByteArrayOutputStream pngOutStream = new ByteArrayOutputStream();
+                Bitmap bitmap = drawView.getCanvasBitmap();
+                //bitmap.setHeight(1);
+                //bitmap.setWidth(1);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, pngOutStream);
+
+                Intent intent = new Intent();
+                intent.putExtra("whiteboard", pngOutStream.toByteArray());
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+            }
+            case R.id.erase_btn: {
+                final Dialog brushDialog = new Dialog(this);
+                brushDialog.setTitle("Eraser size:");
+                brushDialog.setContentView(R.layout.brush_chooser);
+
+                ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
+                smallBtn.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        drawView.setErase(true);
+                        drawView.setBrushSize(smallBrush);
+                        brushDialog.dismiss();
+                    }
+                });
+                ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
+                mediumBtn.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        drawView.setErase(true);
+                        drawView.setBrushSize(mediumBrush);
+                        brushDialog.dismiss();
+                    }
+                });
+                ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
+                largeBtn.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        drawView.setErase(true);
+                        drawView.setBrushSize(largeBrush);
+                        brushDialog.dismiss();
+                    }
+                });
+                brushDialog.show();
+                break;
+            }
         }
     }
 }

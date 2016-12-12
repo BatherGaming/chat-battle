@@ -40,12 +40,7 @@ public class ProfileManager {
                 signupActivity.failedSignup(playerObject.getString("error"));
                 return;
             }
-            currentPlayer = new Player(playerObject.getInt("id"),
-                    playerObject.getString("login"),
-                    playerObject.getInt("age"),
-                    Player.Sex.fromString(playerObject.getString("sex")),
-                    playerObject.optInt("chatId", -1)
-            );
+            currentPlayer = Player.fromJSON(playerObject);
             playerStatus = PlayerStatus.valueOf(playerObject.getString("status"));
             signupActivity.completeSignup();
         } catch (Exception e) {
@@ -66,12 +61,7 @@ public class ProfileManager {
                 loginActivity.failedLogin(playerObject.getString("error"));
                 return;
             }
-            currentPlayer = new Player(playerObject.getInt("id"),
-                    playerObject.getString("login"),
-                    playerObject.getInt("age"),
-                    Player.Sex.fromString(playerObject.getString("sex")),
-                    playerObject.optInt("chatId", -1)
-            );
+            currentPlayer = Player.fromJSON(playerObject);
             playerStatus = PlayerStatus.valueOf(playerObject.getString("status"));
             loginActivity.completeLogin();
         } catch (Exception e) {
@@ -108,7 +98,7 @@ public class ProfileManager {
 
 
     public enum PlayerStatus {
-        IDLE, IN_QUEUE_AS_LEADER, IN_QUEUE_AS_PLAYER, CHATTING_AS_LEADER, CHATTING_AS_PLAYER, WAITING;
+        IDLE, IN_QUEUE_AS_LEADER, IN_QUEUE_AS_PLAYER, CHATTING_AS_LEADER, CHATTING_AS_PLAYER, WAITING
     }
 
     static private PlayerStatus playerStatus;

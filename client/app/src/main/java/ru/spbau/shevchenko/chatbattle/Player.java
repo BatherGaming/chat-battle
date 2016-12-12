@@ -1,5 +1,10 @@
 package ru.spbau.shevchenko.chatbattle;
 
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Player {
     // TODO: add fromJSON
     public Player(int id, String login, int age, Sex sex, int chatId) {
@@ -8,6 +13,20 @@ public class Player {
         this.age = age;
         this.sex = sex;
         this.chatId = chatId;
+    }
+
+    public static Player fromJSON(JSONObject playerObject) {
+        try {
+            return new Player(playerObject.getInt("id"),
+                    playerObject.getString("login"),
+                    playerObject.getInt("age"),
+                    Sex.fromString(playerObject.getString("sex")),
+                    playerObject.optInt("chatId", -1)
+            );
+        } catch (JSONException e) {
+            Log.e("Player.fromJSON", "Failed to initialize Player from JSON: " + e.getMessage());
+        }
+        return null;
     }
 
     public enum Sex {

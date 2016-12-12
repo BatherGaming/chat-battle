@@ -74,10 +74,7 @@ public class ChatService extends Service {
             // TODO: complete
             for (int i = 0; i < jsonMessages.length(); i++) {
                 JSONObject jsonMessage = jsonMessages.getJSONObject(i);
-                Message message = new Message(jsonMessage.getInt("id"), jsonMessage.getString("text"),
-                        jsonMessage.getInt("authorId"),
-                        ProfileManager.getPlayer().getChatId(),
-                        (jsonMessage.isNull("whiteboardTag") ? "" : jsonMessage.getString("whiteboardTag")));
+                Message message = Message.fromJSON(jsonMessage);
                 messages.add(message);
             }
             messageCount += jsonMessages.length();
@@ -142,12 +139,10 @@ public class ChatService extends Service {
     };
 
     private static class GetWhiteboardCallback implements RequestCallback{
-        private final String whiteboardTag;
         private final File whiteboard;
         private final RequestCallback callback;
 
-        private GetWhiteboardCallback(String whiteboardTag, File whiteboard, RequestCallback callback) {
-            this.whiteboardTag = whiteboardTag;
+        private GetWhiteboardCallback(File whiteboard, RequestCallback callback) {
             this.whiteboard = whiteboard;
             this.callback = callback;
         }
@@ -176,7 +171,7 @@ public class ChatService extends Service {
         if (whiteboard.exists()){
             return Uri.fromFile(whiteboard);
         }
-        RequestMaker.getWhiteboard(whiteboardTag, new GetWhiteboardCallback(whiteboardTag, whiteboard, callback));
+        RequestMaker.getWhiteboard(whiteboardTag, new GetWhiteboardCallback(whiteboard, callback));
         return null;
     }
 }

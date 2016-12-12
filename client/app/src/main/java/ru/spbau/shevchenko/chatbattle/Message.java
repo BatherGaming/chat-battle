@@ -1,5 +1,10 @@
 package ru.spbau.shevchenko.chatbattle;
 
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Message {
     // TODO: add fromJSON
 
@@ -35,5 +40,17 @@ public class Message {
 
     public int getChatId() {
         return chatId;
+    }
+
+    public static Message fromJSON(JSONObject jsonMessage) {
+        try {
+            return new Message(jsonMessage.getInt("id"), jsonMessage.getString("text"),
+                    jsonMessage.getInt("authorId"),
+                    jsonMessage.getInt("chatId"),
+                    (jsonMessage.isNull("whiteboardTag") ? "" : jsonMessage.getString("whiteboardTag")));
+        } catch (JSONException e) {
+            Log.e("Message.fromJSON", "Failed to initialize message from JSON: " + e.getMessage());
+        }
+        return null;
     }
 }

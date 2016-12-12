@@ -6,6 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -20,12 +22,15 @@ public class DrawingView extends View {
     //drawing and canvas paint
     private Paint drawPaint, canvasPaint;
     //initial color
-    private int paintColor = 0xFF660000;
+    private int paintColor = 0xFF660000, previous;
     //canvas
     private Canvas drawCanvas;
     //canvas bitmap
     private Bitmap canvasBitmap;
     private float brushSize;
+    private float lastBrushSize;
+
+    private  boolean erase = false;
 
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,10 +39,11 @@ public class DrawingView extends View {
 
     private void setupDrawing() {
         //get drawing area setup for interaction
-        brushSize = getResources().getInteger(R.integer.medium_size);
+        lastBrushSize = brushSize = getResources().getInteger(R.integer.medium_size);
 
         drawPath = new Path();
         drawPaint = new Paint();
+        //setLayerType(LAYER_TYPE_SOFTWARE, drawPaint);
         drawPaint.setColor(paintColor);
         drawPaint.setAntiAlias(true);
         drawPaint.setStrokeWidth(brushSize);
@@ -52,6 +58,7 @@ public class DrawingView extends View {
 
     public void setBrushSize(float newSize) {
         //update size
+        lastBrushSize = brushSize;
         brushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 newSize, getResources().getDisplayMetrics());
         drawPaint.setStrokeWidth(brushSize);
@@ -81,6 +88,11 @@ public class DrawingView extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 drawPath.lineTo(touchX, touchY);
+                if (erase){
+                    drawCanvas.drawPath(drawPath, drawPaint);
+                    drawPath.reset();
+                }
+                drawPath.moveTo(touchX, touchY);
                 break;
             case MotionEvent.ACTION_UP:
                 drawCanvas.drawPath(drawPath, drawPaint);
@@ -101,7 +113,24 @@ public class DrawingView extends View {
 
     }
 
+    public void setErase(boolean erase) {
+        this.erase = erase;
+        if (erase){
+            drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        }
+        else{
+            drawPaint.setXfermode(null);
+        }
+    }
+    public boolean isErase() {
+        return erase;
+    }
+
     public Bitmap getCanvasBitmap() {
         return canvasBitmap;
+    }
+
+    public float getLastBrushSize() {
+        return lastBrushSize;
     }
 }
