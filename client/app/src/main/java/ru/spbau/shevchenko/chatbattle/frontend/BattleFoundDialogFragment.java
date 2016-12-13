@@ -1,6 +1,7 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -21,10 +22,13 @@ import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
+import ru.spbau.shevchenko.chatbattle.backend.SearcherService;
+
+import static ru.spbau.shevchenko.chatbattle.Player.*;
 
 public class BattleFoundDialogFragment extends DialogFragment {
     private int chatId;
-    private Player.Role role;
+    private Role role;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -37,7 +41,11 @@ public class BattleFoundDialogFragment extends DialogFragment {
                 .setNegativeButton(R.string.decline, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         RequestMaker.decline(ProfileManager.getPlayer().getId());
-                        ((SearchActivity)getActivity()).searchAgain(true, role);
+                        ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
+                        Activity activity = getActivity();
+                        if (activity instanceof SearchActivity) {
+                            ((SearchActivity)getActivity()).searchAgain(true, role);
+                        }
                         getStatusHandler.removeCallbacks(getStatusRunnable);
                     }
                 });
@@ -48,7 +56,7 @@ public class BattleFoundDialogFragment extends DialogFragment {
     public void onStart() {
         super.onStart();
         Bundle bundle = getArguments();
-        role = Player.Role.valueOf(bundle.getString("role"));
+        role = Role.valueOf(bundle.getString("role"));
         chatId = bundle.getInt("chatId");
         getStatusHandler.postDelayed(getStatusRunnable, HANDLER_DELAY);
 
@@ -100,13 +108,36 @@ public class BattleFoundDialogFragment extends DialogFragment {
                     }
                     case ("won't start"): {
                         if (getActivity() == null) return;
-                        ((SearchActivity)getActivity()).searchAgain(false, role);
+                        Activity currentActivity = getActivity();
+                        if (currentActivity instanceof SearchActivity) {
+                            ((SearchActivity)currentActivity).searchAgain(false, role);
+                        }
+                        switch (role) {
+                            case PLAYER: {
+                                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER);
+                                break;
+                            }
+                            case LEADER: {
+                                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER);
+                                break;
+                            }
+                        }
                         getStatusHandler.removeCallbacks(getStatusRunnable);
                         dismiss();
                         break;
                     }
                     default: {
-                        Intent intent = role == Player.Role.PLAYER ?
+                        switch (role) {
+                            case PLAYER: {
+                                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_PLAYER);
+                                break;
+                            }
+                            case LEADER: {
+                                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_LEADER);
+                                break;
+                            }
+                        }
+                        Intent intent = role == Role.PLAYER ?
                                 new Intent(getActivity(), PlayerActivity.class) :
                                 new Intent(getActivity(), LeaderActivity.class);
                         intent.putExtra("chatId", chatId);

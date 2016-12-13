@@ -27,16 +27,16 @@ public class SearcherService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         while (true) {
-            if (ProfileManager.getPlayerStatus() != ProfileManager.PlayerStatus.WAITING) {
-                RequestMaker.checkIfFound(id, checkIfFoundCallback);
-            }
+            RequestMaker.checkIfFound(id, checkIfFoundCallback);
             try {
-                Thread.sleep(5000);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
     }
+
+    private int lastChatId = -1;
 
     private RequestCallback checkIfFoundCallback = new RequestCallback() {
 
@@ -47,6 +47,9 @@ public class SearcherService extends IntentService {
                     return;
                 if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.CHATTING_AS_PLAYER)
                     return;
+                if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.WAITING)
+                    return;
+
                 JSONObject playerObject = new JSONObject(response);
                 if (playerObject.has("error")) {
                     // TODO : do smth
@@ -58,6 +61,8 @@ public class SearcherService extends IntentService {
 
                 if (!chatId.equals("null")) {
                     int chatIdInt = Integer.valueOf(chatId);
+                    if (lastChatId == chatIdInt) return;
+                    lastChatId = chatIdInt;
                     ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.WAITING);
                     ProfileManager.getPlayer().setChatId(chatIdInt);
                     BasicActivity currentActivity = ((MyApplication) getApplicationContext()).getCurrentActivity();
