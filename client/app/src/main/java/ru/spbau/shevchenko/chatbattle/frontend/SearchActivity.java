@@ -91,7 +91,8 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         final Button stop_searching = (Button) findViewById(R.id.stop_searching_button);
         final TextView textView = (TextView) findViewById(R.id.queueing_status_text);
         final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
-        String text = "You are searching as " + role;
+        String text = role == Player.Role.PLAYER ? getString(R.string.search_as_player)
+                                                 : getString(R.string.search_as_leader);
         textView.setText(text);
         textView.setVisibility(View.VISIBLE);
         spinner.setVisibility(View.VISIBLE);

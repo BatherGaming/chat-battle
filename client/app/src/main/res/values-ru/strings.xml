@@ -1,0 +1,48 @@
+<resources>
+    <string name="action_settings">Настройки</string>
+    <string name="menu_play_button">Играть!</string>
+    <string name="menu_profile_button">Профиль</string>
+    <string name="search_screen_search_as_player_button">Искать как игрок</string>
+    <string name="search_screen_search_as_leader_button">Искать как лидер</string>
+    <string name="not_loaded">Not loaded</string>
+    <string name="login_view">Логин:</string>
+    <string name="age_view">Возраст:</string>
+    <string name="sex_view">Пол:</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="login_button">Войти</string>
+    <string name="signin_button">Войти</string>
+    <string name="signup_button">Зарегистрироваться</string>
+    <string name="signin_in">Вход...&#8230;</string>
+    <string name="age">Возраст</string>
+    <string name="confirm_password">Подтверждение пароля</string>
+    <string name="male">Мужской</string>
+    <string name="female">Женский</string>
+    <string name="password_dont_match">Пароли не совпадают</string>
+    <string name="signin_up">Регистрация...&#8230;</string>
+    <string name="send_button">Отправить</string>
+    <string name="choose_button">Выбрать</string>
+    <string name="cancel_button">Отменить</string>
+    <string name="ok_button">OK</string>
+    <string name="choice_demand">Выберите, пожалуйста</string>
+    <string name="accept">Принять</string>
+    <string name="decline">Отклонить</string>
+    <string name="battle_found">Для Вас был найден баттл</string>
+    <string name="search_as_player">Вы ищете как игрок</string>
+    <string name="search_as_leader">Вы ищете как лидер</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_screen_stop_searching_button">Остановить поиск</string>
+
+    <string name="start_new">Новый</string>
+    <string name="brush">Кисть</string>
+    <string name="erase">Ластик</string>
+    <string name="save">Сохранить</string>
+    <string name="paint">Рисовать</string>
+    <string name="sml">Маленький</string>
+    <string name="med">Средний</string>
+    <string name="lrg">Большой</string>
+    <string name="whiteboard">Граффити</string>
+    <string name="send">Отправить</string>
+
+</resources>

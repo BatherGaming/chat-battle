@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Chat Battle</string>
+    <string name="app_name" translatable="false">Chat Battle</string>
     <string name="action_settings">Settings</string>
     <string name="menu_play_button">Play!</string>
     <string name="menu_profile_button">Profile</string>
