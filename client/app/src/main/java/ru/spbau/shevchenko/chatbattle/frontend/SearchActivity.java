@@ -1,6 +1,7 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -27,6 +28,7 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         final Button stop_searching_button = (Button) findViewById(R.id.stop_searching_button);
         stop_searching_button.setOnClickListener(this);
 
+        Log.d("Player status:", ProfileManager.getPlayerStatus().toString());
         switch (ProfileManager.getPlayerStatus()) {
             case IDLE: {
                 stop_searching();
@@ -110,6 +112,28 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
-        stop_searching();
+        Log.d("Search", "onResume");
+        switch(ProfileManager.getPlayerStatus()) {
+            case IDLE: {
+                stop_searching();
+                break;
+            }
+            case IN_QUEUE_AS_LEADER: {
+                search_as(Player.Role.LEADER);
+                break;
+            }
+            case IN_QUEUE_AS_PLAYER: {
+                search_as(Player.Role.PLAYER);
+                break;
+            }
+            case CHATTING_AS_LEADER: {
+                finish();
+                break;
+            }
+            case CHATTING_AS_PLAYER: {
+                finish();
+                break;
+            }
+        }
     }
 }

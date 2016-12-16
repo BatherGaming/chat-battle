@@ -111,6 +111,7 @@ public class RequestMaker {
     }
 
     static public void findBattle(Player.Role role, int id) {
+        Log.d("FindBattle", "TRUE");
         sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + role.toString().toLowerCase() + "/" + Integer.toString(id), Method.POST, RequestCallback.DO_NOTHING);
     }
 
