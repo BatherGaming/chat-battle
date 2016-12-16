@@ -86,7 +86,7 @@ public class RequestMaker {
                 StringBuilder plainResponse = new StringBuilder();
                 Log.d("sendRequest()", "Data: " + data);
                 try {
-                    StringEntity dataEntity = new StringEntity(data);
+                    StringEntity dataEntity = new StringEntity(data, "UTF-8");
                     request.setHeader("Content-Type", "application/json");
                     request.setEntity(dataEntity);
                     HttpResponse response = client.execute(request);
