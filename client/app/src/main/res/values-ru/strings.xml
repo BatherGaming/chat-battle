@@ -44,5 +44,6 @@
     <string name="lrg">Большой</string>
     <string name="whiteboard">Граффити</string>
     <string name="send">Отправить</string>
+    <string name="rating_view">Рейтинг:</string>
 
 </resources>
