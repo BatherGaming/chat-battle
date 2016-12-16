@@ -108,10 +108,31 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         }
     }
 
-  /*  @Override
+    @Override
     public void onResume() {
-        Log.d("onResume", "!");
         super.onResume();
-        stop_searching();
-    }*/
+        Log.d("Search", "onResume");
+        switch(ProfileManager.getPlayerStatus()) {
+            case IDLE: {
+                stop_searching();
+                break;
+            }
+            case IN_QUEUE_AS_LEADER: {
+                search_as(Player.Role.LEADER);
+                break;
+            }
+            case IN_QUEUE_AS_PLAYER: {
+                search_as(Player.Role.PLAYER);
+                break;
+            }
+            case CHATTING_AS_LEADER: {
+                finish();
+                break;
+            }
+            case CHATTING_AS_PLAYER: {
+                finish();
+                break;
+            }
+        }
+    }
 }

@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
@@ -28,7 +29,26 @@ public class BasicActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    protected void onDestroy() {
+    public static Class<?> getLastActivityClass() {
+        return lastActivityClass;
+    }
+
+    public static void setLastActivityClass(Class<?> lastActivityClass) {
+        BasicActivity.lastActivityClass = lastActivityClass;
+    }
+
+    private static Class<?> lastActivityClass = null;
+
+
+    @Override
+    public void onBackPressed() {
+        lastActivityClass = this.getClass();
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onDestroy() {
+        lastActivityClass = this.getClass();
         clearReferences();
         super.onDestroy();
     }
@@ -67,6 +87,6 @@ public class BasicActivity extends AppCompatActivity {
         }
     }
 
-    ;
+
 }
 

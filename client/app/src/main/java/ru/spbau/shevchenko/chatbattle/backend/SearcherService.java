@@ -27,7 +27,10 @@ public class SearcherService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         while (true) {
-            RequestMaker.checkIfFound(id, checkIfFoundCallback);
+            if (!waitingCallback) {
+                RequestMaker.checkIfFound(id, checkIfFoundCallback);
+                waitingCallback = true;
+            }
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -35,6 +38,7 @@ public class SearcherService extends IntentService {
             }
         }
     }
+    private boolean waitingCallback = false;
 
     private int lastChatId = -1;
 
@@ -43,6 +47,7 @@ public class SearcherService extends IntentService {
         @Override
         public void run(String response) {
             try {
+                waitingCallback = false;
                 if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.CHATTING_AS_LEADER)
                     return;
                 if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.CHATTING_AS_PLAYER)
@@ -60,12 +65,13 @@ public class SearcherService extends IntentService {
 
 
                 if (!chatId.equals("null")) {
+                    BasicActivity currentActivity = ((MyApplication) getApplicationContext()).getCurrentActivity();
+                    if (currentActivity == null) return;
                     int chatIdInt = Integer.valueOf(chatId);
                     if (lastChatId == chatIdInt) return;
                     lastChatId = chatIdInt;
                     ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.WAITING);
                     ProfileManager.getPlayer().setChatId(chatIdInt);
-                    BasicActivity currentActivity = ((MyApplication) getApplicationContext()).getCurrentActivity();
                     currentActivity.getBattleFoundHandler().postDelayed(
                             new BasicActivity.battleFoundRunnable(
                                     status == ProfileManager.PlayerStatus.CHATTING_AS_LEADER ? Player.Role.LEADER : Player.Role.PLAYER,

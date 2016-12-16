@@ -114,7 +114,8 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         whiteboardBtn.setImageResource(R.drawable.whiteboard);
     }
 
-    protected void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         Log.d("onDestroy()", "called");
         stopService();
@@ -148,6 +149,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                     }
                     ProfileManager.getPlayer().setChatId(-1);
                     ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
+
                     finish();
                 }
             } catch (JSONException e) {
@@ -187,5 +189,11 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
 
 }

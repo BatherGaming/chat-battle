@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.R;
+import ru.spbau.shevchenko.chatbattle.backend.BattleSearcher;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
@@ -67,6 +69,7 @@ public class BattleFoundDialogFragment extends DialogFragment {
                 private boolean isClicked = false;
                 @Override
                 public void onClick(View v) {
+                    hasAccepted = true;
                     if (isClicked) return;
                     RequestMaker.accept(ProfileManager.getPlayer().getId());
                     isClicked = true;
@@ -79,11 +82,15 @@ public class BattleFoundDialogFragment extends DialogFragment {
                 }
             });
         }
+        startTime = System.currentTimeMillis();
     }
 
+    private long startTime;
+    private boolean hasAccepted;
     final Handler getStatusHandler = new Handler();
 
     final static private long HANDLER_DELAY = 100;
+    final private static int MAX_IDLENESS_TIME = 5000;
 
     final Runnable getStatusRunnable = new Runnable() {
         public void run() {
@@ -107,26 +114,35 @@ public class BattleFoundDialogFragment extends DialogFragment {
                         break;
                     }
                     case ("won't start"): {
-                        if (getActivity() == null) return;
                         Activity currentActivity = getActivity();
-                        if (currentActivity instanceof SearchActivity) {
-                            ((SearchActivity)currentActivity).searchAgain(false, role);
-                        }
-                        switch (role) {
-                            case PLAYER: {
-                                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER);
-                                break;
+                        if (currentActivity == null) return;
+                        if (hasAccepted || System.currentTimeMillis() - startTime < MAX_IDLENESS_TIME) {
+                            if (currentActivity instanceof SearchActivity) {
+                                ((SearchActivity) currentActivity).searchAgain(false, role);
                             }
-                            case LEADER: {
-                                ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER);
-                                break;
+                            BattleSearcher.findBattle(role);
+                            switch (role) {
+                                case PLAYER: {
+                                    ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER);
+                                    break;
+                                }
+                                case LEADER: {
+                                    ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER);
+                                    break;
+                                }
+                            }
+                            getStatusHandler.removeCallbacks(getStatusRunnable);
+                        } else {
+                            ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
+                            if (currentActivity instanceof SearchActivity) {
+                                ((SearchActivity) currentActivity).searchAgain(true, role);
                             }
                         }
-                        getStatusHandler.removeCallbacks(getStatusRunnable);
                         dismiss();
                         break;
                     }
                     default: {
+
                         switch (role) {
                             case PLAYER: {
                                 ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_PLAYER);
@@ -142,6 +158,8 @@ public class BattleFoundDialogFragment extends DialogFragment {
                                 new Intent(getActivity(), LeaderActivity.class);
                         intent.putExtra("chatId", chatId);
                         startActivity(intent);
+                        dismiss();
+                        break;
                     }
                 }
 

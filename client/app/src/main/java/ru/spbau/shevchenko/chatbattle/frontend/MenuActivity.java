@@ -41,7 +41,6 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
                     case IN_QUEUE_AS_PLAYER:
                     case IDLE: {
                         Intent intent = new Intent(this, SearchActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                         startActivity(intent);
                         break;
                     }
@@ -63,6 +62,18 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
                 break;
             }
 
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Class<?> previousClass = BasicActivity.getLastActivityClass();
+        if ((ProfileManager.getPlayer().getChatId() == -1) && previousClass != null && AbstractChat.class.isAssignableFrom(previousClass)) {
+            Log.d("My app", previousClass.getName());
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
         }
     }
 
