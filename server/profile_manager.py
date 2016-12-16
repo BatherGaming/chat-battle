@@ -3,6 +3,8 @@ import hashlib
 from db import session, Player, Chat
 from sqlalchemy import and_
 
+BASIC_RATING = 1000
+
 
 def get_players():
     players = session.query(Player).all()
@@ -47,7 +49,8 @@ def add_player(json):
                     sex=json["sex"],
                     password_hash=password_hash,
                     age=json.get("age", 0),
-                    status="IDLE")
+                    status="IDLE",
+                    rating=BASIC_RATING)
 
     session.add(player)
     session.commit()

@@ -48,5 +48,19 @@
         android:layout_toEndOf="@+id/sex_text_view"
         android:layout_below="@+id/age_value_view"
         android:text="@string/not_loaded"/>
+    <TextView
+        android:id="@+id/rating_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sex_text_view"
+        android:text="@string/rating_view"/>
+    <TextView
+        android:id="@+id/rating_value_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/rating_text_view"
+        android:layout_toEndOf="@+id/rating_text_view"
+        android:layout_below="@+id/sex_value_view"
+        android:text="@string/not_loaded"/>
 
 </RelativeLayout>

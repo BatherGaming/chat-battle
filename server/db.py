@@ -53,6 +53,7 @@ class Player(Base):
     sex = Column(String)  # 'MALE'/'FEMALE'
     chat_id = Column(Integer, ForeignKey('chats.id'))
     status = Column(String)   
+    rating = Column(Integer)
 
     messages = relationship("Message", backref="sender")
     # chats = relationship("Chat", backref="leader") # TODO: not chats but chat
@@ -63,14 +64,15 @@ class Player(Base):
                 "sex": self.sex,
                 "age": self.age,
                 "chatId": self.chat_id,
-                "status": self.status}
+                "status": self.status,
+                "rating": self.rating}
 
     @staticmethod
     def fromDict(player_dict):
-        player = session.query(Player).filter_by(id=message_dict["id"]).first()
         return Player(id=message_dict["id"], login=message_dict["login"],
                       sex=message_dict["sex"], age=message_dict["age"],
-                      chat_id=message_dict["chatId"], status=message_dict["status"])
+                      chat_id=message_dict["chatId"], status=message_dict["status"],
+                      rating=message_dict["rating"])
 
 
 class Chat(Base):

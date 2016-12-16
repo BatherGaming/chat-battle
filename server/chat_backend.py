@@ -9,6 +9,9 @@ from db import session, Message, Player, Chat, datetime
 WHITEBOARD_FOLDER = 'whiteboards'
 DOMAIN_NAME = "qwsafex.pythonanywhere.com"  
 
+WINNER_DELTA = 1
+LOSER_DELTA = -1
+
 def create_chat(type, players_ids, leader_id):
     chat = Chat(type=type, creation_time=datetime.datetime.now(),
                 is_closed=False, leader_id=leader_id, accepted=0)
@@ -20,6 +23,14 @@ def create_chat(type, players_ids, leader_id):
     session.commit()
     return chat.id
 
+def close(chat, started, winner_id):
+    chat.is_closed = True
+    for player in chat.players:
+        player.chat_id = None
+        player.status = "IDLE"
+        if started and player.id != chat.leader_id:
+            player.rating = player.rating + (WINNER_DELTA if player.id == winner_id else LOSER_DELTA)
+    session.commit()
 
 def close_chat(leader_id, winner_id):
     leader = session.query(Player).filter_by(id=leader_id).first()
@@ -30,7 +41,7 @@ def close_chat(leader_id, winner_id):
         return {"error": "You have to be a leader"}, 400
     leader.status = "IDLE"
     chat.winner_id = winner_id
-    close(chat)
+    close(chat, True, winner_id)
     session.commit()
     return {}, 200
 
@@ -106,15 +117,8 @@ def verify(chat):
     if chat.is_closed or chat.is_started:
         return
     if (datetime.datetime.now() - chat.creation_time).total_seconds() > 25:
-        close(chat)
+        close(chat, False, -1)
 
-
-def close(chat):
-    chat.is_closed = True
-    for player in chat.players:
-        player.chat_id = None
-        player.status = "IDLE"
-    session.commit()
 
 
 
@@ -134,9 +138,9 @@ def chat_status(player_id, chat_id):
         elif chat.leader_id == player.id:
             return {"result": "leader"}, 200
         elif chat.winner_id == player.id:
-            return {"result": "winner"}, 200
+            return {"result": "winner", "rating": player.rating}, 200
         else:
-            return {"result": "loser"}, 200
+            return {"result": "loser", "rating": player.rating}, 200
     elif chat.is_started:
         return {"result": "running"}, 200
     else:
@@ -169,7 +173,7 @@ def decline(player_id):
         return {"error": "Player is not in chat"}, 400
     chat = session.query(Chat).filter_by(id=player.chat_id).first()
     if not chat.is_closed:
-        close(chat)
+        close(chat, False, -1)
     return {}, 200
 
 def get_chat(chat_id):

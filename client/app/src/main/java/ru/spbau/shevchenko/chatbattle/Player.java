@@ -7,12 +7,13 @@ import org.json.JSONObject;
 
 public class Player {
     // TODO: add fromJSON
-    public Player(int id, String login, int age, Sex sex, int chatId) {
+    public Player(int id, String login, int age, Sex sex, int chatId, int rating) {
         this.id = id;
         this.login = login;
         this.age = age;
         this.sex = sex;
         this.chatId = chatId;
+        this.rating = rating;
     }
 
     public static Player fromJSON(JSONObject playerObject) {
@@ -21,7 +22,8 @@ public class Player {
                     playerObject.getString("login"),
                     playerObject.getInt("age"),
                     Sex.fromString(playerObject.getString("sex")),
-                    playerObject.optInt("chatId", -1)
+                    playerObject.optInt("chatId", -1),
+                    playerObject.getInt("rating")
             );
         } catch (JSONException e) {
             Log.e("Player.fromJSON", "Failed to initialize Player from JSON: " + e.getMessage());
@@ -45,6 +47,18 @@ public class Player {
     final private String login;
     final private Sex sex;
     final private int age;
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    private int rating;
+
+
 
     public int getChatId() {
         return chatId;

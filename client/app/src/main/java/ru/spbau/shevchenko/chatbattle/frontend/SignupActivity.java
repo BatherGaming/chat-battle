@@ -44,7 +44,7 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
                 // Set status
                 ((TextView) findViewById(R.id.status_view)).setText(R.string.signin_up);
                 // Sign up
-                ProfileManager.signUp(new Player(0, login, age, sex, -1), password, this);
+                ProfileManager.signUp(new Player(0, login, age, sex, -1, -1), password, this);
                 break;
             }
 
