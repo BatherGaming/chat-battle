@@ -4,8 +4,6 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +17,11 @@ import java.util.Locale;
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
-import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 
 
 public class MessageAdapter extends BaseAdapter {
     final private Context context;
     final private ArrayList<Message> messages;
-    private RequestCallback getWhiteboardCallback = new RequestCallback() {
-        @Override
-        public void run(String response) {
-            setImage();
-        }
-    };
 
     MessageAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
@@ -70,7 +61,7 @@ public class MessageAdapter extends BaseAdapter {
         holder.senderView.setText(String.format(Locale.getDefault(), "%d", message.getAuthorId()));
         holder.imageView.setImageResource(android.R.color.transparent);
         if (!message.getTag().isEmpty()) {
-            Uri whiteboardURI = ChatService.getWhiteboardURI(message.getTag(), getWhiteboardCallback);
+            Uri whiteboardURI = ChatService.getWhiteboardURI(message.getTag());
             if (whiteboardURI == null) {
                 holder.imageView.setImageResource(R.drawable.grey_square);
             }
@@ -79,10 +70,6 @@ public class MessageAdapter extends BaseAdapter {
             }
         }
         return convertView;
-    }
-
-    private void setImage() {
-        notifyDataSetChanged();
     }
 
     public int add(Message message) {

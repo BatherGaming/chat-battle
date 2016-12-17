@@ -13,6 +13,9 @@ public class Message {
         this.text = text;
         this.authorId = authorId;
         this.chatId = chatId;
+        if (tag == null) {
+            tag = "";
+        }
         this.tag = tag;
     }
 
@@ -42,7 +45,7 @@ public class Message {
         return chatId;
     }
 
-    public static Message fromJSON(JSONObject jsonMessage) {
+    public static Message fromJSON(JSONObject jsonMessage) throws JSONException {
         try {
             return new Message(jsonMessage.getInt("id"), jsonMessage.getString("text"),
                     jsonMessage.getInt("authorId"),
@@ -50,7 +53,7 @@ public class Message {
                     (jsonMessage.isNull("whiteboardTag") ? "" : jsonMessage.getString("whiteboardTag")));
         } catch (JSONException e) {
             Log.e("Message.fromJSON", "Failed to initialize message from JSON: " + e.getMessage());
+            throw e;
         }
-        return null;
     }
 }
