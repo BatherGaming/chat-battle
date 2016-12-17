@@ -70,7 +70,7 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
 
         final Button stop_searching = (Button) findViewById(R.id.stop_searching_button);
         final TextView textView = (TextView) findViewById(R.id.queueing_status_text);
-        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
         spinner.setVisibility(View.GONE);
         stop_searching.setVisibility(View.GONE);
         textView.setVisibility(View.GONE);
@@ -92,7 +92,7 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
 
         final Button stop_searching = (Button) findViewById(R.id.stop_searching_button);
         final TextView textView = (TextView) findViewById(R.id.queueing_status_text);
-        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
         String text = role == Player.Role.PLAYER ? getString(R.string.search_as_player)
                                                  : getString(R.string.search_as_leader);
         textView.setText(text);

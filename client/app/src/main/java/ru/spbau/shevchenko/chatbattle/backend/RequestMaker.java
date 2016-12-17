@@ -125,8 +125,8 @@ public class RequestMaker {
                 callback);
     }
 
-    static public void sendMessage(String messageData) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, RequestCallback.DO_NOTHING, messageData);
+    static public void sendMessage(String messageData, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, callback, messageData);
     }
 
     static public void getPlayersIds(int chatId, RequestCallback callback) {

@@ -36,7 +36,7 @@ public class LeaderActivity extends AbstractChat {
 
         messageInput = (EditText) findViewById(R.id.leader_message_input);
         messageAdapter = new MessageAdapter(this, new ArrayList<Message>());
-        final ListView messagesView = (ListView) findViewById(R.id.leader_messages_view);
+        final ListView messagesView = (ListView) findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
 
     }

@@ -16,8 +16,11 @@ import org.json.JSONObject;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import ru.spbau.shevchenko.chatbattle.Message;
@@ -27,12 +30,17 @@ public class ChatService extends Service {
     private int messageCount;
     private ArrayList<Message> messages;
     private ArrayList<Integer> playersId = new ArrayList<>();
-    private boolean unbinded = false;
+    private boolean unbound = false;
 
     private Handler handler;
     private Runnable getMessagesRunnable;
 
     private final IBinder chatBinder = new ChatBinder();
+    private boolean initialized = false; // becomes true after first server response
+
+    public boolean initialized() {
+        return initialized;
+    }
 
     public class ChatBinder extends Binder {
         public ChatService getChatService() {
@@ -44,7 +52,7 @@ public class ChatService extends Service {
         RequestMaker.pullMessages(ProfileManager.getPlayer().getChatId(), messageCount, pullMessagesCallback);
     }
 
-    public void sendMessage(String messageText, String whiteboard) {
+    public void sendMessage(String messageText, String whiteboard, final String localWhiteboardTag) {
         JSONObject jsonMessage;
         try {
             jsonMessage = new JSONObject().put("authorId", ProfileManager.getPlayer().getId())
@@ -56,7 +64,38 @@ public class ChatService extends Service {
             return;
         }
 
-        RequestMaker.sendMessage(jsonMessage.toString());
+        RequestMaker.sendMessage(jsonMessage.toString(), new RequestCallback() {
+            @Override
+            public void run(String response) {
+                onMessageDelivered(response, localWhiteboardTag);
+            }
+        });
+    }
+
+    private void onMessageDelivered(String response, String localWhiteboardTag) {
+        if (localWhiteboardTag.isEmpty()){
+            return;
+        }
+        try {
+            Message message = Message.fromJSON(new JSONObject(response));
+            File localWhiteboard = new File(MyApplication.storageDir, localWhiteboardTag);
+            File globalWhiteboard = new File(MyApplication.storageDir, message.getTag());
+
+            // Copy whiteboard for better cache
+            InputStream in = new FileInputStream(localWhiteboard);
+            OutputStream out = new FileOutputStream(globalWhiteboard);
+
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (JSONException | IOException e) {
+            Log.d("onMessageDeliver", e.getMessage());
+        }
     }
 
 
@@ -79,6 +118,7 @@ public class ChatService extends Service {
             }
             messageCount += jsonMessages.length();
 
+            initialized = true;
             // Schedule next chat messages update
             handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
         } catch (JSONException e) {
@@ -94,7 +134,7 @@ public class ChatService extends Service {
         getMessagesRunnable = new Runnable() {
             @Override
             public void run() {
-                if (unbinded)
+                if (unbound)
                     return;
                 pullMessages();
             }
@@ -110,7 +150,7 @@ public class ChatService extends Service {
     @Override
     public boolean onUnbind(Intent intent) {
         Log.d("onUnbind", "called");
-        unbinded = true;
+        unbound = true;
         handler.removeCallbacks(getMessagesRunnable);
         return false;
     }
@@ -138,7 +178,19 @@ public class ChatService extends Service {
         }
     };
 
-    private static class GetWhiteboardCallback implements RequestCallback {
+    public static void saveWhiteboard(File destination, String content){ // TODO: move to another class?
+        try {
+            FileOutputStream whiteboardOutStream = new FileOutputStream(destination);
+            byte[] fetchedWhiteboard = Base64.decode(content, Base64.DEFAULT);
+
+            whiteboardOutStream.write(fetchedWhiteboard);
+            whiteboardOutStream.close();
+        } catch (IOException e) {
+            Log.e("saveWhiteboard", "Failed to create/write to whiteboard file");
+        }
+    }
+
+    private static class GetWhiteboardCallback implements RequestCallback{
         private final File whiteboard;
         private final RequestCallback callback;
 
@@ -153,16 +205,7 @@ public class ChatService extends Service {
                 Log.e("getWhUri", "Failed to fetch whiteboard");
                 return;
             }
-            try {
-                FileOutputStream whiteboardOutStream = new FileOutputStream(whiteboard);
-                byte[] fetchedWhiteboard = Base64.decode(response, Base64.DEFAULT);
-
-                whiteboardOutStream.write(fetchedWhiteboard);
-                whiteboardOutStream.close();
-            } catch (IOException e) {
-                Log.e("getWhUri", "Failed to create/write to whiteboard file");
-            }
-            callback.run("");
+            saveWhiteboard(whiteboard, response);
         }
     }
 
