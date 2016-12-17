@@ -144,9 +144,9 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                 if (result.equals("running")) {
                     chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
                 } else {
-                    int newRating = playerObject.getInt("rating");
-                    ProfileManager.getPlayer().setRating(newRating);
                     if (!result.equals("leader")) {
+                        int newRating = playerObject.getInt("rating");
+                        ProfileManager.getPlayer().setRating(newRating);
                         Toast.makeText(AbstractChat.this, result +
                                 "\nNew rating is " + newRating, Toast.LENGTH_LONG).show();
                     }

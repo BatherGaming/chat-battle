@@ -138,7 +138,7 @@ public class ChatService extends Service {
         }
     };
 
-    private static class GetWhiteboardCallback implements RequestCallback{
+    private static class GetWhiteboardCallback implements RequestCallback {
         private final File whiteboard;
         private final RequestCallback callback;
 
@@ -149,7 +149,7 @@ public class ChatService extends Service {
 
         @Override
         public void run(String response) {
-            if (response.isEmpty()){
+            if (response.isEmpty()) {
                 Log.e("getWhUri", "Failed to fetch whiteboard");
                 return;
             }
@@ -166,9 +166,9 @@ public class ChatService extends Service {
         }
     }
 
-    public static Uri getWhiteboardURI(final String whiteboardTag, final RequestCallback callback){
+    public static Uri getWhiteboardURI(final String whiteboardTag, final RequestCallback callback) {
         final File whiteboard = new File(MyApplication.storageDir, whiteboardTag);
-        if (whiteboard.exists()){
+        if (whiteboard.exists()) {
             return Uri.fromFile(whiteboard);
         }
         RequestMaker.getWhiteboard(whiteboardTag, new GetWhiteboardCallback(whiteboard, callback));

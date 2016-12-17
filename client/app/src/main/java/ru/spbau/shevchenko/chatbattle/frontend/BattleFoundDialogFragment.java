@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,13 +17,11 @@ import android.widget.Button;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.BattleSearcher;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
-import ru.spbau.shevchenko.chatbattle.backend.SearcherService;
 
 import static ru.spbau.shevchenko.chatbattle.Player.*;
 
@@ -46,7 +43,7 @@ public class BattleFoundDialogFragment extends DialogFragment {
                         ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
                         Activity activity = getActivity();
                         if (activity instanceof SearchActivity) {
-                            ((SearchActivity)getActivity()).searchAgain(true, role);
+                            ((SearchActivity) getActivity()).searchAgain(true, role);
                         }
                         getStatusHandler.removeCallbacks(getStatusRunnable);
                     }
@@ -67,6 +64,7 @@ public class BattleFoundDialogFragment extends DialogFragment {
             Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 private boolean isClicked = false;
+
                 @Override
                 public void onClick(View v) {
                     hasAccepted = true;

@@ -149,7 +149,8 @@ public class RequestMaker {
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/chat_status/" + id + "/" + chatId,
                 RequestMaker.Method.GET, callback);
     }
-    public static void getWhiteboard(String whiteboardTag, RequestCallback callback){
+
+    public static void getWhiteboard(String whiteboardTag, RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/whiteboards/" + whiteboardTag, Method.GET, callback);
     }
 

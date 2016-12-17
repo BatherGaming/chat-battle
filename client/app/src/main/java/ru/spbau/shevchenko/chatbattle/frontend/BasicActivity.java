@@ -5,40 +5,43 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 
 public class BasicActivity extends AppCompatActivity {
+
     protected MyApplication myApplication;
+    private boolean isVisible = false;
+
+    public boolean visible() {
+        return isVisible;
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         myApplication = (MyApplication) this.getApplicationContext();
+        myApplication.setCurrentActivity(this);
+        isVisible = true;
     }
 
     protected void onResume() {
         super.onResume();
         myApplication.setCurrentActivity(this);
+        isVisible = true;
     }
 
     protected void onPause() {
-        clearReferences();
         super.onPause();
+        isVisible = false;
     }
 
     public static Class<?> getLastActivityClass() {
         return lastActivityClass;
     }
 
-    public static void setLastActivityClass(Class<?> lastActivityClass) {
-        BasicActivity.lastActivityClass = lastActivityClass;
-    }
-
     private static Class<?> lastActivityClass = null;
-
 
     @Override
     public void onBackPressed() {
