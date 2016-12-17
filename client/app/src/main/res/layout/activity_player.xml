@@ -23,6 +23,14 @@
         android:transcriptMode="alwaysScroll"
         />
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/initializing_progress_bar"
+        android:progressDrawable="@drawable/waiting_circular_bar" />
+
     <LinearLayout
         android:id="@+id/input_bar"
         android:layout_width="fill_parent"

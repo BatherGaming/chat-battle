@@ -36,10 +36,11 @@ public class ChatService extends Service {
     private Runnable getMessagesRunnable;
 
     private final IBinder chatBinder = new ChatBinder();
-    private boolean initialized = false; // becomes true after first server response
+    private boolean messagesInitialized = false; // becomes true after first server response
+    private boolean playersIdsInitialized = false; // becomes true after first server response
 
     public boolean initialized() {
-        return initialized;
+        return messagesInitialized && playersIdsInitialized;
     }
 
     public class ChatBinder extends Binder {
@@ -118,7 +119,7 @@ public class ChatService extends Service {
             }
             messageCount += jsonMessages.length();
 
-            initialized = true;
+            messagesInitialized = true;
             // Schedule next chat messages update
             handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
         } catch (JSONException e) {
@@ -172,6 +173,7 @@ public class ChatService extends Service {
                     JSONObject jsonPlayer = jsonMessages.getJSONObject(i);
                     playersId.add(jsonPlayer.getInt("id"));
                 }
+                playersIdsInitialized = true;
             } catch (JSONException e) {
                 Log.e("ChSe.getPlayersId", e.getMessage());
             }

@@ -3,6 +3,7 @@
     package="ru.spbau.shevchenko.chatbattle">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name="ru.spbau.shevchenko.chatbattle.backend.MyApplication"
