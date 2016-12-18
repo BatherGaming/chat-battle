@@ -194,9 +194,11 @@ public class ChatService extends Service {
 
     private static class GetWhiteboardCallback implements RequestCallback{
         private final File whiteboard;
+        private final RequestCallback callback;
 
-        private GetWhiteboardCallback(File whiteboard) {
+        private GetWhiteboardCallback(File whiteboard, RequestCallback callback) {
             this.whiteboard = whiteboard;
+            this.callback = callback;
         }
 
         @Override
@@ -206,15 +208,16 @@ public class ChatService extends Service {
                 return;
             }
             saveWhiteboard(whiteboard, response);
+            callback.run("");
         }
     }
 
-    public static Uri getWhiteboardURI(final String whiteboardTag) {
+    public static Uri getWhiteboardURI(final String whiteboardTag, RequestCallback callback) {
         final File whiteboard = new File(MyApplication.storageDir, whiteboardTag);
         if (whiteboard.exists()) {
             return Uri.fromFile(whiteboard);
         }
-        RequestMaker.getWhiteboard(whiteboardTag, new GetWhiteboardCallback(whiteboard));
+        RequestMaker.getWhiteboard(whiteboardTag, new GetWhiteboardCallback(whiteboard, callback));
         return null;
     }
 }

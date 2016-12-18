@@ -17,6 +17,7 @@ import java.util.Locale;
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
+import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 
 
 public class MessageAdapter extends BaseAdapter {
@@ -61,7 +62,12 @@ public class MessageAdapter extends BaseAdapter {
         holder.senderView.setText(String.format(Locale.getDefault(), "%d", message.getAuthorId()));
         holder.imageView.setImageResource(android.R.color.transparent);
         if (!message.getTag().isEmpty()) {
-            Uri whiteboardURI = ChatService.getWhiteboardURI(message.getTag());
+            Uri whiteboardURI = ChatService.getWhiteboardURI(message.getTag(), new RequestCallback(){
+                @Override
+                public void run(String response) {
+                    notifyDataSetChanged();
+                }
+            });
             if (whiteboardURI == null) {
                 holder.imageView.setImageResource(R.drawable.grey_square);
             }
