@@ -19,12 +19,12 @@ public class WinnerPickActivity extends BasicActivity implements View.OnClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_winner_pick);
-        ViewGroup playersLayout = (ViewGroup) findViewById(R.id.players_radio_group);
+        final ViewGroup playersLayout = (ViewGroup) findViewById(R.id.players_radio_group);
 
-        Button cancel = (Button) findViewById(R.id.cancel_button);
+        final Button cancel = (Button) findViewById(R.id.cancel_button);
         cancel.setOnClickListener(this);
 
-        Button ok = (Button) findViewById(R.id.ok_button);
+        final Button ok = (Button) findViewById(R.id.ok_button);
         ok.setOnClickListener(this);
 
 
@@ -32,9 +32,9 @@ public class WinnerPickActivity extends BasicActivity implements View.OnClickLis
         @SuppressWarnings("unchecked")
         ArrayList<Integer> playersID = (ArrayList<Integer>) intent.getSerializableExtra("playersId");
         for (int playerId : playersID) {
-            RadioButton radioButton = new RadioButton(this);
+            final RadioButton radioButton = new RadioButton(this);
             radioButton.setId(playerId);
-            String x = Integer.toString(playerId);
+            final String x = Integer.toString(playerId);
             radioButton.setText(x);
             playersLayout.addView(radioButton);
         }

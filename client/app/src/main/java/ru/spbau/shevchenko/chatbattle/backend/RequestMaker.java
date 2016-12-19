@@ -43,13 +43,13 @@ public class RequestMaker {
         new AsyncTask<String, Integer, String>() {
             @Override
             protected String doInBackground(String... url) {
-                HttpClient client = new DefaultHttpClient();
-                HttpResponse response;
-                StringBuilder plainResponse = new StringBuilder();
+                final HttpClient client = new DefaultHttpClient();
+                final HttpResponse response;
+                final StringBuilder plainResponse = new StringBuilder();
                 try {
                     response = client.execute(request);
-                    InputStream inputStream = response.getEntity().getContent();
-                    BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+                    final InputStream inputStream = response.getEntity().getContent();
+                    final BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
                     String line;
                     while ((line = rd.readLine()) != null) {
                         plainResponse.append(line);
@@ -82,16 +82,16 @@ public class RequestMaker {
         new AsyncTask<String, Integer, String>() {
             @Override
             protected String doInBackground(String... urls) {
-                HttpClient client = new DefaultHttpClient();
-                StringBuilder plainResponse = new StringBuilder();
+                final HttpClient client = new DefaultHttpClient();
+                final StringBuilder plainResponse = new StringBuilder();
                 Log.d("sendRequest()", "Data: " + data);
                 try {
                     StringEntity dataEntity = new StringEntity(data, "UTF-8");
                     request.setHeader("Content-Type", "application/json");
                     request.setEntity(dataEntity);
-                    HttpResponse response = client.execute(request);
-                    InputStream inputStream = response.getEntity().getContent();
-                    BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+                    final HttpResponse response = client.execute(request);
+                    final InputStream inputStream = response.getEntity().getContent();
+                    final BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
                     String line;
                     while ((line = rd.readLine()) != null) {
                         plainResponse.append(line);

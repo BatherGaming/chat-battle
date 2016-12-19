@@ -12,12 +12,27 @@ import ru.spbau.shevchenko.chatbattle.frontend.SignupActivity;
 public class ProfileManager {
     private static Player currentPlayer = null;
 
+
+    static private PlayerStatus playerStatus;
+
+    static public PlayerStatus getPlayerStatus() {
+        return playerStatus;
+    }
+
+    static public void setPlayerStatus(PlayerStatus newPlayerStatus) {
+        playerStatus = newPlayerStatus;
+    }
+
+    public enum PlayerStatus {
+        IDLE, IN_QUEUE_AS_LEADER, IN_QUEUE_AS_PLAYER, CHATTING_AS_LEADER, CHATTING_AS_PLAYER, WAITING
+    }
+
     public static void signIn(String login, String password, final LoginActivity loginActivity) {
         RequestMaker.signIn(password, login, new SignInCallback(loginActivity));
     }
 
     public static void signUp(Player newPlayer, String password, final SignupActivity signupActivity) {
-        JSONObject jsonPlayer;
+        final JSONObject jsonPlayer;
         try {
             jsonPlayer = new JSONObject().put("login", newPlayer.getLogin())
                     .put("sex", newPlayer.getSex().toString())
@@ -35,7 +50,7 @@ public class ProfileManager {
     private static void onSignUpResponse(String response, SignupActivity signupActivity) {
         try {
             Log.d("onSignUpResponse()", response);
-            JSONObject playerObject = new JSONObject(response);
+            final JSONObject playerObject = new JSONObject(response);
             if (playerObject.has("error")) {
                 signupActivity.failedSignup(playerObject.getString("error"));
                 return;
@@ -56,7 +71,7 @@ public class ProfileManager {
 
     private static void onSignInResponse(String response, LoginActivity loginActivity) {
         try {
-            JSONObject playerObject = new JSONObject(response);
+            final JSONObject playerObject = new JSONObject(response);
             if (playerObject.has("error")) {
                 loginActivity.failedLogin(playerObject.getString("error"));
                 return;
@@ -94,21 +109,6 @@ public class ProfileManager {
         public void run(String response) {
             onSignUpResponse(response, signupActivity);
         }
-    }
-
-
-    public enum PlayerStatus {
-        IDLE, IN_QUEUE_AS_LEADER, IN_QUEUE_AS_PLAYER, CHATTING_AS_LEADER, CHATTING_AS_PLAYER, WAITING
-    }
-
-    static private PlayerStatus playerStatus;
-
-    static public PlayerStatus getPlayerStatus() {
-        return playerStatus;
-    }
-
-    static public void setPlayerStatus(PlayerStatus newPlayerStatus) {
-        playerStatus = newPlayerStatus;
     }
 
 

@@ -11,78 +11,79 @@ import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 
 public class BasicActivity extends AppCompatActivity {
+    final public static long BATTLE_FOUND_HANDLE_DELAY = 100;
 
-    protected MyApplication myApplication;
+    private MyApplication myApplication;
     private boolean isVisible = false;
+    private static Class<?> lastActivityClass = null;
+    final private Handler battleFoundHandler = new Handler();
+
 
     public boolean visible() {
         return isVisible;
-    }
-
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        myApplication = (MyApplication) this.getApplicationContext();
-        myApplication.setCurrentActivity(this);
-        isVisible = true;
-    }
-
-    protected void onResume() {
-        super.onResume();
-        myApplication.setCurrentActivity(this);
-        isVisible = true;
-    }
-
-    protected void onPause() {
-        super.onPause();
-        isVisible = false;
     }
 
     public static Class<?> getLastActivityClass() {
         return lastActivityClass;
     }
 
-    private static Class<?> lastActivityClass = null;
+    public Handler getBattleFoundHandler() {
+        return battleFoundHandler;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        myApplication = (MyApplication) getApplicationContext();
+        myApplication.setCurrentActivity(this);
+        isVisible = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        myApplication.setCurrentActivity(this);
+        isVisible = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isVisible = false;
+    }
 
     @Override
     public void onBackPressed() {
-        lastActivityClass = this.getClass();
+        lastActivityClass = getClass();
         super.onBackPressed();
     }
 
     @Override
     public void onDestroy() {
-        lastActivityClass = this.getClass();
+        lastActivityClass = getClass();
         clearReferences();
         super.onDestroy();
     }
 
     private void clearReferences() {
-        BasicActivity currActivity = myApplication.getCurrentActivity();
-        if (this.equals(currActivity))
+        final BasicActivity currActivity = myApplication.getCurrentActivity();
+        if (equals(currActivity))
             myApplication.setCurrentActivity(null);
     }
 
-    final private Handler battleFoundHandler = new Handler();
-
-    public Handler getBattleFoundHandler() {
-        return battleFoundHandler;
-    }
-
-    final public static long BATTLE_FOUND_HANDLE_DELAY = 100;
-
-    public static class battleFoundRunnable implements Runnable {
+    public static class BattleFoundRunnable implements Runnable {
         private Player.Role role;
         private FragmentManager fragmentManager;
 
-        public battleFoundRunnable(Player.Role role, FragmentManager fragmentManager) {
+        public BattleFoundRunnable(Player.Role role, FragmentManager fragmentManager) {
             this.role = role;
             this.fragmentManager = fragmentManager;
         }
 
         @Override
         public void run() {
-            DialogFragment dialogFragment = new BattleFoundDialogFragment();
-            Bundle bundle = new Bundle();
+            final DialogFragment dialogFragment = new BattleFoundDialogFragment();
+            final Bundle bundle = new Bundle();
             bundle.putString("role", role.toString());
             bundle.putInt("chatId", ProfileManager.getPlayer().getChatId());
             dialogFragment.setArguments(bundle);

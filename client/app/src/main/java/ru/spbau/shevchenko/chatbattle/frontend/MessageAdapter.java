@@ -46,7 +46,7 @@ public class MessageAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        MessageViewHolder holder;
+        final MessageViewHolder holder;
         if (convertView == null) {
             LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = messageInflater.inflate(R.layout.message, null);
@@ -57,7 +57,7 @@ public class MessageAdapter extends BaseAdapter {
         } else {
             holder = (MessageViewHolder) convertView.getTag();
         }
-        Message message = messages.get(position);
+        final Message message = messages.get(position);
         holder.textView.setText(message.getText());
         holder.senderView.setText(String.format(Locale.getDefault(), "%d", message.getAuthorId()));
         holder.imageView.setImageResource(android.R.color.transparent);
@@ -78,10 +78,10 @@ public class MessageAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public int add(Message message) {
+    public void add(Message message) {
         messages.add(message);
         notifyDataSetChanged();
-        return messages.size() - 1;
+        return;
     }
 
     private static class MessageViewHolder {

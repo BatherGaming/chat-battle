@@ -54,7 +54,7 @@ public class ChatService extends Service {
     }
 
     public void sendMessage(String messageText, String whiteboard, final String localWhiteboardTag) {
-        JSONObject jsonMessage;
+        final JSONObject jsonMessage;
         try {
             jsonMessage = new JSONObject().put("authorId", ProfileManager.getPlayer().getId())
                     .put("text", messageText)
@@ -78,13 +78,13 @@ public class ChatService extends Service {
             return;
         }
         try {
-            Message message = Message.fromJSON(new JSONObject(response));
-            File localWhiteboard = new File(MyApplication.storageDir, localWhiteboardTag);
-            File globalWhiteboard = new File(MyApplication.storageDir, message.getTag());
+            final Message message = Message.fromJSON(new JSONObject(response));
+            final File localWhiteboard = new File(MyApplication.storageDir, localWhiteboardTag);
+            final File globalWhiteboard = new File(MyApplication.storageDir, message.getTag());
 
             // Copy whiteboard for better cache
-            InputStream in = new FileInputStream(localWhiteboard);
-            OutputStream out = new FileOutputStream(globalWhiteboard);
+            final InputStream in = new FileInputStream(localWhiteboard);
+            final OutputStream out = new FileOutputStream(globalWhiteboard);
 
             // Transfer bytes from in to out
             byte[] buf = new byte[1024];
@@ -113,8 +113,8 @@ public class ChatService extends Service {
             JSONArray jsonMessages = new JSONArray(response);
             // TODO: complete
             for (int i = 0; i < jsonMessages.length(); i++) {
-                JSONObject jsonMessage = jsonMessages.getJSONObject(i);
-                Message message = Message.fromJSON(jsonMessage);
+                final JSONObject jsonMessage = jsonMessages.getJSONObject(i);
+                final Message message = Message.fromJSON(jsonMessage);
                 messages.add(message);
             }
             messageCount += jsonMessages.length();
@@ -168,7 +168,7 @@ public class ChatService extends Service {
         @Override
         public void run(String response) {
             try {
-                JSONArray jsonMessages = new JSONArray(response);
+                final JSONArray jsonMessages = new JSONArray(response);
                 for (int i = 0; i < jsonMessages.length(); i++) {
                     JSONObject jsonPlayer = jsonMessages.getJSONObject(i);
                     playersId.add(jsonPlayer.getInt("id"));
@@ -182,8 +182,8 @@ public class ChatService extends Service {
 
     public static void saveWhiteboard(File destination, String content){ // TODO: move to another class?
         try {
-            FileOutputStream whiteboardOutStream = new FileOutputStream(destination);
-            byte[] fetchedWhiteboard = Base64.decode(content, Base64.DEFAULT);
+            final FileOutputStream whiteboardOutStream = new FileOutputStream(destination);
+            final byte[] fetchedWhiteboard = Base64.decode(content, Base64.DEFAULT);
 
             whiteboardOutStream.write(fetchedWhiteboard);
             whiteboardOutStream.close();

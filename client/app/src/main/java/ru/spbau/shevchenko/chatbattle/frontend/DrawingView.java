@@ -17,15 +17,10 @@ import ru.spbau.shevchenko.chatbattle.R;
 
 
 public class DrawingView extends View {
-    //drawing path
     private Path drawPath;
-    //drawing and canvas paint
     private Paint drawPaint, canvasPaint;
-    //initial color
     private int paintColor = 0xFF660000;
-    //canvas
     private Canvas drawCanvas;
-    //canvas bitmap
     private Bitmap canvasBitmap;
     private float brushSize;
     private float lastBrushSize;
@@ -80,8 +75,8 @@ public class DrawingView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //detect user touch
-        float touchX = event.getX();
-        float touchY = event.getY();
+        final float touchX = event.getX();
+        final float touchY = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 drawPath.moveTo(touchX, touchY);

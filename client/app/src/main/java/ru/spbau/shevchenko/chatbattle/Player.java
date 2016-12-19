@@ -6,7 +6,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Player {
-    // TODO: add fromJSON
+
+    final private int id;
+    final private String login;
+    final private Sex sex;
+    final private int age;
+    private int rating;
+    private int chatId;
+
     public Player(int id, String login, int age, Sex sex, int chatId, int rating) {
         this.id = id;
         this.login = login;
@@ -16,37 +23,28 @@ public class Player {
         this.rating = rating;
     }
 
-    public static Player fromJSON(JSONObject playerObject) {
-        try {
-            return new Player(playerObject.getInt("id"),
-                    playerObject.getString("login"),
-                    playerObject.getInt("age"),
-                    Sex.fromString(playerObject.getString("sex")),
-                    playerObject.optInt("chatId", -1),
-                    playerObject.getInt("rating")
-            );
-        } catch (JSONException e) {
-            Log.e("Player.fromJSON", "Failed to initialize Player from JSON: " + e.getMessage());
-        }
-        return null;
-    }
-
     public enum Sex {
         MALE, FEMALE;
-
-        public static Sex fromString(String sex) {
-            return Sex.valueOf(sex);
-        }
     }
 
     public enum Role {
         PLAYER, LEADER;
     }
 
-    final private int id;
-    final private String login;
-    final private Sex sex;
-    final private int age;
+    public static Player fromJSON(JSONObject playerObject) throws JSONException {
+        try {
+            return new Player(playerObject.getInt("id"),
+                    playerObject.getString("login"),
+                    playerObject.getInt("age"),
+                    Sex.valueOf(playerObject.getString("sex")),
+                    playerObject.optInt("chatId", -1),
+                    playerObject.getInt("rating")
+            );
+        } catch (JSONException e) {
+            Log.e("Player.fromJSON", "Failed to initialize Player from JSON: " + e.getMessage());
+            throw e;
+        }
+    }
 
     public void setRating(int rating) {
         this.rating = rating;
@@ -56,10 +54,6 @@ public class Player {
         return rating;
     }
 
-    private int rating;
-
-
-
     public int getChatId() {
         return chatId;
     }
@@ -67,8 +61,6 @@ public class Player {
     public void setChatId(int chatId) {
         this.chatId = chatId;
     }
-
-    private int chatId;
 
     public int getId() {
         return id;

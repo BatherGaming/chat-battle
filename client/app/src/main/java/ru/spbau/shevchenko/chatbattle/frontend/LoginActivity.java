@@ -18,9 +18,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Button signInButton = (Button) findViewById(R.id.signin_button);
+        final Button signInButton = (Button) findViewById(R.id.signin_button);
         signInButton.setOnClickListener(this);
-        Button signUpButton = (Button) findViewById(R.id.signup_button);
+        final Button signUpButton = (Button) findViewById(R.id.signup_button);
         signUpButton.setOnClickListener(this);
     }
 
@@ -30,12 +30,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ((TextView) findViewById(R.id.status_view)).setText("");
 
 
-        Intent intent = new Intent(this, MenuActivity.class);
+        final Intent intent = new Intent(this, MenuActivity.class);
         startActivity(intent);
     }
 
     public void failedLogin(String reason) {
-        TextView statusView = (TextView) findViewById(R.id.status_view);
+        final TextView statusView = (TextView) findViewById(R.id.status_view);
         statusView.setText(reason);
     }
 
@@ -43,15 +43,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.signin_button: {
-                TextView statusView = (TextView) findViewById(R.id.status_view);
+                final TextView statusView = (TextView) findViewById(R.id.status_view);
                 statusView.setText(R.string.signin_in);
-                String login = ((EditText) findViewById(R.id.login_edit)).getText().toString().trim();
-                String password = ((EditText) findViewById(R.id.password_edit)).getText().toString().trim();
+                final String login = ((EditText) findViewById(R.id.login_edit)).getText().toString().trim();
+                final String password = ((EditText) findViewById(R.id.password_edit)).getText().toString().trim();
                 ProfileManager.signIn(login, password, this);
                 break;
             }
             case R.id.signup_button: {
-                Intent intent = new Intent(this, SignupActivity.class);
+                final Intent intent = new Intent(this, SignupActivity.class);
                 startActivity(intent);
                 break;
             }

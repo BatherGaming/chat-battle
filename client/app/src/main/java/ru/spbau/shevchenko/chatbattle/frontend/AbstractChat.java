@@ -35,6 +35,8 @@ import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 public abstract class AbstractChat extends BasicActivity implements View.OnClickListener {
 
     private static final int DRAW_WHITEBOARD = 1;
+    private final static long HANDLER_DELAY = 100;
+
     private ListView messagesView;
     private ImageButton sendBtn;
 
@@ -43,7 +45,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
 
     private boolean initialized = false;
 
-    final protected ServiceConnection chatServiceConection = new ServiceConnection() {
+    final private ServiceConnection chatServiceConection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             chatService = ((ChatService.ChatBinder) service).getChatService();
@@ -60,25 +62,16 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
     protected EditText messageInput;
     protected MessageAdapter messageAdapter;
 
-    protected ImageButton whiteboardBtn;
-
-    protected final static long HANDLER_DELAY = 100;
+    private ImageButton whiteboardBtn;
     private int alreadyRead = 0;
-
     private String whiteboardEncoded = "";
 
-    final protected Handler handler = new Handler();
-    final protected Runnable getMessagesRunnable = new Runnable() {
+    final private Handler handler = new Handler();
+    final private Runnable getMessagesRunnable = new Runnable() {
         @Override
         public void run() {
             if (chatService != null) {
-                List<Message> messages = chatService.getMessages();
-/*                StringBuilder messagesString = new StringBuilder();
-                for (Message message : messages) {
-                    messagesString.append(message.getText());
-                    messagesString.append("|");
-                }
-                Log.d("getMessagesRunnable", messagesString.toString());*/
+                final List<Message> messages = chatService.getMessages();
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     // Add our own messages only on initialization
                     if (!initialized || message.getAuthorId() != ProfileManager.getPlayer().getId()) {
@@ -95,15 +88,8 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         }
     };
 
-    private void completeInitialization() {
-        ProgressBar spinner = (ProgressBar) findViewById(R.id.initializing_progress_bar);
-        spinner.setVisibility(View.GONE);
-        messagesView.setVisibility(View.VISIBLE);
-        sendBtn.setEnabled(true);
-    }
-
-    final protected Handler chatStatusHandler = new Handler();
-    final protected Runnable chatStatusRunnable = new Runnable() {
+    final private Handler chatStatusHandler = new Handler();
+    final private Runnable chatStatusRunnable = new Runnable() {
         @Override
         public void run() {
             RequestMaker.chatStatus(ProfileManager.getPlayer().getId(),
@@ -119,13 +105,11 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         sendBtn = (ImageButton) findViewById(R.id.send_button);
         sendBtn.setEnabled(false);
 
-
-
         if (ProfileManager.getPlayer().getChatId() == -1) {
             throw new RuntimeException("Created Chat without providing chat id.");
         }
 
-        Intent chatServiceIntent = new Intent(this, ChatService.class);
+        final Intent chatServiceIntent = new Intent(this, ChatService.class);
         bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
 
         whiteboardBtn = (ImageButton) findViewById(R.id.whiteboard_btn);
@@ -133,8 +117,16 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
     }
 
+    private void completeInitialization() {
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.initializing_progress_bar);
+        spinner.setVisibility(View.GONE);
+        messagesView.setVisibility(View.VISIBLE);
+        sendBtn.setEnabled(true);
+    }
+
+
     public void postMessage() {
-        String messageText = messageInput.getText().toString();
+        final String messageText = messageInput.getText().toString();
         messageInput.setText("");
 
         // Save whiteboard locally
@@ -155,7 +147,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         whiteboardBtn.setImageResource(R.drawable.whiteboard);
 
         // Post image to list view
-        Message message = new Message(-1, messageText, ProfileManager.getPlayer().getId(),
+        final Message message = new Message(-1, messageText, ProfileManager.getPlayer().getId(),
                 ProfileManager.getPlayer().getChatId(), whiteboardTag);
         update(message);
     }
@@ -181,17 +173,17 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         @Override
         public void run(String response) {
             try {
-                JSONObject playerObject = new JSONObject(response);
+                final JSONObject playerObject = new JSONObject(response);
                 if (playerObject.has("error")) {
                     Log.d("ChatAct.iFHandler.run", playerObject.getString("error"));
                     return;
                 }
-                String result = playerObject.getString("result");
+                final String result = playerObject.getString("result");
                 if (result.equals("running")) {
                     chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
                 } else {
                     if (!result.equals("leader")) {
-                        int newRating = playerObject.getInt("rating");
+                        final int newRating = playerObject.getInt("rating");
                         ProfileManager.getPlayer().setRating(newRating);
                         Toast.makeText(AbstractChat.this, result +
                                 "\nNew rating is " + newRating, Toast.LENGTH_LONG).show();
@@ -232,7 +224,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                 break;
             }
             case R.id.whiteboard_btn: {
-                Intent intent = new Intent(this, WhiteboardActivity.class);
+                final Intent intent = new Intent(this, WhiteboardActivity.class);
                 startActivityForResult(intent, DRAW_WHITEBOARD);
                 break;
             }
