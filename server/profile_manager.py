@@ -8,42 +8,46 @@ BASIC_RATING = 1000
 
 def get_players():
     players = session.query(Player).all()
-    return list(map(Player.toDict, players)), 200
+    return list(map(Player.to_dict, players)), 200
 
 
 def get_chat_players(chat_id):
     chat = session.query(Chat).filter_by(id=chat_id).first()
     if not chat:
-        return {"error": "Chat doesn't exist"}, 400
+        return {"error": "Chat doesn't exist"}, 404
     players = session.query(Player)\
                      .filter(and_(Player.chat_id == chat_id,
                                   Player.id != chat.leader_id))\
                      .all()
-    return list(map(Player.toDict, players)), 200
+    return list(map(Player.to_dict, players)), 200
 
 
 def get_player(player_id):
     player = session.query(Player).filter_by(id=player_id).first()
     if not player:
         return {}, 404
-    return player.toDict(), 200
+    return player.to_dict(), 200
+
+
+def get_hash(password):
+    return hashlib.md5(password.encode("utf-8")).hexdigest()
 
 
 def add_player(json):
     if not json:
         return {"error": "JSON is null"}, 400
-    for parametr in ['login', 'sex', 'password']:
-        if parametr not in json:
-            return {"error": "no " + parametr + " in JSON"}, 400
-    for parametr in ['login', 'password']:
-        if json[parametr] == "":
-            return {"error": parametr + " should be not empty"}
+    for parameter in ['login', 'sex', 'password']:
+        if parameter not in json:
+            return {"error": "no " + parameter + " in JSON"}, 400
+    for parameter in ['login', 'password']:
+        if not json[parameter]:
+            return {"error": parameter + " should be not empty"}, 400
 
     if session.query(Player).filter_by(login=json['login']).first():
-        return {"error": "Login is taken."}, 422  # Unprocessible entity
+        return {"error": "Login is taken."}, 422  # Unprocessable entity
 
     password = json.get("password", "")
-    password_hash = hashlib.md5(password.encode("utf-8")).hexdigest()
+    password_hash = get_hash(password)
 
     player = Player(login=json["login"],
                     sex=json["sex"],
@@ -54,12 +58,12 @@ def add_player(json):
 
     session.add(player)
     session.commit()
-    return player.toDict(), 201
+    return player.to_dict(), 201
 
 
 def sign_in(login, password):
-    password_hash = hashlib.md5(password.encode("utf-8")).hexdigest()
+    password_hash = get_hash(password)
     player = session.query(Player).filter_by(login=login).first()
     if not player or player.password_hash != password_hash:
         return {"error": "Wrong login or password. Try again."}, 401
-    return player.toDict(), 200
+    return player.to_dict(), 200

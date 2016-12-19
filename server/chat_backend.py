@@ -1,4 +1,3 @@
-import db
 import uuid
 import itertools
 import base64
@@ -12,8 +11,9 @@ DOMAIN_NAME = "qwsafex.pythonanywhere.com"
 WINNER_DELTA = 1
 LOSER_DELTA = -1
 
-def create_chat(type, players_ids, leader_id):
-    chat = Chat(type=type, creation_time=datetime.datetime.now(),
+
+def create_chat(chat_type, players_ids, leader_id):
+    chat = Chat(type=chat_type, creation_time=datetime.datetime.now(),
                 is_closed=False, leader_id=leader_id, accepted=0)
     session.add(chat)
     for playerId in itertools.chain(players_ids, [leader_id]):
@@ -23,31 +23,36 @@ def create_chat(type, players_ids, leader_id):
     session.commit()
     return chat.id
 
-def close(chat, started, winner_id):
+
+def close(chat, winner_id):
+    if chat.is_closed:
+        return
     chat.is_closed = True
     for player in chat.players:
         player.chat_id = None
         player.status = "IDLE"
-        if started and player.id != chat.leader_id:
-            player.rating = player.rating + (WINNER_DELTA if player.id == winner_id else LOSER_DELTA)
+        if chat.is_started and player.id != chat.leader_id:
+            player.rating += WINNER_DELTA if player.id == winner_id else LOSER_DELTA
     session.commit()
+
 
 def close_chat(leader_id, winner_id):
     leader = session.query(Player).filter_by(id=leader_id).first()
     if not leader:
-        return {"error": "player with provided leader_id doesn't exist"}
+        return {"error": "player with provided leader_id doesn't exist"}, 400
     chat = session.query(Chat).filter_by(id=leader.chat_id).first()
     if chat.leader_id != leader_id:
         return {"error": "You have to be a leader"}, 400
     leader.status = "IDLE"
     chat.winner_id = winner_id
-    close(chat, True, winner_id)
+    close(chat, winner_id)
     session.commit()
     return {}, 200
 
 
 def whiteboard_location(filename):
     return os.path.join("mysite", WHITEBOARD_FOLDER, filename)
+
 
 def unique_filename():
     base_filename = uuid.uuid4().hex[0:15]  # Which makes 2^64 different UUIDs
@@ -72,10 +77,9 @@ def send_message(json):
             or 'text' not in json\
             or 'chatId' not in json\
             or not str(json["chatId"]).isdigit()\
-            or not str(json["authorId"]).isdigit():
-        return {}, 400
-    if json["text"] == "" and ('whiteboard' not in json 
-                               or json['whiteboard'] == ""):
+            or not str(json["authorId"]).isdigit()\
+            or not json["text"] and ('whiteboard' not in json
+                                     or json['whiteboard'] == ""):
         return {}, 400
 
     player = session.query(Player).filter_by(id=int(json["authorId"])).first()
@@ -94,7 +98,7 @@ def send_message(json):
 
     session.add(message)
     session.commit()
-    return message.toDict(), 200
+    return message.to_dict(), 200
 
 
 def get_messages(chat_id, num):
@@ -103,23 +107,14 @@ def get_messages(chat_id, num):
                         order_by(Message.time).\
                         offset(num).\
                         all()
-    return list(map(Message.toDict, messages)), 200
-
-
-def get_leader(chat_id):
-    chat = session.query(Chat).filter_by(id=chat_id).first()
-    if not leader:
-        return {"error": "Chat doesn't exist"}, 400
-    return {"leader": chat.leader_id}
+    return list(map(Message.to_dict, messages)), 200
 
 
 def verify(chat):
     if chat.is_closed or chat.is_started:
         return
     if (datetime.datetime.now() - chat.creation_time).total_seconds() > 25:
-        close(chat, False, -1)
-
-
+        close(chat, -1)
 
 
 def chat_status(player_id, chat_id):
@@ -164,6 +159,7 @@ def accept(player_id):
     session.commit()
     return {}, 200
 
+
 def decline(player_id):
     print('declined', player_id)
     player = session.query(Player).filter_by(id=player_id).first()
@@ -173,20 +169,17 @@ def decline(player_id):
         return {"error": "Player is not in chat"}, 400
     chat = session.query(Chat).filter_by(id=player.chat_id).first()
     if not chat.is_closed:
-        close(chat, False, -1)
+        close(chat, -1)
     return {}, 200
+
 
 def get_chat(chat_id):
     chat = session.query(Chat).filter_by(id=chat_id).first()
-    return chat.toDict(), 200
+    return chat.to_dict(), 200
 
-
-
-    
 
 def get_whiteboard(whiteboard_tag):
     location = whiteboard_location(whiteboard_tag)
     with open(location, "rb") as f:
         whiteboard = f.read()
         return base64.b64encode(whiteboard)
-    return ""

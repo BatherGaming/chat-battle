@@ -10,9 +10,8 @@ open(queue_filename, "a").close()
 
 
 def read_queues_from_file():
-    queues = []
     with open(queue_filename, "r") as queue_file:
-        queues = [queue_file.readline()[:-1].split(",") for i in range(2)]
+        queues = [queue_file.readline()[:-1].split(",") for _ in range(2)]
     queues = [list(map(int, filter(lambda s: str(s).isdigit(), queue)))
               for queue in queues]
     return queues[0], queues[1]
@@ -20,8 +19,10 @@ def read_queues_from_file():
 
 def write_queues_in_file(players_queue, leaders_queue):
     with open(queue_filename, "w") as queue_file:
-        queue_file.write(",".join(map(str, players_queue)) + '\n')
-        queue_file.write(",".join(map(str, leaders_queue)) + '\n')
+        queue_file.write(",".join(map(str, players_queue)))
+        queue_file.write("\n")
+        queue_file.write(",".join(map(str, leaders_queue)))
+        queue_file.write("\n")
 
 
 def add_player_to_queue(role, player_id):
@@ -63,16 +64,11 @@ def add_player_to_queue(role, player_id):
 
 
 def del_player_from_queue(player_id):
-    if not session.query(Player).filter_by(id=player_id).first():
-        return {"error": "There's no such player."}, 400
-
-    players_queue, leaders_queue = read_queues_from_file()
-
     player = session.query(Player).filter_by(id=player_id).first()
+    if not player:
+        return {"error": "There's no such player."}, 400
+    players_queue, leaders_queue = read_queues_from_file()
     player.status = "IDLE"
-    
     queues = [list(filter(lambda x: x != player_id, queue)) for queue in [players_queue, leaders_queue]]
-
     write_queues_in_file(queues[0], queues[1])
-
     return {}, 200

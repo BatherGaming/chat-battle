@@ -3,10 +3,7 @@ from flask import Flask
 from flask import jsonify
 from flask import make_response
 from flask import request
-from flask import send_from_directory
 
-import base64
-import os
 import profile_manager
 import battlemaker
 import chat_backend
@@ -18,11 +15,6 @@ WHITEBOARD_FOLDER = 'whiteboards'
 
 def process(response):
     return jsonify(response[0]), response[1]
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found1'}), 404)
 
 
 @app.route('/players', methods=['GET'])
@@ -82,11 +74,6 @@ def get_chat_players(chat_id):
     return process(profile_manager.get_chat_players(chat_id))
 
 
-@app.route('/chat/get/leader/<int:chat_id>', methods=['GET'])
-def get_leader(chat_id):
-    return process(chat_backend.get_leader(chat_id))
-
-
 @app.route('/chat/accept/<int:player_id>', methods=['POST'])
 def accept(player_id):
     return process(chat_backend.accept(player_id))
@@ -101,6 +88,7 @@ def decline(player_id):
 def get_whiteboard(whiteboard_tag):
     # No process() needed because of raw return value
     return chat_backend.get_whiteboard(whiteboard_tag) 
+
 
 @app.route('/chat/<int:chat_id>', methods=['GET'])
 def get_chat(chat_id):
