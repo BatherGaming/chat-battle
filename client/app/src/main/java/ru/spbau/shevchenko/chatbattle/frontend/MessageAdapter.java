@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
+import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 
 public class MessageAdapter extends BaseAdapter {
@@ -52,7 +54,8 @@ public class MessageAdapter extends BaseAdapter {
             convertView = messageInflater.inflate(R.layout.message, null);
             holder = new MessageViewHolder((TextView) convertView.findViewById(R.id.message_sender),
                     (TextView) convertView.findViewById(R.id.message_body),
-                    (ImageView) convertView.findViewById(R.id.message_image));
+                    (ImageView) convertView.findViewById(R.id.message_image),
+                    (ProgressBar) convertView.findViewById(R.id.delivering_progress_bar));
             convertView.setTag(holder);
         } else {
             holder = (MessageViewHolder) convertView.getTag();
@@ -61,10 +64,16 @@ public class MessageAdapter extends BaseAdapter {
         holder.textView.setText(message.getText());
         holder.senderView.setText(String.format(Locale.getDefault(), "%d", message.getAuthorId()));
         holder.imageView.setImageResource(android.R.color.transparent);
+        if (message.isDelivered()){
+            holder.loadingBar.setVisibility(View.INVISIBLE);
+        }
+        else {
+            holder.loadingBar.setVisibility(View.VISIBLE);
+        }
         if (!message.getTag().isEmpty()) {
             Uri whiteboardURI = ChatService.getWhiteboardURI(message.getTag(), new RequestCallback(){
                 @Override
-                public void run(String response) {
+                public void run(RequestResult requestResult) {
                     notifyDataSetChanged();
                 }
             });
@@ -88,11 +97,13 @@ public class MessageAdapter extends BaseAdapter {
         final private TextView senderView;
         final private TextView textView;
         final private ImageView imageView;
+        final private ProgressBar loadingBar;
 
-        MessageViewHolder(TextView senderView, TextView textView, ImageView imageView) {
+        MessageViewHolder(TextView senderView, TextView textView, ImageView imageView, ProgressBar loadingBar) {
             this.senderView = senderView;
             this.textView = textView;
             this.imageView = imageView;
+            this.loadingBar = loadingBar;
         }
     }
 }

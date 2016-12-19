@@ -30,6 +30,7 @@ import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
+import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 
 public abstract class AbstractChat extends BasicActivity implements View.OnClickListener {
@@ -82,7 +83,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     // Add our own messages only on initialization
                     if (!initialized || message.getAuthorId() != ProfileManager.getPlayer().getId()) {
-                        update(message);
+                        messageAdapter.add(message);
                     }
                 }
                 alreadyRead = messages.size();
@@ -149,15 +150,23 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
             }
         }
 
-        chatService.sendMessage(messageText, whiteboardEncoded, whiteboardTag);
+        // Post image to list view
+        final Message message = new Message(-1, messageText, ProfileManager.getPlayer().getId(),
+                ProfileManager.getPlayer().getChatId(), whiteboardTag);
+        message.setDelivered(false);
+        chatService.sendMessage(messageText, whiteboardEncoded, whiteboardTag, new RequestCallback() {
+            @Override
+            public void run(RequestResult result) {
+                Log.d("chS.sendM", "delivered");
+                message.setDelivered(true);
+                messageAdapter.notifyDataSetChanged();
+            }
+        });
         whiteboardEncoded = "";
         // Change to display that there's no whiteboard attached
         whiteboardBtn.setImageResource(R.drawable.whiteboard);
 
-        // Post image to list view
-        Message message = new Message(-1, messageText, ProfileManager.getPlayer().getId(),
-                ProfileManager.getPlayer().getChatId(), whiteboardTag);
-        update(message);
+        messageAdapter.add(message);
     }
 
     @Override
@@ -173,15 +182,11 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         unbindService(chatServiceConection);
     }
 
-    public void update(Message message) {
-        messageAdapter.add(message);
-    }
-
     final private RequestCallback chatStatusCallback = new RequestCallback() {
         @Override
-        public void run(String response) {
+        public void run(RequestResult requestResult) {
             try {
-                JSONObject playerObject = new JSONObject(response);
+                JSONObject playerObject = new JSONObject(requestResult.getResponse());
                 if (playerObject.has("error")) {
                     Log.d("ChatAct.iFHandler.run", playerObject.getString("error"));
                     return;

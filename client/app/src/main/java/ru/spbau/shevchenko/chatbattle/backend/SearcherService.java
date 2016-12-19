@@ -63,7 +63,7 @@ public class SearcherService extends IntentService {
     private RequestCallback checkIfFoundCallback = new RequestCallback() {
 
         @Override
-        public void run(String response) {
+        public void run(RequestResult requestResult) {
             try {
                 waitingCallback = false;
                 if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.CHATTING_AS_LEADER)
@@ -73,7 +73,7 @@ public class SearcherService extends IntentService {
                 if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.WAITING)
                     return;
 
-                JSONObject playerObject = new JSONObject(response);
+                JSONObject playerObject = new JSONObject(requestResult.getResponse());
                 if (playerObject.has("error")) {
                     // TODO : do smth
                     return;

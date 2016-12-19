@@ -6,7 +6,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Message {
-    // TODO: add fromJSON
+    final private int id;
+    final private String text;
+    final private int authorId;
+    final private int chatId;
+    final private String tag;
+    private boolean delivered;
 
     public Message(int id, String text, int authorId, int chatId, String tag) {
         this.id = id;
@@ -16,14 +21,9 @@ public class Message {
         if (tag == null) {
             tag = "";
         }
+        delivered = true;
         this.tag = tag;
     }
-
-    final private int id;
-    final private String text;
-    final private int authorId;
-    final private int chatId;
-    final private String tag;
 
     public int getId() {
         return id;
@@ -55,5 +55,13 @@ public class Message {
             Log.e("Message.fromJSON", "Failed to initialize message from JSON: " + e.getMessage());
             throw e;
         }
+    }
+
+    public boolean isDelivered() {
+        return delivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        this.delivered = delivered;
     }
 }

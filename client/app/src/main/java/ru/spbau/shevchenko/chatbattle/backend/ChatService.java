@@ -53,7 +53,27 @@ public class ChatService extends Service {
         RequestMaker.pullMessages(ProfileManager.getPlayer().getChatId(), messageCount, pullMessagesCallback);
     }
 
-    public void sendMessage(String messageText, String whiteboard, final String localWhiteboardTag) {
+    private class SendMessageCallback implements RequestCallback {
+        private final RequestCallback callback;
+        private String localWhiteboardTag;
+        public SendMessageCallback(String localWhiteboardTag, RequestCallback callback) {
+            this.localWhiteboardTag = localWhiteboardTag;
+            this.callback = callback;
+        }
+
+        @Override
+        public void run(RequestResult requestResult) {
+            if (requestResult.getStatus() == RequestResult.Status.FAILED_CONNECTION) {
+                // Try sending message again
+                RequestMaker.sendMessage(requestResult.getResponse(), this);
+                return;
+            }
+            copyWhiteboard(requestResult.getResponse(), localWhiteboardTag);
+            callback.run(new RequestResult());
+        }
+    }
+
+    public void sendMessage(String messageText, String whiteboard, final String localWhiteboardTag, RequestCallback callback) {
         JSONObject jsonMessage;
         try {
             jsonMessage = new JSONObject().put("authorId", ProfileManager.getPlayer().getId())
@@ -65,15 +85,10 @@ public class ChatService extends Service {
             return;
         }
 
-        RequestMaker.sendMessage(jsonMessage.toString(), new RequestCallback() {
-            @Override
-            public void run(String response) {
-                onMessageDelivered(response, localWhiteboardTag);
-            }
-        });
+        RequestMaker.sendMessage(jsonMessage.toString(), new SendMessageCallback(localWhiteboardTag, callback));
     }
 
-    private void onMessageDelivered(String response, String localWhiteboardTag) {
+    private void copyWhiteboard(String response, String localWhiteboardTag) {
         if (localWhiteboardTag.isEmpty()){
             return;
         }
@@ -82,11 +97,10 @@ public class ChatService extends Service {
             File localWhiteboard = new File(MyApplication.storageDir, localWhiteboardTag);
             File globalWhiteboard = new File(MyApplication.storageDir, message.getTag());
 
-            // Copy whiteboard for better cache
+            // Copy whiteboard for better caching
             InputStream in = new FileInputStream(localWhiteboard);
             OutputStream out = new FileOutputStream(globalWhiteboard);
 
-            // Transfer bytes from in to out
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
@@ -108,9 +122,9 @@ public class ChatService extends Service {
         return playersId;
     }
 
-    private void onServerResponse(String response) {
+    private void onServerResponse(RequestResult requestResult) {
         try {
-            JSONArray jsonMessages = new JSONArray(response);
+            JSONArray jsonMessages = new JSONArray(requestResult.getResponse());
             // TODO: complete
             for (int i = 0; i < jsonMessages.length(); i++) {
                 JSONObject jsonMessage = jsonMessages.getJSONObject(i);
@@ -158,17 +172,17 @@ public class ChatService extends Service {
 
     final private RequestCallback pullMessagesCallback = new RequestCallback() {
         @Override
-        public void run(String response) {
-            onServerResponse(response);
+        public void run(RequestResult requestResult) {
+            onServerResponse(requestResult);
         }
     };
 
 
     final RequestCallback getPlayersIdsCallback = new RequestCallback() {
         @Override
-        public void run(String response) {
+        public void run(RequestResult requestResult) {
             try {
-                JSONArray jsonMessages = new JSONArray(response);
+                JSONArray jsonMessages = new JSONArray(requestResult.getResponse());
                 for (int i = 0; i < jsonMessages.length(); i++) {
                     JSONObject jsonPlayer = jsonMessages.getJSONObject(i);
                     playersId.add(jsonPlayer.getInt("id"));
@@ -202,13 +216,14 @@ public class ChatService extends Service {
         }
 
         @Override
-        public void run(String response) {
+        public void run(RequestResult requestResult) {
+            String response = requestResult.getResponse();
             if (response.isEmpty()) {
                 Log.e("getWhUri", "Failed to fetch whiteboard");
                 return;
             }
             saveWhiteboard(whiteboard, response);
-            callback.run("");
+            callback.run(new RequestResult());
         }
     }
 
