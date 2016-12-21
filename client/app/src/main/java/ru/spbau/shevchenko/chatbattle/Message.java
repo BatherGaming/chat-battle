@@ -11,7 +11,9 @@ public class Message {
     final private int authorId;
     final private int chatId;
     final private String tag;
-    private boolean delivered;
+    private Status status;
+
+    public enum Status {DELIVERED, SENDING, FAILED}
 
     public Message(int id, String text, int authorId, int chatId, String tag) {
         this.id = id;
@@ -21,7 +23,7 @@ public class Message {
         if (tag == null) {
             tag = "";
         }
-        delivered = true;
+        status = Status.DELIVERED;
         this.tag = tag;
     }
 
@@ -57,11 +59,11 @@ public class Message {
         }
     }
 
-    public boolean isDelivered() {
-        return delivered;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setDelivered(boolean delivered) {
-        this.delivered = delivered;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

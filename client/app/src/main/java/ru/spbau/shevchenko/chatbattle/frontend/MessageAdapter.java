@@ -64,11 +64,21 @@ public class MessageAdapter extends BaseAdapter {
         holder.textView.setText(message.getText());
         holder.senderView.setText(String.format(Locale.getDefault(), "%d", message.getAuthorId()));
         holder.imageView.setImageResource(android.R.color.transparent);
-        if (message.isDelivered()){
-            holder.loadingBar.setVisibility(View.INVISIBLE);
-        }
-        else {
-            holder.loadingBar.setVisibility(View.VISIBLE);
+        switch (message.getStatus()) {
+            case DELIVERED: {
+                holder.loadingBar.setVisibility(View.INVISIBLE);
+                break;
+            }
+            case SENDING: {
+                holder.loadingBar.setVisibility(View.VISIBLE);
+                break;
+            }
+            case FAILED: {
+                holder.loadingBar.setVisibility(View.INVISIBLE);
+                holder.textView.setBackgroundColor(0xFFFFAAAA);
+                holder.senderView.setBackgroundColor(0xFFFFAAAA);
+                break;
+            }
         }
         if (!message.getTag().isEmpty()) {
             Uri whiteboardURI = ChatService.getWhiteboardURI(message.getTag(), new RequestCallback(){

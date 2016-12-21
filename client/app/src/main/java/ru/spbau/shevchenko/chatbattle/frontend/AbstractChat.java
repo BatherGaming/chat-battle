@@ -153,12 +153,17 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         // Post image to list view
         final Message message = new Message(-1, messageText, ProfileManager.getPlayer().getId(),
                 ProfileManager.getPlayer().getChatId(), whiteboardTag);
-        message.setDelivered(false);
+        message.setStatus(Message.Status.SENDING);
         chatService.sendMessage(messageText, whiteboardEncoded, whiteboardTag, new RequestCallback() {
             @Override
             public void run(RequestResult result) {
-                Log.d("chS.sendM", "delivered");
-                message.setDelivered(true);
+                if (result.getStatus() == RequestResult.Status.OK) {
+                    Log.d("chS.sendM", "delivered");
+                    message.setStatus(Message.Status.DELIVERED);
+                } else {
+                    Log.d("chS.sendM", "failed to deliver");
+                    message.setStatus(Message.Status.FAILED);
+                }
                 messageAdapter.notifyDataSetChanged();
             }
         });

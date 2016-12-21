@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.SocketTimeoutException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -19,7 +18,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -36,7 +34,10 @@ public class RequestMaker {
         GET, POST, PUT, DELETE
     }
 
-    private static void sendRequest(String url, final Method method, final RequestCallback callback, final String data) {
+    private static void sendRequest(String url, final Method method, final RequestCallback callback,
+                                    final long timeout_, final String data) {
+        final long timeout = (timeout_ == 0 ? Long.MAX_VALUE : timeout_);
+        final long startTime = System.currentTimeMillis();
         final HttpRequestBase request;
         switch (method) {
             case GET: {
@@ -79,11 +80,17 @@ public class RequestMaker {
                     request.setHeader("Content-Type", "application/json");
                     ((HttpEntityEnclosingRequestBase)request).setEntity(dataEntity);
                 }
-                try {
-                    response = client.execute(request);
-                } catch (IOException e) {
-                    Log.e("sendRequest()", "Connection timed out: " + e.getMessage());
-                    return new RequestResult(data, RequestResult.Status.FAILED_CONNECTION);
+                while (true) {
+                    try {
+                        response = client.execute(request);
+                        break;
+                    } catch (IOException e) {
+                        Log.d("sendRequest()", "Connection timed out: " + e.getMessage());
+                        Log.d("times", String.valueOf(System.currentTimeMillis() - startTime) + " - " + timeout);
+                        if (System.currentTimeMillis() - startTime > timeout) {
+                            return new RequestResult(data, RequestResult.Status.FAILED_CONNECTION);
+                        }
+                    }
                 }
                 Log.d("sendRequest", "successfully sent: " + data);
                 try {
@@ -108,8 +115,12 @@ public class RequestMaker {
         }.execute();
     }
 
-    private static void sendRequest(final String url, Method method, final RequestCallback callback) {
-        sendRequest(url, method, callback, "");
+    private static void sendRequest(final String url, Method method, final RequestCallback callback, int timeout) {
+        sendRequest(url, method, callback, timeout, "");
+    }
+
+    private static void sendRequest(String url, Method method, final RequestCallback callback) {
+        sendRequest(url, method, callback, 1);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -131,8 +142,8 @@ public class RequestMaker {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static void sendMessage(String messageData, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, callback, messageData);
+    public static void sendMessage(String messageData, RequestCallback callback) { // +++++++++++++++++++++++++++++++++++++++++
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, callback, 3000, messageData);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -151,7 +162,7 @@ public class RequestMaker {
 
     @SuppressWarnings("WeakerAccess")
     public static void singUp(String player_data, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/players", Method.POST, callback, player_data);
+        sendRequest(RequestMaker.DOMAIN_NAME + "/players", Method.POST, callback, 0, player_data);
     }
 
     public static void chatStatus(int id, int chatId, RequestCallback callback) {

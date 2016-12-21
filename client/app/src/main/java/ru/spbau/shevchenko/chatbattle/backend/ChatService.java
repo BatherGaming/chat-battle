@@ -63,13 +63,10 @@ public class ChatService extends Service {
 
         @Override
         public void run(RequestResult requestResult) {
-            if (requestResult.getStatus() == RequestResult.Status.FAILED_CONNECTION) {
-                // Try sending message again
-                RequestMaker.sendMessage(requestResult.getResponse(), this);
-                return;
+            if (requestResult.getStatus() == RequestResult.Status.OK) {
+                copyWhiteboard(requestResult.getResponse(), localWhiteboardTag);
             }
-            copyWhiteboard(requestResult.getResponse(), localWhiteboardTag);
-            callback.run(new RequestResult());
+            callback.run(requestResult);
         }
     }
 
