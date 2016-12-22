@@ -85,8 +85,6 @@ public class RequestMaker {
                         response = client.execute(request);
                         break;
                     } catch (IOException e) {
-                        Log.d("sendRequest()", "Connection timed out: " + e.getMessage());
-                        Log.d("times", String.valueOf(System.currentTimeMillis() - startTime) + " - " + timeout);
                         if (System.currentTimeMillis() - startTime > timeout) {
                             return new RequestResult(data, RequestResult.Status.FAILED_CONNECTION);
                         }

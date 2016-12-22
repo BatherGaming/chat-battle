@@ -4,6 +4,7 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,9 @@ public class MessageAdapter extends BaseAdapter {
         holder.textView.setText(message.getText());
         holder.senderView.setText(String.format(Locale.getDefault(), "%d", message.getAuthorId()));
         holder.imageView.setImageResource(android.R.color.transparent);
+        Log.d("getView", message.getText() + " --- " + message.getStatus());
+        holder.textView.setBackgroundColor(0xFFFFFFFF);
+        holder.senderView.setBackgroundColor(0xFFFFFFFF);
         switch (message.getStatus()) {
             case DELIVERED: {
                 holder.loadingBar.setVisibility(View.INVISIBLE);
