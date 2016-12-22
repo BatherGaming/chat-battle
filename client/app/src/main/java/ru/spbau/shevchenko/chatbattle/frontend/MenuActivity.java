@@ -2,8 +2,6 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,15 +10,14 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 
-import java.io.Serializable;
-
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
-import ru.spbau.shevchenko.chatbattle.backend.SearcherService;
+import ru.spbau.shevchenko.chatbattle.backend.SearchHandler;
+import ru.spbau.shevchenko.chatbattle.backend.SearcherRunnable;
 
 public class MenuActivity extends BasicActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    private Intent service;
+    Thread searcherThread;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,16 +40,14 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        service = new Intent(this, SearcherService.class);
-        SearcherService.setFinish(false);
-        startService(service);
+        searcherThread = new Thread(new SearcherRunnable(SearchHandler.getInstance()));
+        searcherThread.start();
 
     }
 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.playButton: {
-                Log.d("Status=", ProfileManager.getPlayerStatus().toString());
                 switch (ProfileManager.getPlayerStatus()) {
                     case IN_QUEUE_AS_LEADER:
                     case IN_QUEUE_AS_PLAYER:
@@ -95,7 +90,8 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
 
 
     @Override
-    public void onBackPressed() {}
+    public void onBackPressed() {
+    }
 
 
     public void onItemSelected(AdapterView<?> parent, View view,
@@ -114,11 +110,9 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
 
     @Override
     public void onDestroy() {
-
-        //stopService(service);
-        SearcherService.setFinish(true);
+        searcherThread.interrupt();
         super.onDestroy();
-
     }
+
 
 }

@@ -13,21 +13,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import ru.spbau.shevchenko.chatbattle.R;
+import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
+import ru.spbau.shevchenko.chatbattle.backend.SearchHandler;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String PREFS_FILE_NAME = "MyPrefsFile";
     private boolean triedAutoLogin = true;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("Login", "onResume7");
-
         super.onCreate(savedInstanceState);
+        SearchHandler.getInstance().setMyApplication((MyApplication) getApplication());
+
         setContentView(R.layout.activity_login);
 
         if (!autoLogin()) showLayout(View.GONE, View.VISIBLE);
@@ -39,8 +39,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void completeLogin() {
-        Log.d("Login", "onResume6");
-
         ((EditText) findViewById(R.id.login_edit)).setText("");
         ((EditText) findViewById(R.id.password_edit)).setText("");
         ((TextView) findViewById(R.id.status_view)).setText("");
@@ -51,8 +49,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void failedLogin(String reason) {
-        Log.d("Login", "onResume5");
-
         if (triedAutoLogin) {
             triedAutoLogin = false;
             showLayout(View.GONE, View.VISIBLE);
@@ -64,8 +60,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        Log.d("Login", "onResume4");
-
         switch (v.getId()) {
             case R.id.signin_button: {
                 final TextView statusView = (TextView) findViewById(R.id.status_view);
@@ -85,30 +79,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void save(String login, String password) {
-        Log.d("Login", "onResume3");
-
         final SharedPreferences settings = getSharedPreferences(PREFS_FILE_NAME, 0);
         final SharedPreferences.Editor editor = settings.edit();
         editor.putString("login", login);
         editor.putString("password", password);
-        Log.d("save", "login:" + login + ", password:" + password);
         editor.apply();
     }
 
     private void showLayout(int spinnerVisibility, int layoutVisibility) {
 
 
-        Log.d("Login", "onResume2");
         final ProgressBar spinner = (ProgressBar) findViewById(R.id.login_initializing_progress_bar);
         final Button signInButton = (Button) findViewById(R.id.signin_button);
         final Button signUpButton = (Button) findViewById(R.id.signup_button);
         final EditText loginEdit = (EditText) findViewById(R.id.login_edit);
         final EditText passwordEdit = (EditText) findViewById(R.id.password_edit);
         final TextView statusView = (TextView) findViewById(R.id.status_view);
-
-        Log.d("spinner visibility", spinnerVisibility + "");
-        Log.d("layout visibility", layoutVisibility + "");
-        Log.d("spinner visibility", View.INVISIBLE + "");
 
         spinner.setVisibility(spinnerVisibility);
 
@@ -117,15 +103,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginEdit.setVisibility(layoutVisibility);
         passwordEdit.setVisibility(layoutVisibility);
         statusView.setVisibility(layoutVisibility);
-
-        Log.d("spinner visibility", spinnerVisibility + "");
-        Log.d("spinner visibility", View.INVISIBLE + "");
-
-
     }
 
     private boolean autoLogin() {
-        Log.d("Login", "onResume1");
         final SharedPreferences settings = getSharedPreferences(PREFS_FILE_NAME, 0);
         final String login = settings.getString("login", "");
         final String password = settings.getString("password", "");
@@ -141,7 +121,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("Login", "onResume");
         showLayout(View.GONE, View.VISIBLE);
     }
 

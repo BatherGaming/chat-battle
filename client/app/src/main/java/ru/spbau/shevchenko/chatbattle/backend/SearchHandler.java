@@ -1,6 +1,5 @@
 package ru.spbau.shevchenko.chatbattle.backend;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,61 +11,58 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.inject.Singleton;
+
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.frontend.BasicActivity;
-import ru.spbau.shevchenko.chatbattle.frontend.SearchActivity;
 
-public class SearcherService extends IntentService {
 
-    private int id;
+@Singleton
+public class SearchHandler {
+    private SearchHandler() {
+    }
+
+    static private SearchHandler instance = new SearchHandler();
+
+    static public SearchHandler getInstance() {
+        return instance;
+    }
+
+
+    public boolean isWaitingCallback() {
+        return waitingCallback;
+    }
+
+    public void setWaitingCallback(boolean waitingCallback) {
+        this.waitingCallback = waitingCallback;
+    }
+
     private boolean waitingCallback = false;
     private int lastChatId = -1;
     private boolean needDialog = false;
-    static private boolean finish;
 
-    public SearcherService() {
-        super("SearcherService");
+    public void setLastChatId(int lastChatId) {
+        this.lastChatId = lastChatId;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        id = ProfileManager.getPlayer().getId();
-
+    public void setMyApplication(MyApplication myApplication) {
+        this.myApplication = myApplication;
     }
 
+    private MyApplication myApplication;
 
-    public BasicActivity getActivity() {
+
+    private BasicActivity getActivity() {
         BasicActivity result = null;
-        while (result == null) result = ((MyApplication) getApplication()).getCurrentActivity();
+        while (result == null) result = myApplication.getCurrentActivity();
         return result;
     }
 
-    public static void setFinish(boolean finish) {
-        SearcherService.finish = finish;
+    public RequestCallback getCheckIfFoundCallback() {
+        return checkIfFoundCallback;
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        while (!finish) {
-            Log.d("Service", "kek" + finish);
-            if (!waitingCallback) {
-                RequestMaker.checkIfFound(id, checkIfFoundCallback);
-                waitingCallback = true;
-            }
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                Log.d("Serice", "interruption ");
-                break;
-            }
-        }
-        while (waitingCallback) {
-            Log.d("Service", "waiting Callback");
-        }
-
-    }
     private RequestCallback checkIfFoundCallback = new RequestCallback() {
 
         @Override
@@ -151,12 +147,6 @@ public class SearcherService extends IntentService {
     private void removeNotifications() {
         NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancelAll();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("Service", "onDestroy");
     }
 
 }
