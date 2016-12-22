@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //if (!autoLogin()) showLayout(View.INVISIBLE, View.VISIBLE);
+        if (!autoLogin()) showLayout(View.GONE, View.VISIBLE);
 
         final Button signInButton = (Button) findViewById(R.id.signin_button);
         signInButton.setOnClickListener(this);
@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (triedAutoLogin) {
             triedAutoLogin = false;
-            showLayout(View.INVISIBLE, View.VISIBLE);
+            showLayout(View.GONE, View.VISIBLE);
         } else {
             final TextView statusView = (TextView) findViewById(R.id.status_view);
             statusView.setText(reason);
@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 final String login = ((EditText) findViewById(R.id.login_edit)).getText().toString().trim();
                 final String password = ((EditText) findViewById(R.id.password_edit)).getText().toString().trim();
                 ProfileManager.signIn(login, password, this);
-                //save(login, password);
+                save(login, password);
                 break;
             }
             case R.id.signup_button: {
@@ -98,28 +98,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void showLayout(int spinnerVisibility, int layoutVisibility) {
 
 
-//        Log.d("Login", "onResume2");
-//        final ProgressBar spinner = (ProgressBar) findViewById(R.id.login_initializing_progress_bar);
-//        final Button signInButton = (Button) findViewById(R.id.signin_button);
-//        final Button signUpButton = (Button) findViewById(R.id.signup_button);
-//        final EditText loginEdit = (EditText) findViewById(R.id.login_edit);
-//        final EditText passwordEdit = (EditText) findViewById(R.id.password_edit);
-//        final TextView statusView = (TextView) findViewById(R.id.status_view);
-//
-//        Log.d("spinner visibility", spinnerVisibility + "");
-//        Log.d("layout visibility", layoutVisibility + "");
-//        Log.d("spinner visibility", View.INVISIBLE + "");
-//
-//        spinner.setVisibility(spinnerVisibility);
-//
-//        signInButton.setVisibility(layoutVisibility);
-//        signUpButton.setVisibility(layoutVisibility);
-//        loginEdit.setVisibility(layoutVisibility);
-//        passwordEdit.setVisibility(layoutVisibility);
-//        statusView.setVisibility(layoutVisibility);
-//
-//        Log.d("spinner visibility", spinnerVisibility + "");
-//        Log.d("spinner visibility", View.INVISIBLE + "");
+        Log.d("Login", "onResume2");
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.login_initializing_progress_bar);
+        final Button signInButton = (Button) findViewById(R.id.signin_button);
+        final Button signUpButton = (Button) findViewById(R.id.signup_button);
+        final EditText loginEdit = (EditText) findViewById(R.id.login_edit);
+        final EditText passwordEdit = (EditText) findViewById(R.id.password_edit);
+        final TextView statusView = (TextView) findViewById(R.id.status_view);
+
+        Log.d("spinner visibility", spinnerVisibility + "");
+        Log.d("layout visibility", layoutVisibility + "");
+        Log.d("spinner visibility", View.INVISIBLE + "");
+
+        spinner.setVisibility(spinnerVisibility);
+
+        signInButton.setVisibility(layoutVisibility);
+        signUpButton.setVisibility(layoutVisibility);
+        loginEdit.setVisibility(layoutVisibility);
+        passwordEdit.setVisibility(layoutVisibility);
+        statusView.setVisibility(layoutVisibility);
+
+        Log.d("spinner visibility", spinnerVisibility + "");
+        Log.d("spinner visibility", View.INVISIBLE + "");
 
 
     }
@@ -131,7 +131,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         final String password = settings.getString("password", "");
 
         if (!login.equals("")) {
-            showLayout(View.VISIBLE, View.INVISIBLE);
+            showLayout(View.VISIBLE, View.GONE);
             ProfileManager.signIn(login, password, this);
             return true;
         }
@@ -142,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onResume() {
         super.onResume();
         Log.d("Login", "onResume");
-       // showLayout(View.VISIBLE, View.VISIBLE);
+        showLayout(View.GONE, View.VISIBLE);
     }
 
 

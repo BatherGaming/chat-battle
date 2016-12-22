@@ -2,6 +2,7 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
@@ -11,13 +12,15 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 
+import java.io.Serializable;
+
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.SearcherService;
 
-public class MenuActivity extends BasicActivity implements View.OnClickListener/*, AdapterView.OnItemSelectedListener*/ {
+public class MenuActivity extends BasicActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    private static boolean isServiceCreated = false;
+    private Intent service;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,7 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener/
         playButton.setOnClickListener(this);
 
 
-        /*final Spinner spinner = (Spinner) findViewById(R.id.menu_spinner);
+        final Spinner spinner = (Spinner) findViewById(R.id.menu_spinner);
         final CharSequence[] adaptersItems = {
                 "Hello, " + ProfileManager.getPlayer().getLogin(),
                 "Profile",
@@ -38,13 +41,11 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener/
                 android.R.layout.simple_spinner_item, adaptersItems);
 
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);*/
+        spinner.setOnItemSelectedListener(this);
 
-        if (!isServiceCreated) {
-            final Intent intent = new Intent(this, SearcherService.class);
-            startService(intent);
-            isServiceCreated = true;
-        }
+        service = new Intent(this, SearcherService.class);
+        SearcherService.setFinish(false);
+        startService(service);
 
     }
 
@@ -92,11 +93,11 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener/
         }
     }
 
-    //@Override
-    //public void onBackPressed() {
-    //}
 
-    /*
+    @Override
+    public void onBackPressed() {}
+
+
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
         if (pos == 1) {
@@ -110,7 +111,14 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener/
 
     public void onNothingSelected(AdapterView<?> parent) {
     }
-    */
 
+    @Override
+    public void onDestroy() {
+
+        //stopService(service);
+        SearcherService.setFinish(true);
+        super.onDestroy();
+
+    }
 
 }

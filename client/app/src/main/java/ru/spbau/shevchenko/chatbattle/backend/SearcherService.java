@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.frontend.BasicActivity;
+import ru.spbau.shevchenko.chatbattle.frontend.SearchActivity;
 
 public class SearcherService extends IntentService {
 
@@ -22,7 +23,7 @@ public class SearcherService extends IntentService {
     private boolean waitingCallback = false;
     private int lastChatId = -1;
     private boolean needDialog = false;
-
+    static private boolean finish;
 
     public SearcherService() {
         super("SearcherService");
@@ -42,9 +43,14 @@ public class SearcherService extends IntentService {
         return result;
     }
 
+    public static void setFinish(boolean finish) {
+        SearcherService.finish = finish;
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
-        while (true) {
+        while (!finish) {
+            Log.d("Service", "kek" + finish);
             if (!waitingCallback) {
                 RequestMaker.checkIfFound(id, checkIfFoundCallback);
                 waitingCallback = true;
@@ -52,11 +58,15 @@ public class SearcherService extends IntentService {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
+                Log.d("Serice", "interruption ");
                 break;
             }
         }
-    }
+        while (waitingCallback) {
+            Log.d("Service", "waiting Callback");
+        }
 
+    }
     private RequestCallback checkIfFoundCallback = new RequestCallback() {
 
         @Override
@@ -143,5 +153,10 @@ public class SearcherService extends IntentService {
         mNotificationManager.cancelAll();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("Service", "onDestroy");
+    }
 
 }

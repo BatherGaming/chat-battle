@@ -23,7 +23,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import ru.spbau.shevchenko.chatbattle.Player;
 
 public class RequestMaker {
-    private static final String DOMAIN_NAME = "http://zhnv.pythonanywhere.com";
+    private static final String DOMAIN_NAME = "http://qwsafex.pythonanywhere.com";
 
     private enum Method {
         GET, POST, PUT, DELETE
