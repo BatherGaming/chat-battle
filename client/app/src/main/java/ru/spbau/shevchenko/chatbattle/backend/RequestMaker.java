@@ -23,7 +23,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import ru.spbau.shevchenko.chatbattle.Player;
 
 public class RequestMaker {
-    private static final String DOMAIN_NAME = "http://qwsafex.pythonanywhere.com";
+    private static final String DOMAIN_NAME = "http://zhnv.pythonanywhere.com";
 
     private enum Method {
         GET, POST, PUT, DELETE
@@ -138,6 +138,7 @@ public class RequestMaker {
     }
 
     static public void signIn(String password, String login, RequestCallback callback) {
+        Log.d("Req Maker:", "sign in");
         sendRequest(RequestMaker.DOMAIN_NAME + "/sign_in/" + login + "/" + password, Method.GET, callback);
     }
 

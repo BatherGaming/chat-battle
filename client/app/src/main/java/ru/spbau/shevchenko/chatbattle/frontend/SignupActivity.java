@@ -60,8 +60,7 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
         ((RadioGroup) findViewById(R.id.sex_radio_group)).clearCheck();
 
 
-        final Intent intent = new Intent(this, MenuActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     public void failedSignup(String reason) {
