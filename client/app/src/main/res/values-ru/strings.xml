@@ -45,5 +45,11 @@
     <string name="whiteboard">Граффити</string>
     <string name="send">Отправить</string>
     <string name="rating_view">Рейтинг:</string>
+    <string name="No">Нет</string>
+    <string name="Yes">Да</string>
+    <string name="exit_question">Вы уверены, что хотите выйти?</string>
+    <string name="hello">"Привет, "</string>
+    <string name="log_out">Выйти из аккаунта</string>
+    <string name="profile">Профиль</string>
 
 </resources>

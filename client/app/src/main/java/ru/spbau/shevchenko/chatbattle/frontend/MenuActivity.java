@@ -1,5 +1,9 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,17 +16,34 @@ import android.widget.Spinner;
 
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
-import ru.spbau.shevchenko.chatbattle.backend.SearchHandler;
-import ru.spbau.shevchenko.chatbattle.backend.SearcherRunnable;
 
 public class MenuActivity extends BasicActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    Thread searcherThread;
+    private enum PlayerStatus {
+        HELLO, PROFILE, LOG_OUT;
+        public String toString() {
+            switch (this) {
+                case HELLO: return MenuActivity.HELLO;
+                case PROFILE: return MenuActivity.PROFILE;
+                case LOG_OUT: return MenuActivity.LOG_OUT;
+            }
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static String HELLO;
+    private static String LOG_OUT;
+    private static String PROFILE;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        HELLO = getString(R.string.hello);
+        LOG_OUT = getString(R.string.log_out);
+        PROFILE = getString(R.string.profile);
 
         final Button playButton = (Button) findViewById(R.id.playButton);
         playButton.setOnClickListener(this);
@@ -30,18 +51,16 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
 
         final Spinner spinner = (Spinner) findViewById(R.id.menu_spinner);
         final CharSequence[] adaptersItems = {
-                "Hello, " + ProfileManager.getPlayer().getLogin(),
-                "Profile",
-                "Log out"
+                PlayerStatus.HELLO.toString() + ProfileManager.getPlayer().getLogin(),
+                PlayerStatus.PROFILE.toString(),
+                PlayerStatus.LOG_OUT.toString()
         };
         final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, adaptersItems);
+                R.layout.menu_activity_spinner_item, adaptersItems);
 
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        searcherThread = new Thread(new SearcherRunnable(SearchHandler.getInstance()));
-        searcherThread.start();
 
     }
 
@@ -91,16 +110,20 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
 
     @Override
     public void onBackPressed() {
+
+        ExitFragment exitFragment = new ExitFragment();
+        exitFragment.setMenuActivity(this);
+        exitFragment.show(getFragmentManager(), "");
     }
 
 
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-        if (pos == 1) {
+        if (pos == PlayerStatus.PROFILE.ordinal()) {
             final Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
 
-        } else if (pos == 2) {
+        } else if (pos == PlayerStatus.LOG_OUT.ordinal()) {
             finish();
         }
     }
@@ -108,10 +131,31 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
-    @Override
-    public void onDestroy() {
-        searcherThread.interrupt();
-        super.onDestroy();
+    static public class ExitFragment extends DialogFragment {
+        public void setMenuActivity(MenuActivity menuActivity) {
+            this.menuActivity = menuActivity;
+        }
+
+        private MenuActivity menuActivity;
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.exit_question)
+                    .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            final Intent intent = new Intent();
+                            intent.putExtra("exit", true);
+                            menuActivity.setResult(RESULT_OK, intent);
+                            menuActivity.finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+            return builder.create();
+        }
     }
 
 

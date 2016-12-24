@@ -2,40 +2,42 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
-import ru.spbau.shevchenko.chatbattle.backend.SearchHandler;
+import ru.spbau.shevchenko.chatbattle.backend.SearcherRunnable;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends BasicActivity implements View.OnClickListener {
 
     private static final String PREFS_FILE_NAME = "MyPrefsFile";
-    private boolean triedAutoLogin = true;
+    static private boolean triedAutoLogin = true;
+    static private Thread SearcherThread;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        SearchHandler.getInstance().setMyApplication((MyApplication) getApplication());
-
         setContentView(R.layout.activity_login);
+        showLayout(View.VISIBLE, View.GONE);
 
-        if (!autoLogin()) showLayout(View.GONE, View.VISIBLE);
+        if (triedAutoLogin && !autoLogin()) showLayout(View.GONE, View.VISIBLE);
 
         final Button signInButton = (Button) findViewById(R.id.signin_button);
         signInButton.setOnClickListener(this);
         final Button signUpButton = (Button) findViewById(R.id.signup_button);
         signUpButton.setOnClickListener(this);
+
+        SearcherThread = new Thread(new SearcherRunnable((MyApplication) getApplication()));
+        SearcherThread.start();
+
     }
 
     public void completeLogin() {
@@ -45,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
         final Intent intent = new Intent(this, MenuActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     public void failedLogin(String reason) {
@@ -121,8 +123,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-        showLayout(View.GONE, View.VISIBLE);
+        if (!triedAutoLogin) showLayout(View.GONE, View.VISIBLE);
     }
 
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER ||
+                ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER) {
+            RequestMaker.deleteFromQueue(ProfileManager.getPlayer().getId());
+        }
+        triedAutoLogin = false;
+        if (data != null && data.getBooleanExtra("exit", false)) {
+            SearcherThread.interrupt();
+            finish();
+        }
+    }
 
 }

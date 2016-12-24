@@ -28,9 +28,6 @@
         <service
             android:name=".backend.ChatService"
             android:enabled="true" />
-        <service
-            android:name=".backend.SearcherService"
-            android:enabled="true" />
 
         <activity android:name=".frontend.LeaderActivity" />
         <activity android:name=".frontend.WinnerPickActivity" />

@@ -46,5 +46,10 @@
     <string name="whiteboard">Whiteboard</string>
     <string name="send">Send</string>
     <string name="rating_view">Rating:</string>
-
+    <string name="exit_question">Do you want to exit?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="hello">Hello, </string>
+    <string name="profile">Profile</string>
+    <string name="log_out">Log out</string>
 </resources>
