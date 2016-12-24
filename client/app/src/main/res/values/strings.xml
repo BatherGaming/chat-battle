@@ -22,7 +22,7 @@
     <string name="password_dont_match">Passwords do not match</string>
     <string name="signin_up">Signing up&#8230;</string>
     <string name="send_button">Send</string>
-    <string name="choose_button">Choose</string>
+    <string name="choose_button">Choose winner</string>
     <string name="cancel_button">Cancel</string>
     <string name="ok_button">OK</string>
     <string name="choice_demand">Choose please</string>

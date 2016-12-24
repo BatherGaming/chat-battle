@@ -13,12 +13,13 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="500dp"
+        android:layout_alignParentBottom="true"
         android:id="@+id/messages_view"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/leader_input_bar"
+        android:layout_above="@+id/leader_choose_button"
         android:transcriptMode="alwaysScroll"
-        />
+        android:layout_below="@+id/leader_choose_button" />
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
@@ -69,11 +70,20 @@
         android:id="@+id/leader_choose_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="11dp"
         android:text="@string/choose_button"
-        android:layout_marginEnd="11dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+    </Button>
+
+    <RelativeLayout
+        android:id="@+id/rlv1"
+        android:layout_width="500dp"
+        android:layout_height="3dp"
+        android:background="@drawable/rectangle"
+        android:layout_above="@+id/messages_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

@@ -21,7 +21,7 @@
     <string name="password_dont_match">Пароли не совпадают</string>
     <string name="signin_up">Регистрация&#8230;</string>
     <string name="send_button">Отправить</string>
-    <string name="choose_button">Выбрать</string>
+    <string name="choose_button">Выбрать победителя</string>
     <string name="cancel_button">Отменить</string>
     <string name="ok_button">OK</string>
     <string name="choice_demand">Выберите, пожалуйста</string>
