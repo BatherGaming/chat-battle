@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
+import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -54,6 +55,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent intent = new Intent(this, SignupActivity.class);
                 startActivity(intent);
                 break;
+            }
+        }
+    }
+
+    public void loginResponse(RequestResult.Status status) {
+        switch (status) {
+            case OK: {
+                completeLogin();
+            }
+            case FAILED_CONNECTION: {
+                failedLogin(getResources().getString(R.string.internet_troubles));
+            }
+            case ERROR: {
+                failedLogin(getResources().getString(R.string.unknown_error));
             }
         }
     }

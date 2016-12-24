@@ -46,5 +46,7 @@
     <string name="whiteboard">Whiteboard</string>
     <string name="send">Send</string>
     <string name="rating_view">Rating:</string>
+    <string name="internet_troubles">Internet connection troubles</string>
+    <string name="unknown_error">UNKNOWN ERROR</string>
 
 </resources>

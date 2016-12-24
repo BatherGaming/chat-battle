@@ -120,6 +120,10 @@ public class ChatService extends Service {
     }
 
     private void onServerResponse(RequestResult requestResult) {
+        if (requestResult.getStatus() != RequestResult.Status.OK){
+            handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
+            return;
+        }
         try {
             JSONArray jsonMessages = new JSONArray(requestResult.getResponse());
             // TODO: complete
@@ -135,6 +139,7 @@ public class ChatService extends Service {
             handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
         } catch (JSONException e) {
             Log.e("Chatter", e.getMessage());
+            handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
         }
     }
 

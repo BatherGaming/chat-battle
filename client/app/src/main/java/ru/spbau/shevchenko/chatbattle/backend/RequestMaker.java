@@ -90,7 +90,6 @@ public class RequestMaker {
                         }
                     }
                 }
-                Log.d("sendRequest", "successfully sent: " + data);
                 try {
                     InputStream inputStream = response.getEntity().getContent();
                     BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
@@ -140,8 +139,8 @@ public class RequestMaker {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static void sendMessage(String messageData, RequestCallback callback) { // +++++++++++++++++++++++++++++++++++++++++
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, callback, 3000, messageData);
+    public static void sendMessage(String messageData, RequestCallback callback) { // TODO: improve internet trouble handling
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, callback, 5000, messageData);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -149,18 +148,18 @@ public class RequestMaker {
         sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/players/" + chatId, Method.GET, callback);
     }
 
-    public static void chooseWinner(int chosen) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/close/" + ProfileManager.getPlayer().getId() + "/" + chosen, Method.POST, RequestCallback.DO_NOTHING);
+    public static void chooseWinner(int chosen, RequestCallback choseCallback) { // ++++
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/close/" + ProfileManager.getPlayer().getId() + "/" + chosen, Method.POST, choseCallback);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static void signIn(String password, String login, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/sign_in/" + login + "/" + password, Method.GET, callback);
+    public static void signIn(String password, String login, RequestCallback callback) { // ++++
+        sendRequest(RequestMaker.DOMAIN_NAME + "/sign_in/" + login + "/" + password, Method.GET, callback, 10000);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static void singUp(String player_data, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/players", Method.POST, callback, 0, player_data);
+    public static void signUp(String player_data, RequestCallback callback) { // ++++
+        sendRequest(RequestMaker.DOMAIN_NAME + "/players", Method.POST, callback, 10000, player_data);
     }
 
     public static void chatStatus(int id, int chatId, RequestCallback callback) {

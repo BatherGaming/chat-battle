@@ -11,6 +11,7 @@ import android.widget.TextView;
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
+import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 public class SignupActivity extends BasicActivity implements View.OnClickListener {
 
@@ -68,4 +69,18 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
         TextView statusView = (TextView) findViewById(R.id.status_view);
         statusView.setText(reason);
     }
+    public void signupResponse(RequestResult.Status status) {
+        switch (status) {
+            case OK: {
+                completeSignup();
+            }
+            case FAILED_CONNECTION: {
+                failedSignup(getResources().getString(R.string.internet_troubles));
+            }
+            case ERROR: {
+                failedSignup(getResources().getString(R.string.unknown_error));
+            }
+        }
+    }
+
 }

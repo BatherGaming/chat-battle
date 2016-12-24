@@ -29,10 +29,14 @@ public class ProfileManager {
         }
 
 
-        RequestMaker.singUp(jsonPlayer.toString(), new SignUpCallback(signupActivity));
+        RequestMaker.signUp(jsonPlayer.toString(), new SignUpCallback(signupActivity));
     }
 
     private static void onSignUpResponse(RequestResult requestResult, SignupActivity signupActivity) {
+        if (requestResult.getStatus() != RequestResult.Status.OK) {
+            signupActivity.signupResponse(requestResult.getStatus());
+
+        }
         try {
             JSONObject playerObject = new JSONObject(requestResult.getResponse());
             if (playerObject.has("error")) {
@@ -54,6 +58,10 @@ public class ProfileManager {
     }
 
     private static void onSignInResponse(RequestResult requestResult, LoginActivity loginActivity) {
+        if (requestResult.getStatus() != RequestResult.Status.OK) {
+            loginActivity.loginResponse(requestResult.getStatus());
+            return;
+        }
         try {
             JSONObject playerObject = new JSONObject(requestResult.getResponse());
             if (playerObject.has("error")) {

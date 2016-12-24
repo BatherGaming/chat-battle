@@ -141,7 +141,6 @@ public class BattleFoundDialogFragment extends DialogFragment {
                         break;
                     }
                     default: {
-
                         switch (role) {
                             case PLAYER: {
                                 ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_PLAYER);
