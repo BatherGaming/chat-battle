@@ -5,6 +5,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
+
 public class Player {
 
     final private int id;
@@ -25,6 +27,13 @@ public class Player {
 
     public enum Sex {
         MALE, FEMALE;
+        public String toString() {
+            switch (this) {
+                case MALE: return StringConstants.getMALE();
+                case FEMALE: return StringConstants.getFEMALE();
+            }
+            throw new IllegalArgumentException();
+        }
     }
 
     public enum Role {

@@ -14,6 +14,7 @@ import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.SearcherRunnable;
+import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
 
 public class LoginActivity extends BasicActivity implements View.OnClickListener {
 
@@ -38,6 +39,7 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         SearcherThread = new Thread(new SearcherRunnable((MyApplication) getApplication()));
         SearcherThread.start();
 
+        initStringConstants();
     }
 
     public void completeLogin() {
@@ -136,6 +138,15 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
             SearcherThread.interrupt();
             finish();
         }
+    }
+
+    void initStringConstants() {
+        StringConstants.setHELLO(getString(R.string.hello));
+        StringConstants.setPROFILE(getString(R.string.profile));
+        StringConstants.setLOG_OUT(getString(R.string.log_out));
+        StringConstants.setMALE(getString(R.string.male));
+        StringConstants.setFEMALE(getString(R.string.female));
+
     }
 
 }

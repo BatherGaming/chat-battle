@@ -16,6 +16,7 @@ import android.widget.Spinner;
 
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
+import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
 
 public class MenuActivity extends BasicActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -23,17 +24,14 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         HELLO, PROFILE, LOG_OUT;
         public String toString() {
             switch (this) {
-                case HELLO: return MenuActivity.HELLO;
-                case PROFILE: return MenuActivity.PROFILE;
-                case LOG_OUT: return MenuActivity.LOG_OUT;
+                case HELLO: return StringConstants.getHELLO();
+                case PROFILE: return StringConstants.getPROFILE();
+                case LOG_OUT: return StringConstants.getLOG_OUT();
             }
             throw new IllegalArgumentException();
         }
     }
 
-    private static String HELLO;
-    private static String LOG_OUT;
-    private static String PROFILE;
 
 
     @Override
@@ -41,9 +39,6 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        HELLO = getString(R.string.hello);
-        LOG_OUT = getString(R.string.log_out);
-        PROFILE = getString(R.string.profile);
 
         final Button playButton = (Button) findViewById(R.id.playButton);
         playButton.setOnClickListener(this);
