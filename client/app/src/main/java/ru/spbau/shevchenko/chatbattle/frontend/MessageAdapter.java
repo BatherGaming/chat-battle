@@ -4,6 +4,7 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +15,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
+import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
@@ -68,15 +72,17 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                     (ProgressBar) convertView.findViewById(R.id.delivering_progress_bar),
                     (ImageButton) convertView.findViewById(R.id.delete_message_btn),
                     (ImageButton) convertView.findViewById(R.id.retry_sending_btn));
-            holder.deleteBtn.setTag(position+1); // TODO: WHY +1??????
             holder.deleteBtn.setOnClickListener(this);
             holder.retryBtn.setOnClickListener(this);
-            holder.retryBtn.setTag(position+1);
             convertView.setTag(holder);
         } else {
             holder = (MessageViewHolder) convertView.getTag();
         }
+        holder.deleteBtn.setTag(position);
+        holder.retryBtn.setTag(position);
         Message message = messages.get(position);
+        Log.d("getView", position + " - " + message.getText());
+        Log.d("getView", String.valueOf(holder.deleteBtn.getTag()));
         holder.textView.setText(message.getText());
         holder.senderView.setText(String.format(Locale.getDefault(), "%d", message.getAuthorId()));
         holder.imageView.setImageResource(android.R.color.transparent);
@@ -124,6 +130,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         switch (v.getId()) {
             case R.id.delete_message_btn: {
                 int position = (int) v.getTag();
+                Log.d("delete_message", String.valueOf(position) + " - " + messages.size());
                 messages.remove(position);
                 notifyDataSetChanged();
                 break;
@@ -131,8 +138,26 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
             case R.id.retry_sending_btn: {
                 int position = (int) v.getTag();
                 Message message = messages.get(position);
+                String whiteboardEncoded = "";
+                if (!message.getTag().isEmpty()) {
+                    byte[] whiteboardBytes;
+                    try {
+                        File whiteboardFile = new File(MyApplication.storageDir, message.getTag());
+                        FileInputStream whiteboardInStream = new FileInputStream(whiteboardFile);
+                        whiteboardBytes = new byte[(int) whiteboardFile.length()];
+                        whiteboardInStream.read(whiteboardBytes);
+                        whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
+                    } catch (FileNotFoundException e) {
+                        Log.e("retry_sending", "Whiteboard file not found");
+                        return;
+                    } catch (IOException e) {
+                        Log.e("retry_sending", "Error while reading data");
+                        return;
+                    }
+                }
                 message.setStatus(Message.Status.SENDING);
-                // TODO: complete
+                ((AbstractChat) context).sendMessage(message, whiteboardEncoded);
+
                 notifyDataSetChanged();
                 break;
             }
