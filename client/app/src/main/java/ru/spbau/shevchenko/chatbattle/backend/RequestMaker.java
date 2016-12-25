@@ -188,6 +188,6 @@ public class RequestMaker {
     static public void changePassword(int id, String oldPassword, String newPassword, RequestCallback callback) {
         Log.d("ch Pass", RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword);
         sendRequest(RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword,
-                Method.POST, callback);
+                Method.POST, callback, 5000);
     }
 }

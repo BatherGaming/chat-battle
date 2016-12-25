@@ -51,5 +51,13 @@
     <string name="hello">"Привет, "</string>
     <string name="log_out">Выйти из аккаунта</string>
     <string name="profile">Профиль</string>
+    <string name="change_password">Поменять пароль</string>
+    <string name="change_success">Пароль изменен</string>
+    <string name="confirm_new_password">Подтверждение пароля</string>
+    <string name="new_password">Новый пароль</string>
+    <string name="old_password">Старый пароль</string>
+    <string name="passwords_dont_match">Пароли не совпадают</string>
+    <string name="internet_troubles">Проблемы с интернетом</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
 
 </resources>

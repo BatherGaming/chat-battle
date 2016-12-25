@@ -10,7 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.Locale;
 
@@ -56,6 +62,9 @@ public class ProfileActivity extends BasicActivity implements View.OnClickListen
     }
 
     static public class ChangePasswordDialog extends DialogFragment {
+
+        private boolean waitingCallback = false;
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -65,19 +74,6 @@ public class ProfileActivity extends BasicActivity implements View.OnClickListen
                     .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                            final EditText oldPassEditText = (EditText) dialogView.findViewById(R.id.old_password);
-                            String oldPassword = oldPassEditText.getText().toString();
-                            final EditText newPassEditText = (EditText) dialogView.findViewById(R.id.new_password);
-                            String newPassword = newPassEditText.getText().toString();
-                            final EditText confirmNewPassEditText = (EditText) dialogView.findViewById(R.id.confirm_new_password);
-                            String cofirmNewPassword = confirmNewPassEditText.getText().toString();
-                            RequestMaker.changePassword(ProfileManager.getPlayer().getId(), oldPassword,
-                                    newPassword, new RequestCallback() {
-                                        @Override
-                                        public void run(RequestResult requestResult) {
-                                            Log.d("change pass", requestResult.getResponse());
-                                        }
-                                    });
 
                         }
                     })
@@ -87,6 +83,80 @@ public class ProfileActivity extends BasicActivity implements View.OnClickListen
                         }
                     });
             return builder.create();
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            final AlertDialog dialog = (AlertDialog) getDialog();
+            if (dialog != null) {
+                final Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (waitingCallback) return;
+                        final EditText oldPassEditText = (EditText) dialog.findViewById(R.id.old_password);
+                        String oldPassword = oldPassEditText.getText().toString();
+                        final EditText newPassEditText = (EditText) dialog.findViewById(R.id.new_password);
+                        String newPassword = newPassEditText.getText().toString();
+                        final EditText confirmNewPassEditText = (EditText) dialog.findViewById(R.id.confirm_new_password);
+                        String cofirmNewPassword = confirmNewPassEditText.getText().toString();
+                        final TextView textView = (TextView) dialog.findViewById(R.id.changing_password_status_view);
+                        if (newPassword.equals(cofirmNewPassword)) {
+                            setLayoutVisibility(dialog, View.VISIBLE, false);
+                            waitingCallback = true;
+                            RequestMaker.changePassword(ProfileManager.getPlayer().getId(), oldPassword,
+                                    newPassword, new RequestCallback() {
+                                        @Override
+                                        public void run(RequestResult response) {
+                                            waitingCallback = false;
+                                            final JSONObject result;
+                                            if (response.getStatus() == RequestResult.Status.FAILED_CONNECTION) {
+                                                textView.setText(R.string.internet_troubles);
+                                                setLayoutVisibility(dialog, View.GONE, true);
+                                            } else if (response.getStatus() == RequestResult.Status.ERROR) {
+                                                textView.setText(R.string.unknown_error);
+                                                setLayoutVisibility(dialog, View.GONE, true);
+                                            } else {
+                                                try {
+                                                    result = new JSONObject(response.getResponse());
+                                                    if (result.has("error")) {
+                                                        textView.setText(result.getString("error"));
+                                                        setLayoutVisibility(dialog, View.GONE, true);
+                                                    } else {
+                                                        final String ok = getString(R.string.change_success);
+                                                        Toast.makeText(dialog.getContext(), ok, Toast.LENGTH_LONG).show();
+                                                        dialog.cancel();
+                                                    }
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    });
+                        } else {
+                            textView.setText(R.string.passwords_dont_match);
+                        }
+                    }
+
+                });
+            }
+        }
+        public void setLayoutVisibility(AlertDialog dialog, int spinnerVisibility, boolean enableLayout) {
+            final EditText oldPassEditText = (EditText) dialog.findViewById(R.id.old_password);
+            final EditText newPassEditText = (EditText) dialog.findViewById(R.id.new_password);
+            final EditText confirmNewPassEditText = (EditText) dialog.findViewById(R.id.confirm_new_password);
+            final TextView textView = (TextView) dialog.findViewById(R.id.changing_password_status_view);
+            final ProgressBar spinner = (ProgressBar) dialog.findViewById(R.id.change_password_spinner);
+
+            oldPassEditText.setEnabled(enableLayout);
+            newPassEditText.setEnabled(enableLayout);
+            confirmNewPassEditText.setEnabled(enableLayout);
+            textView.setEnabled(enableLayout);
+
+            spinner.setVisibility(spinnerVisibility);
+
+
         }
     }
 }

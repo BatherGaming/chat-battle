@@ -58,5 +58,6 @@
     <string name="change_password">Change password</string>
     <string name="internet_troubles">Internet connection troubles</string>
     <string name="unknown_error">UNKNOWN ERROR</string>
-
+    <string name="passwords_dont_match">passwords don\'t match</string>
+    <string name="change_success">Password has been changed</string>
 </resources>
