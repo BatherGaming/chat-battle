@@ -56,4 +56,6 @@
     <string name="new_password">New password</string>
     <string name="confirm_new_password">Confirm password</string>
     <string name="change_password">Change password</string>
+    <string name="passwords_dont_match">passwords don\'t match</string>
+    <string name="change_success">Password has been changed</string>
 </resources>

@@ -50,7 +50,7 @@
             android:layout_weight="0.91"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:inputType="text" />
+            android:maxLines="3" />
 
         <ImageButton
             android:id="@+id/send_button"

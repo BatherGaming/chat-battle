@@ -11,6 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.Locale;
 
@@ -64,20 +69,6 @@ public class ProfileActivity extends BasicActivity implements View.OnClickListen
                     .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                            final EditText oldPassEditText = (EditText) dialogView.findViewById(R.id.old_password);
-                            String oldPassword = oldPassEditText.getText().toString();
-                            final EditText newPassEditText = (EditText) dialogView.findViewById(R.id.new_password);
-                            String newPassword = newPassEditText.getText().toString();
-                            final EditText confirmNewPassEditText = (EditText) dialogView.findViewById(R.id.confirm_new_password);
-                            String cofirmNewPassword = confirmNewPassEditText.getText().toString();
-                            RequestMaker.changePassword(ProfileManager.getPlayer().getId(), oldPassword,
-                                    newPassword, new RequestCallback() {
-                                        @Override
-                                        public void run(String response) {
-                                            Log.d("change pass", response);
-                                        }
-                                    });
-
                         }
                     })
                     .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
@@ -86,6 +77,50 @@ public class ProfileActivity extends BasicActivity implements View.OnClickListen
                         }
                     });
             return builder.create();
+        }
+        @Override
+        public void onStart() {
+            super.onStart();
+            final AlertDialog dialog = (AlertDialog) getDialog();
+            if (dialog != null) {
+                final Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final EditText oldPassEditText = (EditText) dialog.findViewById(R.id.old_password);
+                        String oldPassword = oldPassEditText.getText().toString();
+                        final EditText newPassEditText = (EditText) dialog.findViewById(R.id.new_password);
+                        String newPassword = newPassEditText.getText().toString();
+                        final EditText confirmNewPassEditText = (EditText) dialog.findViewById(R.id.confirm_new_password);
+                        String cofirmNewPassword = confirmNewPassEditText.getText().toString();
+                        if (newPassword.equals(cofirmNewPassword)) {
+                            RequestMaker.changePassword(ProfileManager.getPlayer().getId(), oldPassword,
+                                    newPassword, new RequestCallback() {
+                                        @Override
+                                        public void run(String response) {
+                                            final JSONObject result;
+                                            try {
+                                                result = new JSONObject(response);
+                                                if (result.has("error")) {
+                                                    final TextView textView = (TextView) dialog.findViewById(R.id.changing_password_status_view);
+                                                    textView.setText(result.getString("error"));
+                                                } else {
+                                                    final String ok = getString(R.string.change_success);
+                                                    Toast.makeText(dialog.getContext(), ok, Toast.LENGTH_LONG).show();
+                                                    dialog.cancel();
+                                                }
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            final TextView textView = (TextView) dialog.findViewById(R.id.changing_password_status_view);
+                            textView.setText(R.string.passwords_dont_match);
+                        }
+                    }
+                });
+            }
         }
     }
 }
