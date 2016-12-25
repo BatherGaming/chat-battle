@@ -54,6 +54,12 @@ public class SearcherRunnable implements Runnable {
 
         @Override
         public void run(RequestResult requestResult) {
+            if (requestResult.getStatus() == RequestResult.Status.FAILED_CONNECTION){
+                Log.d("chIfFoCallb", "Internet troubles");
+                waitingCallback = false;
+                return;
+            }
+            Log.d("chIfFoCallb", "checking");
             try {
                 waitingCallback = false;
                 if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.CHATTING_AS_LEADER)

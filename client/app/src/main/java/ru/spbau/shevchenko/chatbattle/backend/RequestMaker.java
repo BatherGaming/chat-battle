@@ -34,7 +34,7 @@ public class RequestMaker {
         GET, POST, PUT, DELETE
     }
 
-    private static void sendRequest(String url, final Method method, final RequestCallback callback,
+    private static void sendRequest(final String url, final Method method, final RequestCallback callback,
                                     final long timeout_, final String data) {
         final long timeout = (timeout_ == 0 ? Long.MAX_VALUE : timeout_);
         final long startTime = System.currentTimeMillis();
@@ -62,7 +62,7 @@ public class RequestMaker {
         new AsyncTask<String, Integer, RequestResult>() {
             @SuppressWarnings("deprecation")
             @Override
-            protected RequestResult doInBackground(String... url) {
+            protected RequestResult doInBackground(String... urls) {
                 BasicHttpParams httpParameters = new BasicHttpParams();
                 HttpConnectionParams.setConnectionTimeout(httpParameters, CONNECTION_TIMEOUT);
                 HttpConnectionParams.setSoTimeout(httpParameters, SOCKET_TIMEOUT);
@@ -82,10 +82,16 @@ public class RequestMaker {
                 }
                 while (true) {
                     try {
+                        if (url.contains("battlemaker")){
+                            Log.d("doInBackground", "Searching for battle");
+                        }
                         response = client.execute(request);
                         break;
                     } catch (IOException e) {
                         if (System.currentTimeMillis() - startTime > timeout) {
+                            if (url.contains("battlemaker")){
+                                Log.d("doInBackground", "Searching for battle FAIL");
+                            }
                             return new RequestResult(data, RequestResult.Status.FAILED_CONNECTION);
                         }
                     }
@@ -124,7 +130,8 @@ public class RequestMaker {
     @SuppressWarnings("WeakerAccess")
     public static void findBattle(Player.Role role, int id) {
         Log.d("FindBattle", "TRUE");
-        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + role.toString().toLowerCase() + "/" + Integer.toString(id), Method.POST, RequestCallback.DO_NOTHING);
+        // TODO: HANDLE THIS SHIT
+        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + role.toString().toLowerCase() + "/" + Integer.toString(id), Method.POST, RequestCallback.DO_NOTHING, 50000);
     }
 
     @SuppressWarnings("WeakerAccess")
