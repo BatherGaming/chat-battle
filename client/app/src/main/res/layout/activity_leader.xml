@@ -46,7 +46,7 @@
             android:src="@drawable/whiteboard"
             android:background="@color/white"/>
         <EditText
-            android:id="@+id/leader_message_input"
+            android:id="@+id/message_input"
             android:layout_weight="0.91"
             android:layout_width="0dp"
             android:layout_height="match_parent"

@@ -26,5 +26,30 @@
         android:layout_alignStart="@+id/message_body"
         android:layout_alignLeft="@+id/message_body" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/delete_message_btn"
+        android:id="@+id/retry_sending_btn"
+        android:src="@drawable/retry"
+        android:visibility="gone"
+        />
+    <ImageButton
+        android:id="@+id/delete_message_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/delete"
+        android:visibility="gone"
+        />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/message_spinner"
+        android:layout_alignParentRight="true"
+        android:id="@+id/delivering_progress_bar"
+        android:visibility="gone"
+        android:progressDrawable="@drawable/waiting_circular_bar" />
+
 
 </RelativeLayout>

@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.spbau.shevchenko.chatbattle.Message;
@@ -30,9 +32,10 @@ import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
+import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 
-public abstract class AbstractChat extends BasicActivity implements View.OnClickListener {
+public abstract class AbstractChat extends BasicActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private static final int DRAW_WHITEBOARD = 1;
     private final static long HANDLER_DELAY = 100;
@@ -75,7 +78,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     // Add our own messages only on initialization
                     if (!initialized || message.getAuthorId() != ProfileManager.getPlayer().getId()) {
-                        update(message);
+                        messageAdapter.add(message);
                     }
                 }
                 alreadyRead = messages.size();
@@ -100,10 +103,20 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initLayout();
+
+        messageInput = (EditText) findViewById(R.id.message_input);
         messagesView = (ListView) findViewById(R.id.messages_view);
         messagesView.setVisibility(View.GONE);
+        messageAdapter = new MessageAdapter(this, new ArrayList<Message>());
+        messagesView.setAdapter(messageAdapter);
+        messagesView.setOnItemClickListener(this);
+
         sendBtn = (ImageButton) findViewById(R.id.send_button);
+        whiteboardBtn = (ImageButton) findViewById(R.id.whiteboard_btn);
         sendBtn.setEnabled(false);
+
+        sendBtn.setOnClickListener(this);
+        whiteboardBtn.setOnClickListener(this);
 
         if (ProfileManager.getPlayer().getChatId() == -1) {
             throw new RuntimeException("Created Chat without providing chat id.");
@@ -111,8 +124,6 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
 
         final Intent chatServiceIntent = new Intent(this, ChatService.class);
         bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
-
-        whiteboardBtn = (ImageButton) findViewById(R.id.whiteboard_btn);
 
         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
     }
@@ -141,15 +152,32 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
             }
         }
 
-        chatService.sendMessage(messageText, whiteboardEncoded, whiteboardTag);
+        // Post image to list view
+        final Message message = new Message(-1, messageText, ProfileManager.getPlayer().getId(),
+                ProfileManager.getPlayer().getChatId(), whiteboardTag);
+        message.setStatus(Message.Status.SENDING);
+        sendMessage(message, whiteboardEncoded);
         whiteboardEncoded = "";
         // Change to display that there's no whiteboard attached
         whiteboardBtn.setImageResource(R.drawable.whiteboard);
 
-        // Post image to list view
-        final Message message = new Message(-1, messageText, ProfileManager.getPlayer().getId(),
-                ProfileManager.getPlayer().getChatId(), whiteboardTag);
-        update(message);
+        messageAdapter.add(message);
+    }
+
+    public void sendMessage(final Message message, String whiteboard) {
+        chatService.sendMessage(message.getText(), whiteboard, message.getTag(), new RequestCallback() {
+            @Override
+            public void run(RequestResult result) {
+                if (result.getStatus() == RequestResult.Status.OK) {
+                    Log.d("chS.sendM", "delivered");
+                    message.setStatus(Message.Status.DELIVERED);
+                } else {
+                    Log.d("chS.sendM", "failed to deliver");
+                    message.setStatus(Message.Status.FAILED);
+                }
+                messageAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -165,15 +193,15 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         unbindService(chatServiceConection);
     }
 
-    public void update(Message message) {
-        messageAdapter.add(message);
-    }
-
     final private RequestCallback chatStatusCallback = new RequestCallback() {
         @Override
-        public void run(String response) {
+        public void run(RequestResult requestResult) {
+            if (requestResult.getStatus() != RequestResult.Status.OK) {
+                chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
+                return;
+            }
             try {
-                final JSONObject playerObject = new JSONObject(response);
+                final JSONObject playerObject = new JSONObject(requestResult.getResponse());
                 if (playerObject.has("error")) {
                     Log.d("ChatAct.iFHandler.run", playerObject.getString("error"));
                     return;
@@ -237,4 +265,8 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+    }
 }

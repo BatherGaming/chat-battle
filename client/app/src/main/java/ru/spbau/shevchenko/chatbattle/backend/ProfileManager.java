@@ -44,13 +44,16 @@ public class ProfileManager {
         }
 
 
-        RequestMaker.singUp(jsonPlayer.toString(), new SignUpCallback(signupActivity));
+        RequestMaker.signUp(jsonPlayer.toString(), new SignUpCallback(signupActivity));
     }
 
-    private static void onSignUpResponse(String response, SignupActivity signupActivity) {
+    private static void onSignUpResponse(RequestResult requestResult, SignupActivity signupActivity) {
+        if (requestResult.getStatus() != RequestResult.Status.OK) {
+            signupActivity.signupResponse(requestResult.getStatus());
+
+        }
         try {
-            Log.d("onSignUpResponse()", response);
-            final JSONObject playerObject = new JSONObject(response);
+            final JSONObject playerObject = new JSONObject(requestResult.getResponse());
             if (playerObject.has("error")) {
                 signupActivity.failedSignup(playerObject.getString("error"));
                 return;
@@ -69,9 +72,13 @@ public class ProfileManager {
         return currentPlayer;
     }
 
-    private static void onSignInResponse(String response, LoginActivity loginActivity) {
+    private static void onSignInResponse(RequestResult requestResult, LoginActivity loginActivity) {
+        if (requestResult.getStatus() != RequestResult.Status.OK) {
+            loginActivity.loginResponse(requestResult.getStatus());
+            return;
+        }
         try {
-            final JSONObject playerObject = new JSONObject(response);
+            final JSONObject playerObject = new JSONObject(requestResult.getResponse());
             if (playerObject.has("error")) {
                 loginActivity.failedLogin(playerObject.getString("error"));
                 return;
@@ -93,8 +100,8 @@ public class ProfileManager {
         }
 
         @Override
-        public void run(String response) {
-            onSignInResponse(response, loginActivity);
+        public void run(RequestResult requestResult) {
+            onSignInResponse(requestResult, loginActivity);
         }
     }
 
@@ -106,8 +113,8 @@ public class ProfileManager {
         }
 
         @Override
-        public void run(String response) {
-            onSignUpResponse(response, signupActivity);
+        public void run(RequestResult requestResult) {
+            onSignUpResponse(requestResult, signupActivity);
         }
     }
 

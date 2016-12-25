@@ -15,6 +15,7 @@ import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.SearcherRunnable;
 import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
+import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 public class LoginActivity extends BasicActivity implements View.OnClickListener {
 
@@ -149,4 +150,17 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
 
     }
 
+    public void loginResponse(RequestResult.Status status) {
+        switch (status) {
+            case OK: {
+                completeLogin();
+            }
+            case FAILED_CONNECTION: {
+                failedLogin(getResources().getString(R.string.internet_troubles));
+            }
+            case ERROR: {
+                failedLogin(getResources().getString(R.string.unknown_error));
+            }
+        }
+    }
 }

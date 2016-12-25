@@ -25,18 +25,8 @@ public class LeaderActivity extends AbstractChat {
     public void initLayout() {
         setContentView(R.layout.activity_leader);
 
-        final ImageButton sendButton = (ImageButton) findViewById(R.id.send_button);
-        final ImageButton whiteboardButton = (ImageButton) findViewById(R.id.whiteboard_btn);
         final Button chooseButton = (Button) findViewById(R.id.leader_choose_button);
-        sendButton.setOnClickListener(this);
         chooseButton.setOnClickListener(this);
-        whiteboardButton.setOnClickListener(this);
-
-        messageInput = (EditText) findViewById(R.id.leader_message_input);
-        messageAdapter = new MessageAdapter(this, new ArrayList<Message>());
-        final ListView messagesView = (ListView) findViewById(R.id.messages_view);
-        messagesView.setAdapter(messageAdapter);
-
     }
 
     @Override

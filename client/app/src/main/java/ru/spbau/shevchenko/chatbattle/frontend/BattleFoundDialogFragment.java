@@ -21,6 +21,7 @@ import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
+import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 import static ru.spbau.shevchenko.chatbattle.Player.*;
 
@@ -98,10 +99,10 @@ public class BattleFoundDialogFragment extends DialogFragment {
 
     private final RequestCallback getStatusCallback = new RequestCallback() {
         @Override
-        public void run(String response) {
+        public void run(RequestResult requestResult) {
             String result = "";
             try {
-                JSONObject playerObject = new JSONObject(response);
+                JSONObject playerObject = new JSONObject(requestResult.getResponse());
                 if (playerObject.has("error")) {
                     //TODO: show
                     return;

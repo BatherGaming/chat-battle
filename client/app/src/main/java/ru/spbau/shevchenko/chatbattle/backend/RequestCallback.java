@@ -3,9 +3,9 @@ package ru.spbau.shevchenko.chatbattle.backend;
 public interface RequestCallback {
     RequestCallback DO_NOTHING = new RequestCallback() {
         @Override
-        public void run(String response) {
+        public void run(RequestResult result) {
 
         }
     };
-    void run(String response);
+    void run(RequestResult result);
 }

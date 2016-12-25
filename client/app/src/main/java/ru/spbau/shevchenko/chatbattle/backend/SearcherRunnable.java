@@ -53,7 +53,7 @@ public class SearcherRunnable implements Runnable {
     private RequestCallback checkIfFoundCallback = new RequestCallback() {
 
         @Override
-        public void run(String response) {
+        public void run(RequestResult requestResult) {
             try {
                 waitingCallback = false;
                 if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.CHATTING_AS_LEADER)
@@ -63,7 +63,7 @@ public class SearcherRunnable implements Runnable {
                 if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.WAITING)
                     return;
 
-                final JSONObject playerObject = new JSONObject(response);
+                final JSONObject playerObject = new JSONObject(requestResult.getResponse());
                 if (playerObject.has("error")) {
                     // TODO : do smth
                     return;
