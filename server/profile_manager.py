@@ -50,7 +50,7 @@ def add_player(json):
     password_hash = get_hash(password)
 
     player = Player(login=json["login"],
-                    sex=json["sex"],
+                    sex=json["sex"].upper(),
                     password_hash=password_hash,
                     age=json.get("age", 0),
                     status="IDLE",
