@@ -19,6 +19,7 @@ import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
+import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 public class ProfileActivity extends BasicActivity implements View.OnClickListener{
 
@@ -73,8 +74,8 @@ public class ProfileActivity extends BasicActivity implements View.OnClickListen
                             RequestMaker.changePassword(ProfileManager.getPlayer().getId(), oldPassword,
                                     newPassword, new RequestCallback() {
                                         @Override
-                                        public void run(String response) {
-                                            Log.d("change pass", response);
+                                        public void run(RequestResult requestResult) {
+                                            Log.d("change pass", requestResult.getResponse());
                                         }
                                     });
 
