@@ -67,3 +67,13 @@ def sign_in(login, password):
     if not player or player.password_hash != password_hash:
         return {"error": "Wrong login or password. Try again."}, 401
     return player.to_dict(), 200
+
+def change_password(player_id, old_password, new_password):
+    player = session.query(Player).filter_by(id=player_id).first()
+    old_password_hash = get_hash(old_password)
+    if not player or player.password_hash != old_password_hash:
+        return {"error": "Wrong old password"}, 400
+    new_password_hash = get_hash(new_password)
+    player.password_hash = new_password_hash
+    return {}, 200
+    

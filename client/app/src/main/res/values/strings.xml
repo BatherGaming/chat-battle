@@ -52,4 +52,8 @@
     <string name="hello">Hello, </string>
     <string name="profile">Profile</string>
     <string name="log_out">Log out</string>
+    <string name="old_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm password</string>
+    <string name="change_password">Change password</string>
 </resources>

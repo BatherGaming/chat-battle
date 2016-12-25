@@ -21,6 +21,10 @@ def process(response):
 def get_players():
     return process(profile_manager.get_players())
 
+@app.route('/player/change_pass/<int:player_id>/<old_password>/<new_password>', methods=['POST'])
+def change_password(player_id, old_password, new_password):
+    return process(profile_manager.change_password(player_id, old_password, new_password))
+
 
 @app.route('/players/<int:player_id>', methods=['GET'])
 def get_player(player_id):
@@ -93,6 +97,7 @@ def get_whiteboard(whiteboard_tag):
 @app.route('/chat/<int:chat_id>', methods=['GET'])
 def get_chat(chat_id):
     return process(chat_backend.get_chat(chat_id))
+
 
 
 if __name__ == '__main__':

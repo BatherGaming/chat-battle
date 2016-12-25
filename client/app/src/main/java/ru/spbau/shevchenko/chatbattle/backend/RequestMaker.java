@@ -166,4 +166,10 @@ public class RequestMaker {
     static public void decline(int id) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/decline/" + id, Method.POST, RequestCallback.DO_NOTHING);
     }
+
+    static public void changePassword(int id, String oldPassword, String newPassword, RequestCallback callback) {
+        Log.d("ch Pass", RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword);
+        sendRequest(RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword,
+                Method.POST, callback);
+    }
 }
