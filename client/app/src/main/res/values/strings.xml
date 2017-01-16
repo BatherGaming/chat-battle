@@ -50,7 +50,7 @@
     <string name="exit_question">Do you want to exit?</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-    <string name="hello">Hello, </string>
+    <string name="hello">"Hello, "</string>
     <string name="profile">Profile</string>
     <string name="log_out">Log out</string>
     <string name="old_password">Current password</string>
