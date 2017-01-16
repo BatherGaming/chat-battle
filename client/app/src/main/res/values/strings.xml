@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name" translatable="false">Chat Battle</string>
     <string name="action_settings">Settings</string>
     <string name="menu_play_button">Play!</string>
@@ -60,4 +61,6 @@
     <string name="unknown_error">UNKNOWN ERROR</string>
     <string name="passwords_dont_match">passwords don\'t match</string>
     <string name="change_success">Password has been changed</string>
+    <string name="chat">chat</string>
+    <string name="battle">battle</string>
 </resources>
