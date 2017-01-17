@@ -1,6 +1,7 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,12 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
 
         final Button signupButton = (Button) findViewById(R.id.signup_button);
         signupButton.setOnClickListener(this);
+
+        final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view_sign_up);
+        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
+
+        final TextView battleTextView = (TextView) findViewById(R.id.battle_text_view_sign_up);
+        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
     }
 
     @Override

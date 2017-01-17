@@ -8,55 +8,111 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/light_blue"
     tools:context="ru.spbau.shevchenko.chatbattle.frontend.SignupActivity">
+
+    <TextView
+        android:id="@+id/chat_text_view_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/chat"
+        android:layout_marginTop="55dp"
+        android:textSize="35pt"
+        android:gravity="center_horizontal"
+        />
+    <TextView
+        android:id="@+id/battle_text_view_sign_up"
+        android:layout_marginTop="130dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/battle"
+        android:textSize="35pt"
+        android:gravity="center_horizontal"
+        />
 
     <EditText
         android:id="@+id/login_edit"
         android:hint="@string/login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textColorHint="@color/gray"
+        android:textColor="@color/blue900"
+        android:textSize="8pt"
+        android:layout_centerHorizontal="true"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/battle_text_view_sign_up"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_rect"
+         />
     <EditText
         android:id="@+id/age_edit"
         android:hint="@string/age"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/blue900"
+        android:textSize="8pt"
+        android:layout_centerHorizontal="true"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+
         android:layout_below="@+id/login_edit"
+        android:background="@drawable/rounded_rect"
+
         android:inputType="number"/>
     <RadioGroup
         android:id="@+id/sex_radio_group"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/age_edit"
+        android:layout_centerHorizontal="true"
+        android:theme="@style/RadioButtonStyle"
         android:orientation="horizontal">
         <RadioButton
             android:id="@+id/male_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/gray800"
+            android:shadowColor="@color/yellow"
             android:text="@string/male"/>
         <RadioButton
             android:id="@+id/female_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/gray800"
             android:text="@string/female"/>
     </RadioGroup>
     <EditText
         android:id="@+id/password_edit"
         android:hint="@string/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/blue900"
+        android:textSize="8pt"
+        android:layout_centerHorizontal="true"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+
         android:layout_below="@+id/sex_radio_group"
+        android:background="@drawable/rounded_rect"
+
         android:inputType="textPassword"
-        android:fontFamily="sans-serif"/>
+        />
     <EditText
         android:id="@+id/password_confirm_edit"
         android:hint="@string/confirm_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/blue900"
+        android:textSize="8pt"
+        android:layout_centerHorizontal="true"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+
         android:layout_below="@+id/password_edit"
+        android:background="@drawable/rounded_rect"
+
         android:inputType="textPassword"
-        android:fontFamily="sans-serif"/>
+        />
     <Button
         android:id="@+id/signup_button"
+        android:textColor="@color/blue900"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/password_confirm_edit"
