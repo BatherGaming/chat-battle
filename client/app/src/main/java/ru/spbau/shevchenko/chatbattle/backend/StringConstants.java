@@ -7,6 +7,10 @@ public final class StringConstants {
     private static String PROFILE;
     private static String MALE;
     private static String FEMALE;
+    private static String NAME;
+    private static String RATING;
+    private static String LEADERBOARD;
+
 
     public static String getHELLO() {
         return HELLO;
@@ -41,6 +45,27 @@ public final class StringConstants {
     }
     public static void setFEMALE(String FEMALE) {
         StringConstants.FEMALE = FEMALE;
+    }
+
+    public static String getNAME() {
+        return NAME;
+    }
+    public static void setNAME(String NAME) {
+        StringConstants.NAME = NAME;
+    }
+
+    public static String getRATING() {
+        return RATING;
+    }
+    public static void setRATING(String RATING) {
+        StringConstants.RATING = RATING;
+    }
+
+    public static String getLEADERBOARD() {
+        return LEADERBOARD;
+    }
+    public static void setLEADERBOARD(String LEADERBOARD) {
+        StringConstants.LEADERBOARD = LEADERBOARD;
     }
 
 }

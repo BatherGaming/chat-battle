@@ -5,27 +5,35 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 
 
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
 
-public class MenuActivity extends BasicActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+
+public class MenuActivity extends BasicActivity implements View.OnClickListener {
 
     private enum PlayerStatus {
-        HELLO, PROFILE, LOG_OUT;
+        NAME, RATING, PROFILE, LEADERBOARD, LOG_OUT;
         public String toString() {
             switch (this) {
-                case HELLO: return StringConstants.getHELLO();
+                case NAME: return StringConstants.getNAME();
+                case RATING: return StringConstants.getRATING();
                 case PROFILE: return StringConstants.getPROFILE();
+                case LEADERBOARD: return StringConstants.getLEADERBOARD();
                 case LOG_OUT: return StringConstants.getLOG_OUT();
             }
             throw new IllegalArgumentException();
@@ -39,22 +47,22 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        onNavigationDrawerCreate();
+
 
         final Button playButton = (Button) findViewById(R.id.playButton);
         playButton.setOnClickListener(this);
 
+        final ImageButton drawerButton = (ImageButton) findViewById(R.id.menu_drawer_button);
+        drawerButton.setOnClickListener(this);
 
-        final Spinner spinner = (Spinner) findViewById(R.id.menu_spinner);
-        final CharSequence[] adaptersItems = {
-                PlayerStatus.HELLO.toString() + ProfileManager.getPlayer().getLogin(),
-                PlayerStatus.PROFILE.toString(),
-                PlayerStatus.LOG_OUT.toString()
-        };
-        final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this,
-                R.layout.menu_activity_spinner_item, adaptersItems);
+        final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view);
+        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
 
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        final TextView battleTextView = (TextView) findViewById(R.id.battle_text_view);
+        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
+
+
 
 
     }
@@ -82,6 +90,9 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
                 }
                 break;
             }
+            case R.id.menu_drawer_button: {
+                openDrawer();
+            }
 
         }
     }
@@ -91,8 +102,8 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
     public void onResume() {
         super.onResume();
 
-        final Spinner spinner = (Spinner) findViewById(R.id.menu_spinner);
-        spinner.setSelection(0);
+        // call it again because of new rating
+        onNavigationDrawerCreate();
 
         Class<?> previousClass = BasicActivity.getLastActivityClass();
         if (ProfileManager.getPlayer().getChatId() == -1 && previousClass != null && AbstractChat.class.isAssignableFrom(previousClass)) {
@@ -109,21 +120,6 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         ExitFragment exitFragment = new ExitFragment();
         exitFragment.setMenuActivity(this);
         exitFragment.show(getFragmentManager(), "");
-    }
-
-
-    public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
-        if (pos == PlayerStatus.PROFILE.ordinal()) {
-            final Intent intent = new Intent(this, ProfileActivity.class);
-            startActivity(intent);
-
-        } else if (pos == PlayerStatus.LOG_OUT.ordinal()) {
-            finish();
-        }
-    }
-
-    public void onNothingSelected(AdapterView<?> parent) {
     }
 
     static public class ExitFragment extends DialogFragment {
@@ -153,5 +149,47 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         }
     }
 
+    //
 
+
+    public void onNavigationDrawerCreate() {
+        //final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        final CharSequence[] adaptersItems = {
+                PlayerStatus.NAME.toString() + ": " + ProfileManager.getPlayer().getLogin(),
+                PlayerStatus.RATING.toString() + ": " + ProfileManager.getPlayer().getRating(),
+                PlayerStatus.PROFILE.toString(),
+                PlayerStatus.LEADERBOARD.toString(),
+                PlayerStatus.LOG_OUT.toString()
+        };
+        final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this,
+                R.layout.drawer_list_item, adaptersItems);
+        mDrawerList.setAdapter(adapter);
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+    }
+
+    public void openDrawer(){
+        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+
+    }
+
+    private void selectItem(int position) {
+        if (position == PlayerStatus.PROFILE.ordinal()) {
+                final Intent intent = new Intent(this, ProfileActivity.class);
+                startActivity(intent);
+        } else if (position == PlayerStatus.LEADERBOARD.ordinal()) {
+
+        } else if (position == PlayerStatus.LOG_OUT.ordinal()) {
+            finish();
+        }
+    }
 }

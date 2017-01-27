@@ -59,5 +59,8 @@
     <string name="passwords_dont_match">Пароли не совпадают</string>
     <string name="internet_troubles">Проблемы с интернетом</string>
     <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="rating">Рейтинг</string>
+    <string name="name">Имя</string>
+    <string name="leaderboard">Доска рекордов</string>
 
 </resources>

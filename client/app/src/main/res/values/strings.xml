@@ -63,4 +63,8 @@
     <string name="change_success">Password has been changed</string>
     <string name="chat">chat</string>
     <string name="battle">battle</string>
+    <string name="name">Name</string>
+    <string name="rating">Rating</string>
+    <string name="leaderboard">Leaderboard</string>
+
 </resources>

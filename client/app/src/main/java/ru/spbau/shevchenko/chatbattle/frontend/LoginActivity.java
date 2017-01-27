@@ -157,6 +157,9 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         StringConstants.setLOG_OUT(getString(R.string.log_out));
         StringConstants.setMALE(getString(R.string.male));
         StringConstants.setFEMALE(getString(R.string.female));
+        StringConstants.setNAME(getString(R.string.name));
+        StringConstants.setRATING(getString(R.string.rating));
+        StringConstants.setLEADERBOARD(getString(R.string.leaderboard));
 
     }
 
