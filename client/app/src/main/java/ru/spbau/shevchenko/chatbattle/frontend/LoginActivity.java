@@ -160,6 +160,7 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         StringConstants.setNAME(getString(R.string.name));
         StringConstants.setRATING(getString(R.string.rating));
         StringConstants.setLEADERBOARD(getString(R.string.leaderboard));
+        StringConstants.setCHANGE_PASSWORD(getString(R.string.change_password));
 
     }
 

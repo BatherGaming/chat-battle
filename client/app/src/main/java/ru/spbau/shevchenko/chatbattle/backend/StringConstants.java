@@ -10,7 +10,7 @@ public final class StringConstants {
     private static String NAME;
     private static String RATING;
     private static String LEADERBOARD;
-
+    private static String CHANGE_PASSWORD;
 
     public static String getHELLO() {
         return HELLO;
@@ -66,6 +66,11 @@ public final class StringConstants {
     }
     public static void setLEADERBOARD(String LEADERBOARD) {
         StringConstants.LEADERBOARD = LEADERBOARD;
+    }
+
+    public static String getCHANGE_PASSWORD() { return CHANGE_PASSWORD; }
+    public static void setCHANGE_PASSWORD(String CHANGE_PASSWORD) {
+        StringConstants.CHANGE_PASSWORD = CHANGE_PASSWORD;
     }
 
 }
