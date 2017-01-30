@@ -16,8 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/chat"
-        android:layout_marginTop="75dp"
-        android:textSize="35pt"
+        android:layout_marginTop="90dp"
+        android:textColor="@color/black"
+        android:textSize="25pt"
         android:gravity="center_horizontal"
         />
     <TextView
@@ -25,11 +26,11 @@
         android:layout_marginTop="150dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textColor="@color/black"
         android:text="@string/battle"
-        android:textSize="35pt"
+        android:textSize="20pt"
         android:gravity="center_horizontal"
         />
-
     <EditText
         android:id="@+id/login_edit"
         android:hint="@string/login"

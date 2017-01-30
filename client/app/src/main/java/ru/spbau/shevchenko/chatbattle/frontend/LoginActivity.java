@@ -33,10 +33,10 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         setContentView(R.layout.activity_login);
 
         final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view);
-        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
+        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
 
         final TextView battleTextView = (TextView) findViewById(R.id.battle_text_view);
-        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
+        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
 
         showLayout(View.VISIBLE, View.GONE);
 

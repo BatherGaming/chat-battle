@@ -25,10 +25,10 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
         signupButton.setOnClickListener(this);
 
         final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view_sign_up);
-        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
+        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
 
         final TextView battleTextView = (TextView) findViewById(R.id.battle_text_view_sign_up);
-        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
+        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
     }
 
     @Override

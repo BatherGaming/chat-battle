@@ -60,17 +60,17 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
         onNavigationDrawerCreate();
 
 
-        final Button playButton = (Button) findViewById(R.id.playButton);
+        final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
         playButton.setOnClickListener(this);
 
         final ImageButton drawerButton = (ImageButton) findViewById(R.id.menu_drawer_button);
         drawerButton.setOnClickListener(this);
 
         final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view);
-        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
+        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
 
         final TextView battleTextView = (TextView) findViewById(R.id.battle_text_view);
-        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/BetsyFlanagan.ttf"));
+        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
 
 
 
@@ -194,7 +194,7 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
 
     private void selectItem(int position) {
         if (position == PlayerStatus.CHANGE_PASSWORD.ordinal()) {
-            ProfileActivity.ChangePasswordDialog changePasswordDialog = new ProfileActivity.ChangePasswordDialog();
+            ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog();
             changePasswordDialog.show(getFragmentManager(), "");
         } else if (position == PlayerStatus.LEADERBOARD.ordinal()) {
 
