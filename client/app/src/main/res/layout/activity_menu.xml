@@ -18,7 +18,7 @@
             android:id="@+id/menu_drawer_button"
             android:layout_width="40dp"
             android:layout_height="30dp"
-            android:background="@drawable/navigation_button" />
+            android:background="@drawable/ic_drawer" />
 
         <TextView
             android:id="@+id/chat_text_view"
