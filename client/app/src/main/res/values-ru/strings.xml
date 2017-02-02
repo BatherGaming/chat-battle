@@ -62,5 +62,6 @@
     <string name="rating">Рейтинг</string>
     <string name="name">Имя</string>
     <string name="leaderboard">Доска рекордов</string>
+    <string name="search">ИСКАТЬ КАК</string>
 
 </resources>

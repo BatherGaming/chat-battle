@@ -196,7 +196,7 @@ public class ChatService extends Service {
         }
     };
 
-    public static void saveWhiteboard(File destination, String content){ // TODO: move to another class?
+    public static void saveWhiteboard(File destination, String content){ // TODO: right_bit_move to another class?
         try {
             final FileOutputStream whiteboardOutStream = new FileOutputStream(destination);
             final byte[] fetchedWhiteboard = Base64.decode(content, Base64.DEFAULT);

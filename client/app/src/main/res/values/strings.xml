@@ -66,5 +66,6 @@
     <string name="name">Name</string>
     <string name="rating">Rating</string>
     <string name="leaderboard">Leaderboard</string>
+    <string name="search">SEARCH AS</string>
 
 </resources>

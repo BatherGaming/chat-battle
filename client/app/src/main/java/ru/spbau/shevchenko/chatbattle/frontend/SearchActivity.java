@@ -1,9 +1,14 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -18,10 +23,10 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        final Button searchAsPlayerButton = (Button) findViewById(R.id.search_as_player_button);
+        final ImageButton searchAsPlayerButton = (ImageButton) findViewById(R.id.search_as_player_button);
         searchAsPlayerButton.setOnClickListener(this);
 
-        final Button searchAsLeaderButton = (Button) findViewById(R.id.search_as_leader_button);
+        final ImageButton searchAsLeaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
         searchAsLeaderButton.setOnClickListener(this);
 
         final Button stopSearchingButton = (Button) findViewById(R.id.stop_searching_button);
@@ -47,16 +52,31 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
+        ImageButton leaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
+        ImageButton playerButton = (ImageButton) findViewById(R.id.search_as_player_button);
+
         switch (view.getId()) {
             case R.id.search_as_player_button: {
+                move(leaderButton, R.anim.left_big_move);
+                move(playerButton, R.anim.left_small_move);
+                leaderButton.setClickable(false);
+                playerButton.setClickable(false);
                 searchAs(Player.Role.PLAYER);
                 break;
             }
             case R.id.search_as_leader_button: {
+                move(leaderButton, R.anim.right_small_move);
+                move(playerButton, R.anim.right_bit_move);
+                leaderButton.setClickable(false);
+                playerButton.setClickable(false);
                 searchAs(Player.Role.LEADER);
                 break;
             }
             case R.id.stop_searching_button: {
+                leaderButton.setClickable(true);
+                playerButton.setClickable(true);
+                leaderButton.clearAnimation();
+                playerButton.clearAnimation();
                 stopSearching();
                 break;
             }
@@ -68,11 +88,9 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         RequestMaker.deleteFromQueue(ProfileManager.getPlayer().getId());
 
         final Button stopSearching = (Button) findViewById(R.id.stop_searching_button);
-        final TextView textView = (TextView) findViewById(R.id.queueing_status_text);
         final ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
-        spinner.setVisibility(View.GONE);
-        stopSearching.setVisibility(View.GONE);
-        textView.setVisibility(View.GONE);
+        spinner.setVisibility(View.INVISIBLE);
+        stopSearching.setVisibility(View.INVISIBLE);
     }
 
     private void searchAs(Player.Role role) {
@@ -90,12 +108,7 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         }
 
         final Button stopSearching = (Button) findViewById(R.id.stop_searching_button);
-        final TextView textView = (TextView) findViewById(R.id.queueing_status_text);
         final ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
-        String text = role == Player.Role.PLAYER ? getString(R.string.search_as_player)
-                                                 : getString(R.string.search_as_leader);
-        textView.setText(text);
-        textView.setVisibility(View.VISIBLE);
         spinner.setVisibility(View.VISIBLE);
         stopSearching.setVisibility(View.VISIBLE);
     }
@@ -134,5 +147,11 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
                 break;
             }
         }
+    }
+
+
+    public void move(ImageView image, int anim){
+        Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(), anim);
+        image.startAnimation(animation1);
     }
 }
