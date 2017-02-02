@@ -52,27 +52,21 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        ImageButton leaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
-        ImageButton playerButton = (ImageButton) findViewById(R.id.search_as_player_button);
 
         switch (view.getId()) {
             case R.id.search_as_player_button: {
-                move(leaderButton, R.anim.left_big_move);
-                move(playerButton, R.anim.left_small_move);
-                leaderButton.setClickable(false);
-                playerButton.setClickable(false);
                 searchAs(Player.Role.PLAYER);
                 break;
             }
             case R.id.search_as_leader_button: {
-                move(leaderButton, R.anim.right_small_move);
-                move(playerButton, R.anim.right_bit_move);
-                leaderButton.setClickable(false);
-                playerButton.setClickable(false);
+
                 searchAs(Player.Role.LEADER);
                 break;
             }
             case R.id.stop_searching_button: {
+                final ImageButton leaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
+                final ImageButton playerButton = (ImageButton) findViewById(R.id.search_as_player_button);
+
                 leaderButton.setClickable(true);
                 playerButton.setClickable(true);
                 leaderButton.clearAnimation();
@@ -94,13 +88,26 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
     }
 
     private void searchAs(Player.Role role) {
+        final ImageButton leaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
+        final ImageButton playerButton = (ImageButton) findViewById(R.id.search_as_player_button);
+
         switch (role) {
             case PLAYER: {
+                move(leaderButton, R.anim.left_big_move);
+                move(playerButton, R.anim.left_small_move);
+                leaderButton.setClickable(false);
+                playerButton.setClickable(false);
+
                 ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER);
                 RequestMaker.findBattle(Player.Role.PLAYER, ProfileManager.getPlayer().getId());
                 break;
             }
             case LEADER: {
+                move(leaderButton, R.anim.right_small_move);
+                move(playerButton, R.anim.right_bit_move);
+                leaderButton.setClickable(false);
+                playerButton.setClickable(false);
+
                 ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER);
                 RequestMaker.findBattle(Player.Role.LEADER, ProfileManager.getPlayer().getId());
                 break;
