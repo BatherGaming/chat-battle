@@ -197,7 +197,8 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
             ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog();
             changePasswordDialog.show(getFragmentManager(), "");
         } else if (position == PlayerStatus.LEADERBOARD.ordinal()) {
-
+            final Intent intent = new Intent(this, LeaderboardActivity.class);
+            startActivity(intent);
         } else if (position == PlayerStatus.LOG_OUT.ordinal()) {
             finish();
         }

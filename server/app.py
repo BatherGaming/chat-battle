@@ -31,6 +31,10 @@ def get_player(player_id):
     return process(profile_manager.get_player(player_id))
 
 
+@app.route('/players/leaderboard', methods=['GET'])
+def get_leaderboard():
+    return process(profile_manager.get_leaderboard())
+
 @app.route('/sign_in/<login>/<password>', methods=['GET'])
 def sign_in(login, password):
     return process(profile_manager.sign_in(login, password))

@@ -33,6 +33,10 @@ def get_hash(password):
     return hashlib.md5(password.encode("utf-8")).hexdigest()
 
 
+def get_leaderboard():
+    leaderboard = session.query(Player).order_by(Player.rating.desc()).limit(20).all()
+    return list(map(Player.to_dict, leaderboard)), 200
+
 def add_player(json):
     if not json:
         return {"error": "JSON is null"}, 400
