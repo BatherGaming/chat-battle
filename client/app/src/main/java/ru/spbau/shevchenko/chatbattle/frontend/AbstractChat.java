@@ -9,12 +9,15 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -23,7 +26,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
@@ -33,6 +38,7 @@ import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
+import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
 
 
 public abstract class AbstractChat extends BasicActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -47,6 +53,30 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
     abstract public void initLayout();
 
     private boolean initialized = false;
+
+    private final SparseArray<Color> playerColor = new SparseArray<>();
+    private int usedColors = 0;
+
+    Color getPlayerColor(int playerId) {
+        Color color = playerColor.get(playerId, null);
+        if (color != null) return  color;
+        color = Color.values()[usedColors++];
+        playerColor.put(playerId, color);
+        return color;
+    }
+
+    public enum Color {
+        RED, PURPLE, YELLOW, GREEN;
+        public int getTextViewId() {
+            switch (this) {
+                case RED: return R.drawable.textview_red;
+                case PURPLE: return R.drawable.textview_purple;
+                case YELLOW: return R.drawable.textview_yellow;
+                case GREEN: return R.drawable.textview_green;
+            }
+            throw new IllegalArgumentException();
+        }
+    }
 
     final private ServiceConnection chatServiceConection = new ServiceConnection() {
         @Override

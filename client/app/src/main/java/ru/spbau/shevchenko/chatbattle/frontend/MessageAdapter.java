@@ -3,7 +3,9 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,19 +15,21 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ChatService;
 import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
+import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
@@ -63,30 +67,50 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final MessageViewHolder holder;
-        if (convertView == null) {
+        final Message message = messages.get(position);
+        boolean isCur = message.getAuthorId() == ProfileManager.getPlayer().getId();
+        if (convertView == null || isCur != ((MessageViewHolder) convertView.getTag()).isCur) {
+            isCur = message.getAuthorId() == ProfileManager.getPlayer().getId();
             LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = messageInflater.inflate(R.layout.message, null);
-            holder = new MessageViewHolder((TextView) convertView.findViewById(R.id.message_sender),
-                    (TextView) convertView.findViewById(R.id.message_body),
+            holder = new MessageViewHolder((TextView) convertView.findViewById(R.id.message_body),
                     (ImageView) convertView.findViewById(R.id.message_image),
                     (ProgressBar) convertView.findViewById(R.id.delivering_progress_bar),
                     (ImageButton) convertView.findViewById(R.id.delete_message_btn),
-                    (ImageButton) convertView.findViewById(R.id.retry_sending_btn));
+                    (ImageButton) convertView.findViewById(R.id.retry_sending_btn),
+                    isCur,((AbstractChat) context).getPlayerColor(message.getAuthorId())
+            );
             holder.deleteBtn.setOnClickListener(this);
             holder.retryBtn.setOnClickListener(this);
-            convertView.setTag(holder);
         } else {
             holder = (MessageViewHolder) convertView.getTag();
+            isCur = holder.isCur;
         }
         holder.deleteBtn.setTag(position);
         holder.retryBtn.setTag(position);
-        final Message message = messages.get(position);
-        Log.d("getView", position + " - " + message.getText());
-        Log.d("getView", String.valueOf(holder.deleteBtn.getTag()));
+//        Log.d("getView", position + " - " + message.getText());
+//        Log.d("getView", String.valueOf(holder.deleteBtn.getTag()));
+        holder.textView.setBackgroundResource(holder.color.getTextViewId());
         holder.textView.setText(message.getText());
-        holder.senderView.setText(String.format(Locale.getDefault(), "%d", message.getAuthorId()));
+
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.textView.getLayoutParams();
+        lp.addRule(isCur ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
+        if (isCur)
+            lp.setMargins(dpAsPixels(20), 0, dpAsPixels(10), dpAsPixels(5));
+        else
+            lp.setMargins(dpAsPixels(10), 0, dpAsPixels(20), dpAsPixels(5));
+        holder.textView.setLayoutParams(lp);
+        //holder.textView.
+//        if (isCur)
+//            holder.textView.setPadding(dpAsPixels(10), dpAsPixels(5), 0, 0);
+//        else
+//            holder.textView.setPadding(0, dpAsPixels(5), dpAsPixels(10), 0);
+        lp = (RelativeLayout.LayoutParams) holder.imageView.getLayoutParams();
+        lp.addRule(isCur ? RelativeLayout.ALIGN_RIGHT : RelativeLayout.ALIGN_LEFT, holder.textView.getId());
+        holder.imageView.setLayoutParams(lp);
         holder.imageView.setImageResource(android.R.color.transparent);
-        convertView.setBackgroundColor(0xFFFFFFFF);
+        convertView.setBackgroundColor(ContextCompat.getColor(context, R.color.light_blue));
+
         switch (message.getStatus()) {
             case DELIVERED: {
                 setStatusVisibility(holder, View.GONE, View.GONE);
@@ -102,6 +126,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                 break;
             }
         }
+
         if (!message.getTag().isEmpty()) {
             Uri whiteboardURI = ChatService.getWhiteboardURI(message.getTag(), new RequestCallback(){
                 @Override
@@ -109,13 +134,26 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                     notifyDataSetChanged();
                 }
             });
-            if (whiteboardURI == null) {
-                holder.imageView.setImageResource(R.drawable.grey_square);
+            Drawable pic;
+            if (whiteboardURI != null) {
+                InputStream inputStream = null;
+                try {
+                    inputStream = context.getContentResolver().openInputStream(whiteboardURI);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                pic = Drawable.createFromStream(inputStream, whiteboardURI.toString());
+            } else {
+                pic = ContextCompat.getDrawable(context, R.drawable.grey_square);
             }
-            else {
-                holder.imageView.setImageURI(whiteboardURI);
-            }
+            holder.textView.setCompoundDrawablePadding(2);
+            holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, pic);
+
+        } else {
+            holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+
         }
+        convertView.setTag(holder);
         return convertView;
     }
 
@@ -163,22 +201,31 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         }
     }
 
+    private int dpAsPixels(int sizeInDp) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (sizeInDp*scale + 0.5f);
+    }
+
     private static class MessageViewHolder {
-        final private TextView senderView;
+
         final private TextView textView;
         final private ImageView imageView;
         final private ProgressBar loadingBar;
         private final ImageButton deleteBtn;
         private final ImageButton retryBtn;
+        private final boolean isCur;
+        private final AbstractChat.Color color;
 
-        MessageViewHolder(TextView senderView, TextView textView, ImageView imageView,
-                          ProgressBar loadingBar, ImageButton deleteBtn, ImageButton retryBtn) {
-            this.senderView = senderView;
+        MessageViewHolder(TextView textView, ImageView imageView,
+                          ProgressBar loadingBar, ImageButton deleteBtn, ImageButton retryBtn,
+                          boolean isCur, AbstractChat.Color color) {
             this.textView = textView;
             this.imageView = imageView;
             this.loadingBar = loadingBar;
             this.deleteBtn = deleteBtn;
             this.retryBtn = retryBtn;
+            this.isCur = isCur;
+            this.color = color;
         }
     }
 }
