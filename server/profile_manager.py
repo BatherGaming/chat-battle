@@ -34,7 +34,7 @@ def get_hash(password):
 
 
 def get_leaderboard():
-    leaderboard = session.query(Player).order_by(Player.rating.desc()).limit(20).all()
+    leaderboard = session.query(Player).order_by(Player.rating.desc()).all()
     return list(map(Player.to_dict, leaderboard)), 200
 
 def add_player(json):
