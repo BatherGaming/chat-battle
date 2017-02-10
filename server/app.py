@@ -82,6 +82,16 @@ def get_chat_players(chat_id):
     return process(profile_manager.get_chat_players(chat_id))
 
 
+@app.route('/chat/kick/<int:chat_id>/<int:player_id>/<int:mute_time>', methods=['POST'])
+def mute_player(player_id, chat_id, mute_time):
+    return process(chat_backend.mute_player(player_id, chat_id, mute_time))
+
+
+@app.route('/chat/kick/<int:chat_id>/<int:player_id>', methods=['POST'])
+def kick_player(player_id, chat_id):
+    return process(chat_backend.kick_player(player_id, chat_id))
+
+
 @app.route('/chat/accept/<int:player_id>', methods=['POST'])
 def accept(player_id):
     return process(chat_backend.accept(player_id))

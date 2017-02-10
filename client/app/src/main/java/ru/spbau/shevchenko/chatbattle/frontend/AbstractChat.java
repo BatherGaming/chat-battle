@@ -201,6 +201,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                 return;
             }
             try {
+                Log.d("ChatAct.iFHandler.run", requestResult.getResponse());
                 final JSONObject playerObject = new JSONObject(requestResult.getResponse());
                 if (playerObject.has("error")) {
                     Log.d("ChatAct.iFHandler.run", playerObject.getString("error"));
@@ -209,7 +210,18 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                 final String result = playerObject.getString("result");
                 if (result.equals("running")) {
                     chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
-                } else {
+                }
+                else if(result.equals("kicked")) {
+                    Toast.makeText(AbstractChat.this, "You were kicked from the chat",
+                            Toast.LENGTH_LONG).show();
+                    ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
+
+                    finish();
+                }
+                else if(result.equals("muted")){
+                    Toast.makeText(AbstractChat.this, "You were muted", Toast.LENGTH_LONG).show();
+                }
+                else{
                     if (!result.equals("leader")) {
                         final int newRating = playerObject.getInt("rating");
                         ProfileManager.getPlayer().setRating(newRating);

@@ -40,7 +40,7 @@ def get_leaderboard():
 def add_player(json):
     if not json:
         return {"error": "JSON is null"}, 400
-    for parameter in ['login', 'sex', 'password']:
+    for parameter in ['login', 'password']:
         if parameter not in json:
             return {"error": "no " + parameter + " in JSON"}, 400
     for parameter in ['login', 'password']:
@@ -54,9 +54,7 @@ def add_player(json):
     password_hash = get_hash(password)
 
     player = Player(login=json["login"],
-                    sex=json["sex"].upper(),
                     password_hash=password_hash,
-                    age=json.get("age", 0),
                     status="IDLE",
                     rating=BASIC_RATING)
 

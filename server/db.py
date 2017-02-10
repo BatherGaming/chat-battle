@@ -48,11 +48,11 @@ class Player(Base):
 
     id = Column(Integer, primary_key=True)
     login = Column(String, nullable=False)
-    age = Column(Integer)
     password_hash = Column(String)
-    sex = Column(Enum('MALE', 'FEMALE'))
     chat_id = Column(Integer, ForeignKey('chats.id'))
     status = Column(Enum('IDLE', 'CHATTING_AS_PLAYER', 'CHATTING_AS_LEADER', 'IN_QUEUE_AS_LEADER', 'IN_QUEUE_AS_PLAYER'))
+    penalty = Column(Enum('NONE', 'MUTED', 'KICKED'))
+    mute_end_time = Column(DateTime)
     rating = Column(Integer)
 
     messages = relationship("Message", backref="sender")
@@ -60,8 +60,6 @@ class Player(Base):
     def to_dict(self):
         return {"id": self.id,
                 "login": self.login,
-                "sex": self.sex,
-                "age": self.age,
                 "chatId": self.chat_id,
                 "status": self.status,
                 "rating": self.rating}
@@ -69,7 +67,6 @@ class Player(Base):
     @staticmethod
     def from_dict(player_dict):
         return Player(id=player_dict["id"], login=player_dict["login"],
-                      sex=player_dict["sex"], age=player_dict["age"],
                       chat_id=player_dict["chatId"], status=player_dict["status"],
                       rating=player_dict["rating"])
 

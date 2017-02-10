@@ -138,7 +138,7 @@ public class ChatService extends Service {
             // Schedule next chat messages update
             handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
         } catch (JSONException e) {
-            Log.e("Chatter", e.getMessage());
+            Log.e("ChatSevice", e.getMessage());
             handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
         }
     }

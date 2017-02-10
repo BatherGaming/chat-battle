@@ -37,10 +37,6 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
             case R.id.signup_button: {
                 // Getting all the data from form
                 final String login = ((EditText) findViewById(R.id.login_edit)).getText().toString();
-                int age = Integer.valueOf(((EditText) findViewById(R.id.age_edit)).getText()
-                        .toString());
-                final RadioGroup rg = (RadioGroup) findViewById(R.id.sex_radio_group);
-                final Player.Sex sex = (rg.getCheckedRadioButtonId() == R.id.male_radio_button ? Player.Sex.MALE : Player.Sex.FEMALE);
                 final String password = ((EditText) findViewById(R.id.password_edit)).getText().toString();
                 final String passwordConfirm = ((EditText) findViewById(R.id.password_confirm_edit)).getText().toString();
 
@@ -52,7 +48,7 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
                 // Set status
                 ((TextView) findViewById(R.id.status_view)).setText(R.string.signin_up);
                 // Sign up
-                ProfileManager.signUp(new Player(0, login, age, sex, -1, -1), password, this);
+                ProfileManager.signUp(new Player(0, login, -1, -1), password, this);
                 break;
             }
 
@@ -62,11 +58,8 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
     public void completeSignup() {
         ((TextView) findViewById(R.id.status_view)).setText("");
         ((EditText) findViewById(R.id.login_edit)).setText("");
-        ((EditText) findViewById(R.id.age_edit)).setText("");
         ((EditText) findViewById(R.id.password_edit)).setText("");
         ((EditText) findViewById(R.id.password_confirm_edit)).setText("");
-        ((RadioGroup) findViewById(R.id.sex_radio_group)).clearCheck();
-
 
         finish();
     }
