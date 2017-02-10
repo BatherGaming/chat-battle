@@ -31,6 +31,10 @@ def get_player(player_id):
     return process(profile_manager.get_player(player_id))
 
 
+@app.route('/players/leaderboard', methods=['GET'])
+def get_leaderboard():
+    return process(profile_manager.get_leaderboard())
+
 @app.route('/sign_in/<login>/<password>', methods=['GET'])
 def sign_in(login, password):
     return process(profile_manager.sign_in(login, password))
@@ -76,6 +80,16 @@ def chat_status(player_id, chat_id):
 @app.route('/profile_manager/players/<int:chat_id>', methods=['GET'])
 def get_chat_players(chat_id):
     return process(profile_manager.get_chat_players(chat_id))
+
+
+@app.route('/chat/kick/<int:chat_id>/<int:player_id>/<int:mute_time>', methods=['POST'])
+def mute_player(player_id, chat_id, mute_time):
+    return process(chat_backend.mute_player(player_id, chat_id, mute_time))
+
+
+@app.route('/chat/kick/<int:chat_id>/<int:player_id>', methods=['POST'])
+def kick_player(player_id, chat_id):
+    return process(chat_backend.kick_player(player_id, chat_id))
 
 
 @app.route('/chat/accept/<int:player_id>', methods=['POST'])

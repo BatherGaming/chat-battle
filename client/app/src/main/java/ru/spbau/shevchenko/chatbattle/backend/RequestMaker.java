@@ -155,6 +155,10 @@ public class RequestMaker {
     public static void getPlayersIds(int chatId, RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/players/" + chatId, Method.GET, callback);
     }
+    @SuppressWarnings("WeakerAccess")
+    public static void getLeaderboard(RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/players/leaderboard", Method.GET, callback);
+    }
 
     public static void chooseWinner(int chosen, RequestCallback choseCallback) { // ++++
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/close/" + ProfileManager.getPlayer().getId() + "/" + chosen, Method.POST, choseCallback);

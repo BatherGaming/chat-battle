@@ -46,43 +46,6 @@
         android:background="@drawable/rounded_rect"
          />
     <EditText
-        android:id="@+id/age_edit"
-        android:hint="@string/age"
-        android:textColorHint="@color/gray"
-        android:textColor="@color/blue900"
-        android:textSize="8pt"
-        android:layout_centerHorizontal="true"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-
-        android:layout_below="@+id/login_edit"
-        android:background="@drawable/rounded_rect"
-
-        android:inputType="number"/>
-    <RadioGroup
-        android:id="@+id/sex_radio_group"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/age_edit"
-        android:layout_centerHorizontal="true"
-        android:theme="@style/RadioButtonStyle"
-        android:orientation="horizontal">
-        <RadioButton
-            android:id="@+id/male_radio_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/gray800"
-            android:shadowColor="@color/yellow"
-            android:text="@string/male"/>
-        <RadioButton
-            android:id="@+id/female_radio_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/gray800"
-            android:text="@string/female"/>
-    </RadioGroup>
-    <EditText
         android:id="@+id/password_edit"
         android:hint="@string/password"
         android:textColorHint="@color/gray"
@@ -92,7 +55,7 @@
         android:layout_width="250dp"
         android:layout_height="60dp"
 
-        android:layout_below="@+id/sex_radio_group"
+        android:layout_below="@+id/login_edit"
         android:background="@drawable/rounded_rect"
 
         android:inputType="textPassword"

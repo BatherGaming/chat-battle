@@ -19,6 +19,7 @@ def create_chat(chat_type, players_ids, leader_id):
     for playerId in itertools.chain(players_ids, [leader_id]):
         player = session.query(Player).filter_by(id=playerId).first()
         player.chat_id = chat.id
+        player.penalty = "NONE"
         player.status = "CHATTING_AS_LEADER" if player.id == leader_id else "CHATTING_AS_PLAYER"
     session.commit()
     return chat.id
@@ -120,11 +121,15 @@ def verify(chat):
 def chat_status(player_id, chat_id):
     player = session.query(Player).filter_by(id=player_id).first()
     chat = session.query(Chat).filter_by(id=chat_id).first()
+    if player.penalty == "MUTED" and  player.mute_end_time < datetime.datetime.now():
+        player.penalty = "NONE"
     verify(chat)
     if not chat:
         return {"error": "Chat doesn't exist"}, 400
     if not player:
         return {"error": "Player doesn't exist"}, 400
+    if player.penalty == "KICKED":
+        return {"result": "kicked"}, 200
     if not chat.is_closed and player not in chat.players:
         return {"error": "You are not in required chat"}, 400
     if chat.is_closed:
@@ -137,7 +142,10 @@ def chat_status(player_id, chat_id):
         else:
             return {"result": "loser", "rating": player.rating}, 200
     elif chat.is_started:
-        return {"result": "running"}, 200
+        if player.penalty == "MUTED":
+            return {"result": "muted"}, 200
+        else:
+            return {"result": "running"}, 200
     else:
         return {"result": "waiting"}, 200
 
@@ -183,3 +191,36 @@ def get_whiteboard(whiteboard_tag):
     with open(location, "rb") as f:
         whiteboard = f.read()
         return base64.b64encode(whiteboard)
+
+def mute_player(player_id, chat_id, mute_time):
+    player = session.query(Player).filter_by(id=player_id).first()
+    if not player:
+        return {"error": "Player doesn't exist"}, 400
+    if not player.chat_id or player.chat_id != chat_id:
+        return {"error": "Player is not in this chat"}, 400
+    chat = session.query(Chat).filter_by(id=player.chat_id).first()
+    if chat.is_closed:
+        return {}, 200
+    player.penalty = "MUTED"
+    player.mute_end_time = datetime.datetime.now() + datetime.timedelta(seconds=mute_time)
+    session.commit()
+def kick_player(player_id, chat_id):
+    player = session.query(Player).filter_by(id=player_id).first()
+    if not player:
+        return {"error": "Player doesn't exist"}, 400
+    if not player.chat_id or player.chat_id != chat_id:
+        return {"error": "Player is not in this chat"}, 400
+    chat = session.query(Chat).filter_by(id=player.chat_id).first()
+
+    # TODO: think about desired behaviour in this case
+    if len(chat.players) == 1:
+        return {"error": "You can't kick last player"}, 400 
+
+    if chat.is_closed:
+        return {}, 200
+    player.penalty = "KICKED"
+    player.status = "IDLE"
+    player.chat_id = None
+    session.commit()
+
+    return {}, 200

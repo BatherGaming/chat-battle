@@ -109,6 +109,7 @@ public class BattleFoundDialogFragment extends DialogFragment {
                 }
                 result = playerObject.getString("result");
             } catch (JSONException e) {
+                Log.d("BFDialFragm.run", requestResult.getResponse());
                 Log.e("BFDialFragm.run", e.getMessage());
                 // TODO: show
             }

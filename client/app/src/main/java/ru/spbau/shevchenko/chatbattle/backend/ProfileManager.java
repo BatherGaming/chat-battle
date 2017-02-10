@@ -35,8 +35,6 @@ public class ProfileManager {
         final JSONObject jsonPlayer;
         try {
             jsonPlayer = new JSONObject().put("login", newPlayer.getLogin())
-                    .put("sex", newPlayer.getSex().toString())
-                    .put("age", newPlayer.getAge())
                     .put("password", password);
         } catch (JSONException e) {
             Log.e("signUp()", e.getMessage()); // TODO: handle this
@@ -53,6 +51,7 @@ public class ProfileManager {
 
         }
         try {
+            Log.d("kek", requestResult.getResponse());
             final JSONObject playerObject = new JSONObject(requestResult.getResponse());
             if (playerObject.has("error")) {
                 signupActivity.failedSignup(playerObject.getString("error"));
