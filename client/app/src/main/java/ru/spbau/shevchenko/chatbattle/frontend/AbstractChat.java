@@ -48,6 +48,38 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
 
     private ListView messagesView;
     private ImageButton sendBtn;
+    private Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!timerInitialized){
+                return;
+            }
+            timeLeft = timeLeft > 0 ? timeLeft-1 : 0;
+            timerView.setText(String.valueOf(timeLeft));
+            chatStatusHandler.postDelayed(timerRunnable, 1000);
+        }
+    };
+    private RequestCallback timeLeftCallback = new RequestCallback() {
+        @Override
+        public void run(RequestResult result) {
+            if (result.getStatus() != RequestResult.Status.OK) {
+                Log.e("timeLeftC", "FAIL");
+                return;
+            }
+            try {
+                timeLeft = new JSONObject(result.getResponse()).getInt("time");
+                if (timeLeft < 0) {
+                    timeLeft = 0;
+                }
+                timerView.setText(String.valueOf(timeLeft));
+
+                timerInitialized = true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    private TextView timerView;
 
     //    abstract public void onClick(View view);
     abstract public void initLayout();
@@ -100,6 +132,8 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
     private String whiteboardEncoded = "";
 
     final private Handler handler = new Handler();
+    private boolean timerInitialized = false;
+    private int timeLeft = 0;
     final private Runnable getMessagesRunnable = new Runnable() {
         @Override
         public void run() {
@@ -112,7 +146,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                     }
                 }
                 alreadyRead = messages.size();
-                if (!initialized && chatService.initialized()){
+                if (!initialized && timerInitialized && chatService.initialized()){
                     initialized = true;
                     completeInitialization();
                 }
@@ -134,6 +168,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         initLayout();
 
+        timerView = (TextView) findViewById(R.id.timer_view);
         messageInput = (EditText) findViewById(R.id.message_input);
         messagesView = (ListView) findViewById(R.id.messages_view);
         messagesView.setVisibility(View.GONE);
@@ -156,6 +191,8 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
 
         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
+        RequestMaker.getTimeLeft(ProfileManager.getPlayer().getChatId(), timeLeftCallback);
+        chatStatusHandler.postDelayed(timerRunnable, 1000); // run each second
     }
 
     private void completeInitialization() {
@@ -223,6 +260,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         unbindService(chatServiceConection);
     }
 
+    private boolean muted;
     final private RequestCallback chatStatusCallback = new RequestCallback() {
         @Override
         public void run(RequestResult requestResult) {
@@ -239,6 +277,12 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                 }
                 final String result = playerObject.getString("result");
                 if (result.equals("running")) {
+                    if (muted){
+                        muted = false;
+                        Toast.makeText(AbstractChat.this, "Mute time ended, you can speak now.", Toast.LENGTH_LONG).show();
+                        sendBtn.setEnabled(true);
+                        messageInput.setEnabled(true);
+                    }
                     chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
                 }
                 else if(result.equals("kicked")) {
@@ -249,7 +293,13 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                     finish();
                 }
                 else if(result.equals("muted")){
-                    Toast.makeText(AbstractChat.this, "You were muted", Toast.LENGTH_LONG).show();
+                    if (!muted) {
+                        Toast.makeText(AbstractChat.this, "You were muted", Toast.LENGTH_LONG).show();
+                        muted = true;
+                        sendBtn.setEnabled(false);
+                        messageInput.setEnabled(false);
+                    }
+                    chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
                 }
                 else{
                     if (!result.equals("leader")) {

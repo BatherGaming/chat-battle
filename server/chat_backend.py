@@ -3,6 +3,7 @@ import itertools
 import base64
 import os
 
+from random import randrange
 from db import session, Message, Player, Chat, datetime
 
 WHITEBOARD_FOLDER = 'whiteboards'
@@ -10,6 +11,7 @@ DOMAIN_NAME = "qwsafex.pythonanywhere.com"
 
 WINNER_DELTA = 1
 LOSER_DELTA = -1
+BATTLE_TIME = 30
 
 
 def create_chat(chat_type, players_ids, leader_id):
@@ -26,6 +28,7 @@ def create_chat(chat_type, players_ids, leader_id):
 
 
 def close(chat, winner_id):
+    print("closing")
     if chat.is_closed:
         return
     chat.is_closed = True
@@ -91,6 +94,8 @@ def send_message(json):
             or player not in chat.players:
         return {}, 422
 
+    if player.penalty == "MUTED":
+        return {"error": "You're muted"}, 400
     message = Message(chat_id=chat.id, text=json["text"], author_id=player.id,
                       time=datetime.datetime.now())
 
@@ -112,10 +117,28 @@ def get_messages(chat_id, num):
 
 
 def verify(chat):
-    if chat.is_closed or chat.is_started:
+    print("verifying")
+    if chat.is_closed:
+        return
+    if chat.is_started:
+        print(chat.end_time, datetime.datetime.now())
+        if chat.end_time < datetime.datetime.now():
+            print("trying to close")
+            player_amount = len(chat.players)
+            winner_n = randrange(0,player_amount-1)
+            winner_id = -1
+            for player in chat.players:
+                if player.id != chat.leader_id:
+                    if winner_n == 0:
+                        winner_id = player.id
+                        break;
+                    winner_n -= 1
+            print("winner: ", winner_id)
+            close_chat(chat.leader_id, winner_id)
         return
     if (datetime.datetime.now() - chat.creation_time).total_seconds() > 25:
         close(chat, -1)
+
 
 
 def chat_status(player_id, chat_id):
@@ -164,6 +187,7 @@ def accept(player_id):
     if chat.accepted == len(chat.players):
         print('chat is created')
         chat.is_started = True
+        chat.end_time = datetime.datetime.now() + datetime.timedelta(seconds=BATTLE_TIME)
     session.commit()
     return {}, 200
 
@@ -204,6 +228,8 @@ def mute_player(player_id, chat_id, mute_time):
     player.penalty = "MUTED"
     player.mute_end_time = datetime.datetime.now() + datetime.timedelta(seconds=mute_time)
     session.commit()
+    return {}, 200
+
 def kick_player(player_id, chat_id):
     player = session.query(Player).filter_by(id=player_id).first()
     if not player:
@@ -224,3 +250,14 @@ def kick_player(player_id, chat_id):
     session.commit()
 
     return {}, 200
+
+def get_time_left(chat_id):
+    chat = session.query(Chat).filter_by(id=chat_id).first()
+    if not chat:
+        return {"error": "Chat doesn't exist"}, 400
+    if chat.is_closed:
+        return {"error": "Chat has already closed"}, 400
+    if not chat.is_started:
+        return {"error": "Chat has not yet started"}, 400
+
+    return {"time": (chat.end_time - datetime.datetime.now()).total_seconds()}, 200

@@ -62,6 +62,7 @@ class Player(Base):
                 "login": self.login,
                 "chatId": self.chat_id,
                 "status": self.status,
+                "penalty": self.penalty,
                 "rating": self.rating}
 
     @staticmethod
@@ -83,6 +84,7 @@ class Chat(Base):
     leader_id = Column(Integer)
     winner_id = Column(Integer)
     accepted = Column(Integer, default=0)
+    end_time = Column(DateTime)
 
     messages = relationship("Message", backref="chat")
     players = relationship("Player", backref="chat")

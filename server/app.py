@@ -82,7 +82,7 @@ def get_chat_players(chat_id):
     return process(profile_manager.get_chat_players(chat_id))
 
 
-@app.route('/chat/kick/<int:chat_id>/<int:player_id>/<int:mute_time>', methods=['POST'])
+@app.route('/chat/mute/<int:chat_id>/<int:player_id>/<int:mute_time>', methods=['POST'])
 def mute_player(player_id, chat_id, mute_time):
     return process(chat_backend.mute_player(player_id, chat_id, mute_time))
 
@@ -113,6 +113,9 @@ def get_chat(chat_id):
     return process(chat_backend.get_chat(chat_id))
 
 
+@app.route('/chat/time_left/<int:chat_id>', methods=['GET'])
+def get_time_left(chat_id):
+    return process(chat_backend.get_time_left(chat_id))
 
 if __name__ == '__main__':
     app.run(debug=True)
