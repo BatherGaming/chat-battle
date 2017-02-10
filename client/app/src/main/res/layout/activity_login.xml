@@ -107,11 +107,25 @@
         android:id="@+id/login_initializing_progress_bar"
         android:progressDrawable="@drawable/waiting_circular_bar" />
 
-    <TextView
-        android:id="@+id/status_view"
+
+
+    <Button
+        android:id="@+id/reset_password_button"
+        android:text="@string/reset_password_button"
+        android:textColor="@color/blue900"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/signin_layout"/>
+        android:gravity="center_horizontal"
 
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_below="@+id/signin_layout"
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:id="@+id/status_view"
+        android:text="tu pidor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/reset_password_button"/>
 
 </RelativeLayout>

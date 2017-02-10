@@ -4,17 +4,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
+import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.SearcherRunnable;
 import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
@@ -46,6 +50,8 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         signInButton.setOnClickListener(this);
         final Button signUpButton = (Button) findViewById(R.id.signup_button);
         signUpButton.setOnClickListener(this);
+        final Button resetPasswordButton = (Button) findViewById(R.id.reset_password_button);
+        resetPasswordButton.setOnClickListener(this);
 
         SearcherThread = new Thread(new SearcherRunnable((MyApplication) getApplication()));
         SearcherThread.start();
@@ -75,6 +81,7 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
+
         switch (v.getId()) {
             case R.id.signin_button: {
                 final TextView statusView = (TextView) findViewById(R.id.status_view);
@@ -89,6 +96,30 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
                 final Intent intent = new Intent(this, SignupActivity.class);
                 startActivity(intent);
                 break;
+            }
+            case R.id.reset_password_button: {
+                final String login = ((EditText) findViewById(R.id.login_edit)).getText().toString().trim();
+                if (login.equals("")) {
+                    final TextView statusView = (TextView) findViewById(R.id.status_view);
+                    statusView.setText(getString(R.string.invalid_login));
+                    return;
+                }
+                RequestMaker.reset_password(login, new RequestCallback() {
+                    @Override
+                    public void run(RequestResult result) {
+                        try {
+                            final TextView statusView = (TextView) findViewById(R.id.status_view);
+                            final JSONObject playerObject = new JSONObject(result.getResponse());
+                            if (playerObject.has("error")) {
+                                statusView.setText(getString(R.string.invalid_login));
+                            } else {
+                                statusView.setText(getString(R.string.success_reset));
+                            }
+                        } catch (JSONException e) {
+                            Log.e("resetPasswordCallback", e.getMessage());
+                        }
+                    }
+                });
             }
         }
     }

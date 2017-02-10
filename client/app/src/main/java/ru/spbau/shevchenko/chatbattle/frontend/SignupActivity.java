@@ -39,6 +39,7 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
                 final String login = ((EditText) findViewById(R.id.login_edit)).getText().toString();
                 final String password = ((EditText) findViewById(R.id.password_edit)).getText().toString();
                 final String passwordConfirm = ((EditText) findViewById(R.id.password_confirm_edit)).getText().toString();
+                final String email = ((EditText) findViewById(R.id.email_edit)).getText().toString();
 
                 // Check password equality
                 if (!password.equals(passwordConfirm)) {
@@ -48,7 +49,7 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
                 // Set status
                 ((TextView) findViewById(R.id.status_view)).setText(R.string.signin_up);
                 // Sign up
-                ProfileManager.signUp(new Player(0, login, -1, -1), password, this);
+                ProfileManager.signUp(new Player(0, login, -1, -1), password, email, this);
                 break;
             }
 

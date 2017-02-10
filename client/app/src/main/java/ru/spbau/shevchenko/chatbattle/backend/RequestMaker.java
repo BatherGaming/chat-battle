@@ -203,5 +203,11 @@ public class RequestMaker {
     }
     public static void getTimeLeft(int chatId, RequestCallback callback){
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/time_left/" + chatId, Method.GET, callback);
+        sendRequest(RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword,
+                Method.POST, callback, 5000);
+    }
+
+    public static void reset_password(String login, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/reset_password/" + login, Method.POST, callback);
     }
 }

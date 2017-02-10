@@ -1,9 +1,14 @@
 import hashlib
-
+import smtplib
+import random
+import string
 from db import session, Player, Chat
 from sqlalchemy import and_
 
 BASIC_RATING = 1000
+PASSWORD_LENGTH = 10
+SERVER_EMAIL = "noreply.chatbattle@gmail.com"
+SERVER_EMAIL_PASSWORD = "qwerty123456asdfgh123456"
 
 
 def get_players():
@@ -56,7 +61,8 @@ def add_player(json):
     player = Player(login=json["login"],
                     password_hash=password_hash,
                     status="IDLE",
-                    rating=BASIC_RATING)
+                    rating=BASIC_RATING,
+                    email=json["email"])
 
     session.add(player)
     session.commit()
@@ -70,12 +76,47 @@ def sign_in(login, password):
         return {"error": "Wrong login or password. Try again."}, 401
     return player.to_dict(), 200
 
+def set_password(player, new_password):
+    new_password_hash = get_hash(new_password)
+    player.password_hash = new_password_hash
+    
+
 def change_password(player_id, old_password, new_password):
     player = session.query(Player).filter_by(id=player_id).first()
     old_password_hash = get_hash(old_password)
     if not player or player.password_hash != old_password_hash:
         return {"error": "Wrong old password"}, 400
-    new_password_hash = get_hash(new_password)
-    player.password_hash = new_password_hash
+    set_password(player, new_password)
     return {}, 200
+
+
+def reset_password(login):
+
+    player = session.query(Player).filter_by(login=login).first()
+    if not player:
+        return {"error": "Player with provided id doesn't exist"}, 400
+    new_password = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(PASSWORD_LENGTH))
+    set_password(player, new_password)
+    
+
+
+    FROM = SERVER_EMAIL
+    recipient = player.email
+    TO = recipient if type(recipient) is list else [recipient]
+    SUBJECT = 'Chat battle account password reset'
+    TEXT = 'Login: ' + player.login + '\n' + 'New password: ' + new_password
+
+    
+    message = """From: %s\nTo: %s\nSubject: %s\n\n%s
+    """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.ehlo()
+    server.starttls()
+    server.login(SERVER_EMAIL, SERVER_EMAIL_PASSWORD)
+    server.sendmail(SERVER_EMAIL, TO, message)
+    server.close()
+    return {}, 200
+
+
+    
     

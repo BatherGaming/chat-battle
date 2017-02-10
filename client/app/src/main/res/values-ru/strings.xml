@@ -63,5 +63,7 @@
     <string name="name">Имя</string>
     <string name="leaderboard">Доска рекордов</string>
     <string name="search">ИСКАТЬ КАК</string>
+    <string name="email">Почта</string>
+    <string name="reset_password_button">Восстановить пароль</string>
 
 </resources>
