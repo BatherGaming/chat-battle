@@ -31,11 +31,12 @@ public class ProfileManager {
         RequestMaker.signIn(password, login, new SignInCallback(loginActivity));
     }
 
-    public static void signUp(Player newPlayer, String password, final SignupActivity signupActivity) {
+    public static void signUp(Player newPlayer, String password, String email, final SignupActivity signupActivity) {
         final JSONObject jsonPlayer;
         try {
             jsonPlayer = new JSONObject().put("login", newPlayer.getLogin())
-                    .put("password", password);
+                    .put("password", password)
+                    .put("email", email);
         } catch (JSONException e) {
             Log.e("signUp()", e.getMessage()); // TODO: handle this
             return;

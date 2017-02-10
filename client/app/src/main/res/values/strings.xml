@@ -61,11 +61,14 @@
     <string name="unknown_error">UNKNOWN ERROR</string>
     <string name="passwords_dont_match">passwords don\'t match</string>
     <string name="change_success">Password has been changed</string>
-    <string name="chat">chat</string>
-    <string name="battle">battle</string>
+    <string name="chat" translatable="false">chat</string>
+    <string name="battle" translatable="false">battle</string>
     <string name="name">Name</string>
     <string name="rating">Rating</string>
     <string name="leaderboard">Leaderboard</string>
     <string name="search">SEARCH AS</string>
-
+    <string name="email">Email</string>
+    <string name="reset_password_button">Reset password</string>
+    <string name="invalid_login">invalid login</string>
+    <string name="success_reset">new password has been sent</string>
 </resources>

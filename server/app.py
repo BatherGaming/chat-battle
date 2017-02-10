@@ -112,6 +112,10 @@ def get_whiteboard(whiteboard_tag):
 def get_chat(chat_id):
     return process(chat_backend.get_chat(chat_id))
 
+@app.route('/profile_manager/reset_password/<login>', methods=['POST'])
+def reset_password(login):
+    return process(profile_manager.reset_password(login))
+
 
 
 if __name__ == '__main__':

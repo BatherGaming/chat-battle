@@ -5,6 +5,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
+
 public class Player {
 
     final private int id;

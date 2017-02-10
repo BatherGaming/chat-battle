@@ -54,6 +54,7 @@ class Player(Base):
     penalty = Column(Enum('NONE', 'MUTED', 'KICKED'))
     mute_end_time = Column(DateTime)
     rating = Column(Integer)
+    email = Column(String)
 
     messages = relationship("Message", backref="sender")
 

@@ -196,9 +196,12 @@ public class RequestMaker {
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/decline/" + id, Method.POST, RequestCallback.DO_NOTHING);
     }
 
-    static public void changePassword(int id, String oldPassword, String newPassword, RequestCallback callback) {
-        Log.d("ch Pass", RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword);
+    public static void changePassword(int id, String oldPassword, String newPassword, RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword,
                 Method.POST, callback, 5000);
+    }
+
+    public static void reset_password(String login, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/reset_password/" + login, Method.POST, callback);
     }
 }
