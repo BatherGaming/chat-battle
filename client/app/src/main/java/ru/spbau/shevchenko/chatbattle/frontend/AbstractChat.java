@@ -52,6 +52,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         @Override
         public void run() {
             if (!timerInitialized){
+                chatStatusHandler.postDelayed(timerRunnable, 1000);
                 return;
             }
             timeLeft = timeLeft > 0 ? timeLeft-1 : 0;

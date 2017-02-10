@@ -64,13 +64,6 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
                 break;
             }
             case R.id.stop_searching_button: {
-                final ImageButton leaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
-                final ImageButton playerButton = (ImageButton) findViewById(R.id.search_as_player_button);
-
-                leaderButton.setClickable(true);
-                playerButton.setClickable(true);
-                leaderButton.clearAnimation();
-                playerButton.clearAnimation();
                 stopSearching();
                 break;
             }
@@ -78,6 +71,14 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
     }
 
     private void stopSearching() {
+        final ImageButton leaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
+        final ImageButton playerButton = (ImageButton) findViewById(R.id.search_as_player_button);
+
+        leaderButton.setClickable(true);
+        playerButton.setClickable(true);
+        leaderButton.clearAnimation();
+        playerButton.clearAnimation();
+
         ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
         RequestMaker.deleteFromQueue(ProfileManager.getPlayer().getId());
 

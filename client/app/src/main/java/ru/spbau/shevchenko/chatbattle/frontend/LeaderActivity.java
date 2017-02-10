@@ -23,10 +23,8 @@ public class LeaderActivity extends AbstractChat {
     }
 
     public void initLayout() {
-        setContentView(R.layout.activity_leader);
+        setContentView(R.layout.activity_player);
 
-        final Button chooseButton = (Button) findViewById(R.id.leader_choose_button);
-        chooseButton.setOnClickListener(this);
     }
 
     @Override
