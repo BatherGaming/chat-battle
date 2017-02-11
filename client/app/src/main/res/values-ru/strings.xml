@@ -65,5 +65,17 @@
     <string name="search">ИСКАТЬ КАК</string>
     <string name="email">Почта</string>
     <string name="reset_password_button">Восстановить пароль</string>
+    <string name="choose">Выбрать</string>
+    <string name="desc_menu_drawer_button">Кнопка меню</string>
+    <string name="desc_play_button">Кнопка играть</string>
+    <string name="green">Зелёный</string>
+    <string name="invalid_login">Неверный логин</string>
+    <string name="kick">Исключить</string>
+    <string name="mute">Заткнуть</string>
+    <string name="play">Играть!</string>
+    <string name="purple">Фиолетовый</string>
+    <string name="red">Красный</string>
+    <string name="success_reset">Новый пароль был выслан на почту</string>
+    <string name="yellow">Жёлтый</string>
 
 </resources>

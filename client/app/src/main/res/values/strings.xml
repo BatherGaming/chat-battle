@@ -69,16 +69,16 @@
     <string name="search">SEARCH AS</string>
     <string name="email">Email</string>
     <string name="reset_password_button">Reset password</string>
-    <string name="invalid_login">invalid login</string>
-    <string name="success_reset">new password has been sent</string>
-    <string name="kick">kick</string>
-    <string name="mute">mute</string>
-    <string name="choose">choose</string>
-    <string name="green">green</string>
-    <string name="yellow">yellow</string>
-    <string name="purple">purple</string>
-    <string name="red">red</string>
-    <string name="desc_menu_drawer_button">menu drawer button</string>
-    <string name="desc_play_button">play button</string>
+    <string name="invalid_login">Invalid login</string>
+    <string name="success_reset">New password has been sent</string>
+    <string name="kick">Kick</string>
+    <string name="mute">Mute</string>
+    <string name="choose">Choose</string>
+    <string name="green">Green</string>
+    <string name="yellow">Yellow</string>
+    <string name="purple">Purple</string>
+    <string name="red">Red</string>
+    <string name="desc_menu_drawer_button">Menu drawer button</string>
+    <string name="desc_play_button">Play button</string>
     <string name="play">Play!</string>
 </resources>
