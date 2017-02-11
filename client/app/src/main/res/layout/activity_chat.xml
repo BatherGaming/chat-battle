@@ -1,0 +1,91 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/abc_action_bar_default_height_material"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        />
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        android:background="@color/light_blue"
+        tools:context="ru.spbau.shevchenko.chatbattle.frontend.PlayerActivity">
+
+        <ListView
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/messages_view"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:transcriptMode="alwaysScroll"
+            android:dividerHeight="0dp"
+            android:divider="@null"
+            android:layout_above="@+id/input_bar" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/initializing_progress_bar"
+            android:progressDrawable="@drawable/waiting_circular_bar" />
+
+        <LinearLayout
+            android:id="@+id/input_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_light_blue"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/whiteboard_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/whiteboard"
+                android:background="@color/white"/>
+            <EditText
+                android:id="@+id/message_input"
+                android:layout_weight="0.5"
+                android:layout_width="0dp"
+                android:textSize="8pt"
+                android:textColor="@color/black"
+                android:layout_height="match_parent" />
+
+            <ImageButton
+                android:id="@+id/send_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/send"
+                android:background="@color/white"/>
+
+
+        </LinearLayout>
+    </RelativeLayout>
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/yellow"
+        app:headerLayout="@layout/drawer_header"
+        app:itemIconTint="@color/purple"
+        app:itemTextColor="@color/light_blue"
+        app:menu="@menu/drawer"/>
+
+</android.support.v4.widget.DrawerLayout>

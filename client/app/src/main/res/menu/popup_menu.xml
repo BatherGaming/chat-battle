@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <item
+            android:id="@+id/item_green"
+            android:icon="@drawable/brush"
+
+            android:title="@string/green"/>
+        <item
+            android:id="@+id/item_yellow"
+            android:icon="@drawable/brush"
+            android:title="@string/yellow"/>
+        <item
+            android:id="@+id/item_purple"
+            android:icon="@drawable/brush"
+            android:title="@string/purple"/>
+        <item
+            android:id="@+id/item_red"
+            android:icon="@drawable/brush"
+            android:title="@string/red"/>
+</menu>

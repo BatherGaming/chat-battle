@@ -20,8 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".frontend.SearchActivity" />
-        <activity android:name=".frontend.ProfileActivity" />
-        <activity android:name=".frontend.PlayerActivity" />
+        <activity android:name=".frontend.Chat" />
         <activity android:name=".frontend.MenuActivity" />
         <activity android:name=".frontend.SignupActivity" />
 
@@ -29,10 +28,9 @@
             android:name=".backend.ChatService"
             android:enabled="true" />
 
-        <activity android:name=".frontend.LeaderActivity" />
         <activity android:name=".frontend.WinnerPickActivity" />
         <activity android:name=".frontend.WhiteboardActivity" />
-        <activity android:name=".frontend.LeaderboardActivity"></activity>
+        <activity android:name=".frontend.LeaderboardActivity" />
     </application>
 
 </manifest>

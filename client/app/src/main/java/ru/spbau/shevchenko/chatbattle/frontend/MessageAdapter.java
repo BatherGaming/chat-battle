@@ -78,7 +78,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                     (ProgressBar) convertView.findViewById(R.id.delivering_progress_bar),
                     (ImageButton) convertView.findViewById(R.id.delete_message_btn),
                     (ImageButton) convertView.findViewById(R.id.retry_sending_btn),
-                    isCur,((AbstractChat) context).getPlayerColor(message.getAuthorId())
+                    isCur
             );
             holder.deleteBtn.setOnClickListener(this);
             holder.retryBtn.setOnClickListener(this);
@@ -88,9 +88,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         }
         holder.deleteBtn.setTag(position);
         holder.retryBtn.setTag(position);
-//        Log.d("getView", position + " - " + message.getText());
-//        Log.d("getView", String.valueOf(holder.deleteBtn.getTag()));
-        holder.textView.setBackgroundResource(holder.color.getTextViewId());
+        holder.textView.setBackgroundResource(((Chat) context).getPlayerColor(message.getAuthorId()).getTextViewId());
         holder.textView.setText(message.getText());
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.textView.getLayoutParams();
@@ -100,11 +98,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         else
             lp.setMargins(dpAsPixels(10), 0, dpAsPixels(20), dpAsPixels(5));
         holder.textView.setLayoutParams(lp);
-        //holder.textView.
-//        if (isCur)
-//            holder.textView.setPadding(dpAsPixels(10), dpAsPixels(5), 0, 0);
-//        else
-//            holder.textView.setPadding(0, dpAsPixels(5), dpAsPixels(10), 0);
+
         lp = (RelativeLayout.LayoutParams) holder.imageView.getLayoutParams();
         lp.addRule(isCur ? RelativeLayout.ALIGN_RIGHT : RelativeLayout.ALIGN_LEFT, holder.textView.getId());
         holder.imageView.setLayoutParams(lp);
@@ -193,7 +187,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                     }
                 }
                 message.setStatus(Message.Status.SENDING);
-                ((AbstractChat) context).sendMessage(message, whiteboardEncoded);
+                ((Chat) context).sendMessage(message, whiteboardEncoded);
 
                 notifyDataSetChanged();
                 break;
@@ -214,18 +208,16 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         private final ImageButton deleteBtn;
         private final ImageButton retryBtn;
         private final boolean isCur;
-        private final AbstractChat.Color color;
 
         MessageViewHolder(TextView textView, ImageView imageView,
                           ProgressBar loadingBar, ImageButton deleteBtn, ImageButton retryBtn,
-                          boolean isCur, AbstractChat.Color color) {
+                          boolean isCur) {
             this.textView = textView;
             this.imageView = imageView;
             this.loadingBar = loadingBar;
             this.deleteBtn = deleteBtn;
             this.retryBtn = retryBtn;
             this.isCur = isCur;
-            this.color = color;
         }
     }
 }

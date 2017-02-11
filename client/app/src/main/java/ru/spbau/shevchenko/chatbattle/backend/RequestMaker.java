@@ -205,8 +205,15 @@ public class RequestMaker {
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/time_left/" + chatId, Method.GET, callback);
 
     }
-
     public static void reset_password(String login, RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/reset_password/" + login, Method.POST, callback);
+    }
+
+    public static void kick(int playerId, int chatId, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/kick/" + chatId + "/" + playerId, Method.POST, callback);
+    }
+    public static void mute(int playerId, int chatId, int muteTime) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/mute/" + chatId + "/" + playerId + "/" + muteTime,
+                Method.POST, RequestCallback.DO_NOTHING);
     }
 }

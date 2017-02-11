@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+        <item
+            android:id="@+id/kick_item"
+            android:icon="@drawable/retry"
+            android:title="@string/kick"
+            app:showAsAction="ifRoom"
+            app:actionViewClass="android.widget.ImageButton"
+            />
+        <item
+            android:id="@+id/mute_item"
+            android:icon="@drawable/brush"
+            android:title="@string/mute"
+            app:showAsAction="ifRoom"
+            app:actionViewClass="android.widget.ImageButton"
+            />
+        <item
+            android:id="@+id/choose_item"
+            android:icon="@drawable/brush"
+            android:title="@string/choose"
+            app:showAsAction="ifRoom"
+            app:actionViewClass="android.widget.ImageButton"
+            />
+
+
+
+</menu>

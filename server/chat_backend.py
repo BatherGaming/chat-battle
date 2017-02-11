@@ -239,7 +239,7 @@ def kick_player(player_id, chat_id):
     chat = session.query(Chat).filter_by(id=player.chat_id).first()
 
     # TODO: think about desired behaviour in this case
-    if len(chat.players) == 1:
+    if len(chat.players) == 2:
         return {"error": "You can't kick last player"}, 400 
 
     if chat.is_closed:
