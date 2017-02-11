@@ -78,4 +78,7 @@
     <string name="yellow">yellow</string>
     <string name="purple">purple</string>
     <string name="red">red</string>
+    <string name="desc_menu_drawer_button">menu drawer button</string>
+    <string name="desc_play_button">play button</string>
+    <string name="play">Play!</string>
 </resources>

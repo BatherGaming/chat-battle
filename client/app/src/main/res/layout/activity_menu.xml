@@ -13,13 +13,14 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:background="@color/light_blue">
+        android:background="@color/sand">
 
         <ImageButton
             android:id="@+id/menu_drawer_button"
-            android:layout_width="40dp"
+            android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/ic_drawer" />
+            android:background="@drawable/ic_drawer"
+            android:contentDescription="@string/desc_menu_drawer_button" />
 
         <TextView
             android:id="@+id/chat_text_view"
@@ -42,18 +43,16 @@
             android:gravity="center_horizontal"
             />
 
-        <ImageButton
-            android:id="@+id/playButton"
-            android:layout_width="300dp"
-            android:layout_height="250dp"
-            android:background="@drawable/play_button"
-            android:text="@string/menu_play_button"
-            android:layout_marginBottom="57dp"
+        <Button
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play"
+            android:textSize="20pt"
+            android:layout_marginBottom="90dp"
+            android:background="@drawable/play_button_normal"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true">
-
-        </ImageButton>
-        <!--style="?android:attr/buttonBarButtonStyle"-->
+            android:layout_centerHorizontal="true" />
 
 
 
@@ -64,12 +63,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/yellow"
+        android:background="@color/white"
         app:headerLayout="@layout/menu_drawer_header"
-
+        app:menu="@menu/menu_drawer"
         app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
-        app:menu="@menu/menu_drawer"/>
-
+        app:itemTextColor="@color/blue900"
+        />
 
 </android.support.v4.widget.DrawerLayout>

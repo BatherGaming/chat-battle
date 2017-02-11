@@ -59,7 +59,6 @@ public class SearcherRunnable implements Runnable {
                 waitingCallback = false;
                 return;
             }
-            Log.d("chIfFoCallb", "checking");
             try {
                 waitingCallback = false;
                 if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.CHATTING_AS_LEADER)

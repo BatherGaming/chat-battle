@@ -72,4 +72,9 @@ public class LeaderboardActivity extends BasicActivity {
 
         RequestMaker.getLeaderboard(leaderboardResponseCallback);
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

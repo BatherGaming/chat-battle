@@ -3,27 +3,30 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:background="@color/light_green"
+    android:background="@color/sand300"
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:id="@+id/menu_header_login"
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/white"
+        android:layout_marginStart="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:textSize="12pt"
         android:textAppearance="?android:attr/textAppearanceLargeInverse"/>
 
     <TextView
-        android:layout_width="match_parent"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_below="@id/menu_header_login"
-        android:layout_marginBottom="8dp"
+        android:layout_alignParentBottom="true"
+        android:textSize="7pt"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
         android:id="@+id/menu_header_rating"
         android:textAppearance="?android:attr/textAppearanceLargeInverse"/>
 

@@ -8,6 +8,8 @@
     <color name="pink">#F8BBD0</color>
     <color name="light_light_blue">#BBDEFB</color>
     <color name="light_blue">#90CAF9</color>
+    <color name="sand">#FFCC80</color>
+    <color name="sand300">#FFB74D</color>
     <color name="black">#000000</color>
     <color name="gray">#9E9E9E</color>
     <color name="gray800">#424242</color>
@@ -17,4 +19,5 @@
     <color name="cyan">#80DEEA</color>
     <color name="light_green">#81C784</color>
     <color name="purple">#B39DDB</color>
+    <color name="red">#F44336</color>
 </resources>

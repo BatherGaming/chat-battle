@@ -12,13 +12,19 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,9 +48,8 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
 
         createDrawer();
 
+        setupPlayButton();
 
-        final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
-        playButton.setOnClickListener(this);
 
         final ImageButton drawerButton = (ImageButton) findViewById(R.id.menu_drawer_button);
         drawerButton.setOnClickListener(this);
@@ -56,13 +61,55 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
 
 
-
-
     }
 
+    private final static int NORMAL_PLAY_BUTTON_SIZE_DP = 180;
+    private final static int NORMAL_MARGIN_BOTTOM_DP = 90;
+    private final static int PRESSED_PLAY_BUTTON_SIZE_DP = 170;
+    private final static int PRESSED_MARGIN_BOTTOM_DP = 95;
+
+    private int toPixels(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
+    }
+
+    public void setupPlayButton() {
+        final Button playButton = (Button) findViewById(R.id.play_button);
+        playButton.setOnClickListener(this);
+        playButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/IMMORTAL.ttf"));
+
+        playButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) playButton.getLayoutParams();
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        params.width = toPixels(PRESSED_PLAY_BUTTON_SIZE_DP);
+                        params.height = toPixels(PRESSED_PLAY_BUTTON_SIZE_DP);
+                        params.bottomMargin = toPixels(PRESSED_MARGIN_BOTTOM_DP);
+                        playButton.setLayoutParams(params);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        params.width = toPixels(NORMAL_PLAY_BUTTON_SIZE_DP);
+                        params.height = toPixels(NORMAL_PLAY_BUTTON_SIZE_DP);
+                        params.bottomMargin = toPixels(NORMAL_MARGIN_BOTTOM_DP);
+                        playButton.setLayoutParams(params);
+                        break;
+                }
+                return false;
+
+            }
+        });
+    }
+
+
+
     public void onClick(View view) {
+
         switch (view.getId()) {
-            case R.id.playButton: {
+            case R.id.play_button: {
+
+
+
                 switch (ProfileManager.getPlayerStatus()) {
                     case IN_QUEUE_AS_LEADER:
                     case IN_QUEUE_AS_PLAYER:
@@ -88,10 +135,12 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
+        final Button play_button = (Button) findViewById(R.id.play_button);
+        play_button.clearAnimation();
+        Log.e("menu", "onResume");
 
         // call it again because of new rating
         createDrawer();
-
         Class<?> previousClass = BasicActivity.getLastActivityClass();
         if (ProfileManager.getPlayer().getChatId() == -1 && previousClass != null && Chat.class.isAssignableFrom(previousClass)) {
             Log.d("My app", previousClass.getName());
@@ -100,10 +149,8 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         }
     }
 
-
     @Override
     public void onBackPressed() {
-
         ExitFragment exitFragment = new ExitFragment();
         exitFragment.setMenuActivity(this);
         exitFragment.show(getFragmentManager(), "");
@@ -165,6 +212,7 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
             case R.id.menu_leaderboard: {
                 final Intent intent = new Intent(this, LeaderboardActivity.class);
                 startActivity(intent);
+                break;
             }
             case R.id.menu_log_out: {
                 finish();
