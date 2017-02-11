@@ -1,6 +1,7 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.NavigationView;
+import android.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -375,12 +378,17 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                             Toast.makeText(Chat.this, result +
                                     "\nNew rating is " + newRating, Toast.LENGTH_LONG).show();
                         }
-                        final Intent intent = new Intent(Chat.this, SummaryActivity.class);
-                        intent.putExtra("player_colors", (Serializable) playerColor);
-                        intent.putExtra("chat_id", ProfileManager.getPlayer().getChatId());
+                        final Bundle bundle = new Bundle();
+                        bundle.putSerializable("player_colors", (Serializable) playerColor);
+                        bundle.putSerializable("player_ids", chatService.getPlayersId());
+                        bundle.putInt("chat_id", ProfileManager.getPlayer().getChatId());
                         ProfileManager.getPlayer().setChatId(-1);
                         ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
-                        startActivity(intent);
+                        final DialogFragment summaryFragment = new SummaryFragment();
+                        summaryFragment.setArguments(bundle);
+                        summaryFragment.show(getFragmentManager(), "");
+                        messageInput.setEnabled(false);
+                        sendBtn.setEnabled(false);
                         //finish();
 
                         break;

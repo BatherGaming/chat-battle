@@ -4,6 +4,7 @@ import random
 import string
 from db import session, Player, Chat
 from sqlalchemy import and_
+from chat_backend import LOSER_DELTA
 
 BASIC_RATING = 1000
 PASSWORD_LENGTH = 10
@@ -118,5 +119,17 @@ def reset_password(login):
     return {}, 200
 
 
-    
+def get_ratings(player_ids):
+    def to_dict(player):
+        return {"id": player.id, "login": player.login, "new_rating": player.rating,
+                            "old_rating": player.rating - LOSER_DELTA}
+
+    player_ids = player_ids.split(",")
+    players = []
+    for id in player_ids:
+        player = session.query(Player).filter_by(id=id).first()
+        players.append(to_dict(player))
+
+    return players, 200
+
     

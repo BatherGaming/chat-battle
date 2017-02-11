@@ -292,10 +292,4 @@ def get_summary(chat_id):
 
     leader = session.query(Player).filter_by(id=chat.leader_id).first()
     winner = session.query(Player).filter_by(id=chat.winner_id).first()
-    print("Chat players: ", chat.players)
-
-    players = []
-    for player in chat.players:
-        if player.id != leader.id and player.id != winner.id:
-            players.append(to_dict(player))
     return {"leader": to_dict(leader), "winner": to_dict(winner)}, 200

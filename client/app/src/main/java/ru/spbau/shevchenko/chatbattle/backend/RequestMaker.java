@@ -159,10 +159,14 @@ public class RequestMaker {
     public static void getLeaderboard(RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/players/leaderboard", Method.GET, callback);
     }
+
     public static void getSummary(int chatId, RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/summary/" + chatId, Method.GET, callback);
     }
 
+    public static void getRatings(String idsString, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/ratings/" + idsString, Method.GET, callback);
+    }
 
     public static void chooseWinner(int chosen, RequestCallback choseCallback) { // ++++
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/close/" + ProfileManager.getPlayer().getId() + "/" + chosen, Method.POST, choseCallback);
