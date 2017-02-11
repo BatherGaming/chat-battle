@@ -15,6 +15,7 @@ BATTLE_TIME = 30
 
 
 def create_chat(chat_type, players_ids, leader_id):
+    print("create_chat")
     chat = Chat(type=chat_type, creation_time=datetime.datetime.now(),
                 is_closed=False, leader_id=leader_id, accepted=0)
     session.add(chat)
@@ -41,6 +42,7 @@ def close(chat, winner_id):
 
 
 def close_chat(leader_id, winner_id):
+    print("close_chat")
     leader = session.query(Player).filter_by(id=leader_id).first()
     if not leader:
         return {"error": "player with provided leader_id doesn't exist"}, 400
@@ -77,6 +79,7 @@ def save_whiteboard(whiteboard_body):
 
 
 def send_message(json):
+    print("send_message")
     if not json or 'authorId' not in json\
             or 'text' not in json\
             or 'chatId' not in json\
@@ -137,11 +140,13 @@ def verify(chat):
             close_chat(chat.leader_id, winner_id)
         return
     if (datetime.datetime.now() - chat.creation_time).total_seconds() > 25:
+        print("mamku ebal")
         close(chat, -1)
 
 
 
 def chat_status(player_id, chat_id):
+    print("chat_status")
     player = session.query(Player).filter_by(id=player_id).first()
     chat = session.query(Chat).filter_by(id=chat_id).first()
     if player.penalty == "MUTED" and  player.mute_end_time < datetime.datetime.now():
@@ -217,6 +222,7 @@ def get_whiteboard(whiteboard_tag):
         return base64.b64encode(whiteboard)
 
 def mute_player(player_id, chat_id, mute_time):
+    print("mute_player")
     player = session.query(Player).filter_by(id=player_id).first()
     if not player:
         return {"error": "Player doesn't exist"}, 400
@@ -227,10 +233,12 @@ def mute_player(player_id, chat_id, mute_time):
         return {}, 200
     player.penalty = "MUTED"
     player.mute_end_time = datetime.datetime.now() + datetime.timedelta(seconds=mute_time)
+    print("mute2")
     session.commit()
     return {}, 200
 
 def kick_player(player_id, chat_id):
+    print("kick_player")
     player = session.query(Player).filter_by(id=player_id).first()
     if not player:
         return {"error": "Player doesn't exist"}, 400
@@ -246,12 +254,14 @@ def kick_player(player_id, chat_id):
         return {}, 200
     player.penalty = "KICKED"
     player.status = "IDLE"
+    player.rating += LOSER_DELTA
     player.chat_id = None
     session.commit()
 
     return {}, 200
 
 def get_time_left(chat_id):
+    print("get_time_left")
     chat = session.query(Chat).filter_by(id=chat_id).first()
     if not chat:
         return {"error": "Chat doesn't exist"}, 400
@@ -261,3 +271,31 @@ def get_time_left(chat_id):
         return {"error": "Chat has not yet started"}, 400
 
     return {"time": (chat.end_time - datetime.datetime.now()).total_seconds()}, 200
+
+def get_summary(chat_id):
+    print("get_summary")
+    chat = session.query(Chat).filter_by(id=chat_id).first()
+    def to_dict(player):
+        delta = 0
+        if player.id == chat.winner_id:
+            delta = WINNER_DELTA
+        elif player.id == chat.leader_id:
+            delta = 0
+        else:
+            delta = LOSER_DELTA
+        return {"id": player.id, "login": player.login, "new_rating": player.rating,
+                            "old_rating": player.rating - delta}
+    if not chat:
+        return {"error": "Chat doesn't exist"}, 400
+    if not chat.is_started or not chat.is_closed:
+        return {"error": "Chat summary doesn't exist"}, 400
+
+    leader = session.query(Player).filter_by(id=chat.leader_id).first()
+    winner = session.query(Player).filter_by(id=chat.winner_id).first()
+    print("Chat players: ", chat.players)
+
+    players = []
+    for player in chat.players:
+        if player.id != leader.id and player.id != winner.id:
+            players.append(to_dict(player))
+    return {"leader": to_dict(leader), "winner": to_dict(winner)}, 200

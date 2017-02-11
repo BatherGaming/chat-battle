@@ -21,7 +21,7 @@ import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
-public class LeaderboardActivity extends AppCompatActivity {
+public class LeaderboardActivity extends BasicActivity {
     private ListView leaderboardView;
     private TextView leaderboardText;
     private LeaderboardAdapter leaderboardAdapter;
@@ -59,7 +59,7 @@ public class LeaderboardActivity extends AppCompatActivity {
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
 

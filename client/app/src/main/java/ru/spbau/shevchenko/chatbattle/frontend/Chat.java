@@ -1,5 +1,6 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -97,6 +99,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
 
     private boolean initialized = false;
 
+    @SuppressLint("UseSparseArrays")
     private final Map<Integer, Color> playerColor = new HashMap<>();
     private int usedColors = 0;
 
@@ -372,10 +375,14 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                             Toast.makeText(Chat.this, result +
                                     "\nNew rating is " + newRating, Toast.LENGTH_LONG).show();
                         }
+                        final Intent intent = new Intent(Chat.this, SummaryActivity.class);
+                        intent.putExtra("player_colors", (Serializable) playerColor);
+                        intent.putExtra("chat_id", ProfileManager.getPlayer().getChatId());
                         ProfileManager.getPlayer().setChatId(-1);
                         ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
+                        startActivity(intent);
+                        //finish();
 
-                        finish();
                         break;
                 }
             } catch (JSONException e) {
@@ -542,8 +549,4 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
             popup.show();
         }
     }
-
-
-
-
 }
