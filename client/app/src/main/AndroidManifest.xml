@@ -32,7 +32,8 @@
         <activity android:name=".frontend.LeaderActivity" />
         <activity android:name=".frontend.WinnerPickActivity" />
         <activity android:name=".frontend.WhiteboardActivity" />
-        <activity android:name=".frontend.LeaderboardActivity"></activity>
+        <activity android:name=".frontend.LeaderboardActivity" />
+        <activity android:name=".frontend.SummaryActivity"></activity>
     </application>
 
 </manifest>

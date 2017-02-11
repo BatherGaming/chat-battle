@@ -1,5 +1,6 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +12,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,10 +25,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
@@ -38,7 +38,6 @@ import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
-import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
 
 
 public abstract class AbstractChat extends BasicActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -52,6 +51,7 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
         @Override
         public void run() {
             if (!timerInitialized){
+                chatStatusHandler.postDelayed(timerRunnable, 1000);
                 return;
             }
             timeLeft = timeLeft > 0 ? timeLeft-1 : 0;
@@ -86,13 +86,15 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
 
     private boolean initialized = false;
 
-    private final SparseArray<Color> playerColor = new SparseArray<>();
+    @SuppressLint("UseSparseArrays")
+    private final HashMap<Integer, Color> playerColor = new HashMap<>();
     private int usedColors = 0;
 
     Color getPlayerColor(int playerId) {
-        Color color = playerColor.get(playerId, null);
-        if (color != null) return  color;
-        color = Color.values()[usedColors++];
+        if (playerColor.containsKey(playerId)) {
+            return playerColor.get(playerId);
+        }
+        Color color = Color.values()[usedColors++];
         playerColor.put(playerId, color);
         return color;
     }
@@ -308,10 +310,13 @@ public abstract class AbstractChat extends BasicActivity implements View.OnClick
                         Toast.makeText(AbstractChat.this, result +
                                 "\nNew rating is " + newRating, Toast.LENGTH_LONG).show();
                     }
+                    final Intent intent = new Intent(AbstractChat.this, SummaryActivity.class);
+                    intent.putExtra("player_colors", (Serializable) playerColor);
+                    intent.putExtra("chat_id", ProfileManager.getPlayer().getChatId());
                     ProfileManager.getPlayer().setChatId(-1);
                     ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
-
-                    finish();
+                    startActivity(intent);
+                    //finish();
                 }
             } catch (JSONException e) {
                 Log.e("ChatAct.iFHandler.run", e.getMessage());

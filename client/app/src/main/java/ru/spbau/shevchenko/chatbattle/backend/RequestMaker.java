@@ -159,6 +159,10 @@ public class RequestMaker {
     public static void getLeaderboard(RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/players/leaderboard", Method.GET, callback);
     }
+    public static void getSummary(int chatId, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/summary/" + chatId, Method.GET, callback);
+    }
+
 
     public static void chooseWinner(int chosen, RequestCallback choseCallback) { // ++++
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/close/" + ProfileManager.getPlayer().getId() + "/" + chosen, Method.POST, choseCallback);
@@ -203,8 +207,6 @@ public class RequestMaker {
     }
     public static void getTimeLeft(int chatId, RequestCallback callback){
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/time_left/" + chatId, Method.GET, callback);
-        sendRequest(RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword,
-                Method.POST, callback, 5000);
     }
 
     public static void reset_password(String login, RequestCallback callback) {

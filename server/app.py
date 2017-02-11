@@ -59,6 +59,7 @@ def get_messages(chat_id, num):
 
 @app.route('/chat/close/<int:leader_id>/<int:winner_id>', methods=['POST'])
 def close_chat(leader_id, winner_id):
+    print("po ebalu")
     return process(chat_backend.close_chat(leader_id, winner_id))
 
 
@@ -112,6 +113,7 @@ def get_whiteboard(whiteboard_tag):
 def get_chat(chat_id):
     return process(chat_backend.get_chat(chat_id))
 
+
 @app.route('/profile_manager/reset_password/<login>', methods=['POST'])
 def reset_password(login):
     return process(profile_manager.reset_password(login))
@@ -120,6 +122,12 @@ def reset_password(login):
 @app.route('/chat/time_left/<int:chat_id>', methods=['GET'])
 def get_time_left(chat_id):
     return process(chat_backend.get_time_left(chat_id))
+
+
+@app.route('/chat/summary/<int:chat_id>', methods=['GET'])
+def get_chat_summary(chat_id):
+    return process(chat_backend.get_summary(chat_id))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
