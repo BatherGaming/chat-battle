@@ -83,7 +83,7 @@ public class SummaryActivity extends AppCompatActivity {
         summaryView = (ListView) findViewById(R.id.summary_view);
         summaryView.setEnabled(false);
         summaryAdapter = new SummaryAdapter(this);
-        HashMap<Integer, AbstractChat.Color> playerColors = (HashMap<Integer, AbstractChat.Color>)intent.getSerializableExtra("player_colors");
+        HashMap<Integer, Chat.Color> playerColors = (HashMap<Integer, Chat.Color>)intent.getSerializableExtra("player_colors");
         summaryAdapter.setPlayerColors(playerColors);
         summaryView.setAdapter(summaryAdapter);
 

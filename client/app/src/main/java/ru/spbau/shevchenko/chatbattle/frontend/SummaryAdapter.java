@@ -45,7 +45,7 @@ public class SummaryAdapter extends BaseAdapter {
 
     private int playerPosition;
     private final Context context;
-    private HashMap<Integer, AbstractChat.Color> playerColors;
+    private HashMap<Integer, Chat.Color> playerColors;
 
     SummaryAdapter(Context context){
         this.context = context;
@@ -96,17 +96,17 @@ public class SummaryAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setPlayerColors(HashMap<Integer, AbstractChat.Color> playerColors) {
+    public void setPlayerColors(HashMap<Integer, Chat.Color> playerColors) {
         this.playerColors = playerColors;
     }
 
-    public AbstractChat.Color getPlayerColor(int playerId) {
+    public Chat.Color getPlayerColor(int playerId) {
         if (playerColors.containsKey(playerId)) {
             Log.d("getPC", "" + playerId);
             Log.d("getPC", "" + playerColors.get(playerId));
             return playerColors.get(playerId);
         }
-        AbstractChat.Color color = AbstractChat.Color.values()[playerColors.size()];
+        Chat.Color color = Chat.Color.values()[playerColors.size()];
         playerColors.put(playerId, color);
         Log.d("getPC", "" + color);
         return color;
