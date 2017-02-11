@@ -141,6 +141,7 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         final EditText loginEdit = (EditText) findViewById(R.id.login_edit);
         final EditText passwordEdit = (EditText) findViewById(R.id.password_edit);
         final TextView statusView = (TextView) findViewById(R.id.status_view);
+        final Button reset = (Button) findViewById(R.id.reset_password_button);
 
         spinner.setVisibility(spinnerVisibility);
 
@@ -149,6 +150,7 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         loginEdit.setVisibility(layoutVisibility);
         passwordEdit.setVisibility(layoutVisibility);
         statusView.setVisibility(layoutVisibility);
+        reset.setVisibility(layoutVisibility);
     }
 
     private boolean autoLogin() {

@@ -7,17 +7,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,33 +31,16 @@ import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
-import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
 
 
-public class MenuActivity extends BasicActivity implements View.OnClickListener {
-
-    private enum PlayerStatus {
-        NAME, RATING, CHANGE_PASSWORD, LEADERBOARD, LOG_OUT;
-        public String toString() {
-            switch (this) {
-                case NAME: return StringConstants.getNAME();
-                case RATING: return StringConstants.getRATING();
-                case CHANGE_PASSWORD: return StringConstants.getCHANGE_PASSWORD();
-                case LEADERBOARD: return StringConstants.getLEADERBOARD();
-                case LOG_OUT: return StringConstants.getLOG_OUT();
-            }
-            throw new IllegalArgumentException();
-        }
-    }
-
-
+public class MenuActivity extends BasicActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        onNavigationDrawerCreate();
+        createDrawer();
 
 
         final ImageButton playButton = (ImageButton) findViewById(R.id.playButton);
@@ -88,20 +71,14 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
                         startActivity(intent);
                         break;
                     }
-                    case CHATTING_AS_LEADER: {
-                        final Intent intent = new Intent(this, LeaderActivity.class);
-                        startActivity(intent);
-                        break;
-                    }
-                    case CHATTING_AS_PLAYER: {
-                        final Intent intent = new Intent(this, PlayerActivity.class);
-                        startActivity(intent);
+                    default: {
+                        startActivity(new Intent(this, Chat.class));
                     }
                 }
                 break;
             }
             case R.id.menu_drawer_button: {
-                openDrawer();
+                mDrawerLayout.openDrawer(GravityCompat.START);
             }
 
         }
@@ -113,10 +90,10 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
         super.onResume();
 
         // call it again because of new rating
-        onNavigationDrawerCreate();
+        createDrawer();
 
         Class<?> previousClass = BasicActivity.getLastActivityClass();
-        if (ProfileManager.getPlayer().getChatId() == -1 && previousClass != null && AbstractChat.class.isAssignableFrom(previousClass)) {
+        if (ProfileManager.getPlayer().getChatId() == -1 && previousClass != null && Chat.class.isAssignableFrom(previousClass)) {
             Log.d("My app", previousClass.getName());
             final Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
@@ -162,47 +139,48 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
     //
 
 
-    public void onNavigationDrawerCreate() {
-        //final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        final CharSequence[] adaptersItems = {
-                PlayerStatus.NAME.toString() + ": " + ProfileManager.getPlayer().getLogin(),
-                PlayerStatus.RATING.toString() + ": " + ProfileManager.getPlayer().getRating(),
-                PlayerStatus.CHANGE_PASSWORD.toString(),
-                PlayerStatus.LEADERBOARD.toString(),
-                PlayerStatus.LOG_OUT.toString()
-        };
-        final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this,
-                R.layout.drawer_list_item, adaptersItems);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+    private DrawerLayout mDrawerLayout;
+
+    void createDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        final View headerLayout = navigationView.getHeaderView(0);
+        final TextView loginView = (TextView) headerLayout.findViewById(R.id.menu_header_login);
+        final TextView ratingView = (TextView) headerLayout.findViewById(R.id.menu_header_rating);
+
+        loginView.setText(ProfileManager.getPlayer().getLogin());
+        ratingView.setText(String.valueOf(ProfileManager.getPlayer().getRating()));
     }
 
-    public void openDrawer(){
-        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.openDrawer(GravityCompat.START);
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
-
-    }
-
-    private void selectItem(int position) {
-        if (position == PlayerStatus.CHANGE_PASSWORD.ordinal()) {
-            ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog();
-            changePasswordDialog.show(getFragmentManager(), "");
-        } else if (position == PlayerStatus.LEADERBOARD.ordinal()) {
-            final Intent intent = new Intent(this, LeaderboardActivity.class);
-            startActivity(intent);
-        } else if (position == PlayerStatus.LOG_OUT.ordinal()) {
-            finish();
+    private void navigate(int id) {
+        switch (id) {
+            case R.id.menu_change_password: {
+                ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog();
+                changePasswordDialog.show(getFragmentManager(), "");
+                break;
+            }
+            case R.id.menu_leaderboard: {
+                final Intent intent = new Intent(this, LeaderboardActivity.class);
+                startActivity(intent);
+            }
+            case R.id.menu_log_out: {
+                finish();
+                break;
+            }
         }
     }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
+        menuItem.setChecked(true);
+        navigate(menuItem.getItemId());
+        return true;
+    }
+
+
 
     static public class ChangePasswordDialog extends DialogFragment {
 

@@ -157,9 +157,12 @@ public class BattleFoundDialogFragment extends DialogFragment {
                             break;
                         }
                     }
-                    final Intent intent = role == Role.PLAYER ?
-                            new Intent(getActivity(), PlayerActivity.class) :
-                            new Intent(getActivity(), LeaderActivity.class);
+                    if (role == Role.PLAYER) {
+                        ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_PLAYER);
+                    } else {
+                        ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_LEADER);
+                    }
+                    final Intent intent = new Intent(getActivity(), Chat.class);
                     intent.putExtra("chatId", chatId);
                     startActivity(intent);
                     dismiss();

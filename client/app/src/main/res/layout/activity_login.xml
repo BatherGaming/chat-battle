@@ -42,7 +42,7 @@
         android:layout_height="60dp"
         android:inputType="text"
         android:background="@drawable/rounded_rect"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="250dp"
         android:paddingStart="8dp"
         android:paddingLeft="8dp"
         android:paddingRight="0dp"
@@ -66,38 +66,42 @@
         android:paddingStart="8dp"
         android:paddingLeft="8dp"
         android:paddingRight="0dp"
-        android:paddingEnd="0dp"
+        android:paddingEnd="0dp"/>
 
-
-
-        />
-        <!--android:fontFamily="sans-serif"-->
-    <LinearLayout
-        android:id="@+id/signin_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/signin_button"
+        android:text="@string/signin_button"
+        android:textColor="@color/blue900"
         android:layout_below="@+id/password_edit"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true">
-        <Button
-            android:id="@+id/signin_button"
-            android:text="@string/signin_button"
-            android:textColor="@color/blue900"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="?android:attr/buttonBarButtonStyle"/>
-        <Button
-            android:id="@+id/signup_button"
-            android:text="@string/signup_button"
-            android:textColor="@color/blue900"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="?android:attr/buttonBarButtonStyle"/>
-    </LinearLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/password_edit"
+        android:layout_alignRight="@id/password_edit"
+        android:layout_alignEnd="@id/password_edit"
+        android:layout_alignStart="@id/password_edit"
+        />
+
+
+
+    <Button
+        android:layout_below="@+id/signin_button"
+        android:id="@+id/signup_button"
+        android:text="@string/signup_button"
+        android:textColor="@color/blue900"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarButtonStyle"/>
+    <Button
+        android:layout_below="@+id/signup_button"
+        android:id="@+id/reset_password_button"
+        android:text="@string/reset_password_button"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/blue900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarButtonStyle"
+        />
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
@@ -109,18 +113,7 @@
 
 
 
-    <Button
-        android:id="@+id/reset_password_button"
-        android:text="@string/reset_password_button"
-        android:textColor="@color/blue900"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
 
-        style="?android:attr/buttonBarButtonStyle"
-        android:layout_below="@+id/signin_layout"
-        android:layout_centerHorizontal="true"
-        />
     <TextView
         android:id="@+id/status_view"
         android:text="tu pidor"

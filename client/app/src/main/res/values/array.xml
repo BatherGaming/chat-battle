@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="menu_spinner_array">
+    <item>a</item>
+        <item>a1</item>
+        <item>a2</item>
 
     </string-array>
 </resources>
