@@ -3,14 +3,18 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -22,9 +26,8 @@ import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 public class LeaderboardActivity extends BasicActivity {
-    private ListView leaderboardView;
+    private TableLayout leaderboardView;
     private TextView leaderboardText;
-    private LeaderboardAdapter leaderboardAdapter;
 
     private RequestCallback leaderboardResponseCallback = new RequestCallback() {
         @Override
@@ -35,22 +38,34 @@ public class LeaderboardActivity extends BasicActivity {
             try {
                 JSONArray jsonLeaderboard = new JSONArray(result.getResponse());
                 int count = Math.min(10, jsonLeaderboard.length());
-                for (int i = 0; i < jsonLeaderboard.length(); i++) {
+                boolean currentAdded = false;
+                for (int i = 0; i < count; i++) {
                     final JSONObject jsonLeaderboardPlayer = jsonLeaderboard.getJSONObject(i);
                     final Player leaderboardPlayer = Player.fromJSON(jsonLeaderboardPlayer);
+                    leaderboard.add(leaderboardPlayer);
                     if (leaderboardPlayer.getId() == ProfileManager.getPlayer().getId()){
-                        leaderboardAdapter.setPlayerPosition(i+1);
-                        leaderboard.add(leaderboardPlayer);
+                        currentAdded = true;
                     }
-                    else if (i < count) {
-                        leaderboard.add(leaderboardPlayer);
-                    }
+                }
+                if (!currentAdded) {
+                    leaderboard.add(ProfileManager.getPlayer());
                 }
             } catch (JSONException e) {
                 Log.d("leaderboardCallback", result.getResponse());
                 Log.e("leaderboardCallback", "json error");
             }
-            leaderboardAdapter.setLeaderboard(leaderboard);
+
+            for (Player player : leaderboard) {
+                final TableRow row = (TableRow) LayoutInflater.from(LeaderboardActivity.this).inflate(R.layout.leader, null);
+                TextView tv = (TextView) row.getChildAt(0);
+                tv.setText(String.valueOf(player.getId()));
+                tv = (TextView) row.getChildAt(1);
+                tv.setText(String.valueOf(player.getLogin()));
+                tv = (TextView) row.getChildAt(2);
+                tv.setText(String.valueOf(player.getRating()));
+                leaderboardView.addView(row);
+            }
+
             leaderboardView.setEnabled(true);
             leaderboardText.setEnabled(true);
             final ProgressBar spinner = (ProgressBar) findViewById(R.id.initializing_progress_bar);
@@ -65,10 +80,10 @@ public class LeaderboardActivity extends BasicActivity {
 
         leaderboardText = (TextView) findViewById(R.id.leaderboard_text);
         leaderboardText.setEnabled(false);
-        leaderboardView = (ListView) findViewById(R.id.leaderboard_view);
+        leaderboardView = (TableLayout) findViewById(R.id.leaderboard_view);
+        leaderboardView.setStretchAllColumns(true);
         leaderboardView.setEnabled(false);
-        leaderboardAdapter = new LeaderboardAdapter(this);
-        leaderboardView.setAdapter(leaderboardAdapter);
+
 
         RequestMaker.getLeaderboard(leaderboardResponseCallback);
     }
