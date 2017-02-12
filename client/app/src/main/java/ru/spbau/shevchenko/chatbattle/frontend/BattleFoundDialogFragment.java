@@ -54,7 +54,9 @@ public class BattleFoundDialogFragment extends DialogFragment {
                         getStatusHandler.removeCallbacks(getStatusRunnable);
                     }
                 });
-        return builder.create();
+        Dialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
     }
 
     @Override

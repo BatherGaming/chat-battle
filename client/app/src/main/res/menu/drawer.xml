@@ -9,14 +9,14 @@
             />
         <item
             android:id="@+id/mute_item"
-            android:icon="@drawable/brush"
+            android:icon="@drawable/whiteboard_brush"
             android:title="@string/mute"
             app:showAsAction="ifRoom"
             app:actionViewClass="android.widget.ImageButton"
             />
         <item
             android:id="@+id/choose_item"
-            android:icon="@drawable/brush"
+            android:icon="@drawable/whiteboard_brush"
             android:title="@string/choose"
             app:showAsAction="ifRoom"
             app:actionViewClass="android.widget.ImageButton"

@@ -3,7 +3,6 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,7 +28,7 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
         // Set initial color
         final LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
         currPaint = (ImageButton) paintLayout.getChildAt(0);
-        currPaint.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.paint_pressed, null));
+        currPaint.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.whiteboard_paint_pressed, null));
 
         smallBrush = getResources().getInteger(R.integer.small_size);
         mediumBrush = getResources().getInteger(R.integer.medium_size);
@@ -57,8 +56,8 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
             final ImageButton imgView = (ImageButton) view;
             final String color = view.getTag().toString();
             drawView.setColor(color);
-            imgView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.paint_pressed, null));
-            currPaint.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.paint, null));
+            imgView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.whiteboard_paint_pressed, null));
+            currPaint.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.whiteboard_paint, null));
             currPaint = (ImageButton) view;
 
         }

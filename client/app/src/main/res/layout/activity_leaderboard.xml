@@ -25,6 +25,8 @@
         android:layout_height="match_parent"
         android:id="@+id/leaderboard_view"
         android:layout_below="@+id/leaderboard_text"
+        android:divider="@drawable/divider_3dp"
+        android:showDividers="middle"
     />
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"

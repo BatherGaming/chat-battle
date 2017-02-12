@@ -1,30 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_battle_summary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    > -->
+    >
+    <TextView
+        android:gravity="center"
+        android:textSize="@dimen/summary_title_font_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/summary"
+        android:textColor="@color/black"
+        android:background="@color/sand"
+        android:id="@+id/summary_text" />
+    <TextView
+        android:id="@+id/divider"
+        android:layout_below="@id/summary_text"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/black"/>
     <TableLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_below="@id/divider"
         android:paddingStart="@dimen/small_padding"
         android:paddingLeft="@dimen/small_padding"
         android:paddingRight="@dimen/small_padding"
         android:paddingEnd="@dimen/small_padding"
-        android:paddingTop="@dimen/small_padding"
-        android:paddingBottom="@dimen/small_padding"
         android:id="@+id/summary_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:divider="@drawable/divider_2dp"
+        android:showDividers="middle"
+
+    />
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/black"
+        android:text="@string/ok_caps"
+        android:layout_below="@+id/summary_view"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:background="@drawable/button_summary_ok"
          />
-    <!--<ProgressBar
+    <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:id="@+id/initializing_progress_bar"
         android:progressDrawable="@drawable/waiting_circular_bar" />
-</RelativeLayout>-->
+</RelativeLayout>

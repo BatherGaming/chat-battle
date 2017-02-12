@@ -1,15 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_change_password"
-        android:icon="@drawable/settings"
+        android:icon="@drawable/drawer_settings"
         android:title="@string/change_password"/>
     <item
         android:id="@+id/menu_leaderboard"
-        android:icon="@drawable/pedestal"
+        android:icon="@drawable/drawer_pedestal"
         android:title="@string/leaderboard"/>
     <item
         android:id="@+id/menu_log_out"
-        android:icon="@drawable/logout"
+        android:icon="@drawable/drawer_logout"
         android:title="@string/log_out"/>
 </menu>
 

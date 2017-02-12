@@ -32,8 +32,6 @@
     <string name="battle_found">Battle for you has been found</string>
     <string name="search_as_player">You are searching as player</string>
     <string name="search_as_leader">You are searching as leader</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_screen_stop_searching_button">Stop searching</string>
 
     <string name="start_new">New</string>
@@ -81,7 +79,11 @@
     <string name="desc_menu_drawer_button">Menu drawer button</string>
     <string name="desc_play_button">Play button</string>
     <string name="play">Play!</string>
-    <string name="leader">LEADER</string>
+    <string name="leader_caps">LEADER</string>
+    <string name="leader">Leader</string>
+    <string name="winner">Winner</string>
     <string name="player">PLAYER</string>
     <string name="want_to_play">I wanna play as</string>
+    <string name="summary">Summary</string>
+    <string name="ok_caps">OK</string>
 </resources>

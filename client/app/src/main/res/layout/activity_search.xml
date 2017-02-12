@@ -71,7 +71,7 @@
             android:layout_width="220dp"
             android:layout_height="70dp"
             android:id="@+id/search_as_leader_button"
-            android:text="@string/leader"
+            android:text="@string/leader_caps"
             android:textSize="10pt"
             android:layout_weight="1"
             android:layout_marginStart="20dp"
@@ -83,7 +83,7 @@
             android:layout_marginBottom="10dp"
 
             android:textColor="@color/white"
-            android:background="@drawable/role_button"
+            android:background="@drawable/button_role"
             />
         <Button
             android:layout_width="220dp"
@@ -103,7 +103,7 @@
 
 
             android:textColor="@color/white"
-            android:background="@drawable/role_button"
+            android:background="@drawable/button_role"
             />
 
 

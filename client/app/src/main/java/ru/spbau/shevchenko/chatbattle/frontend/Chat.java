@@ -1,7 +1,6 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -390,6 +388,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                         final DialogFragment summaryFragment = new SummaryFragment();
                         summaryFragment.setArguments(bundle);
                         summaryFragment.show(getFragmentManager(), "");
+
                         messageInput.setEnabled(false);
                         sendBtn.setEnabled(false);
                         //finish();
@@ -460,7 +459,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
 
     void setupMenuItem(Menu menu, Action action) {
         ImageButton locButton = (ImageButton) menu.findItem(action.getItemId()).getActionView();
-        locButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.brush));
+        locButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.whiteboard_brush));
         locButton.setOnClickListener(new MenuItemListener(action));
     }
 

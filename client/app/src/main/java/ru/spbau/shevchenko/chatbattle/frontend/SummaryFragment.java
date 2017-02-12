@@ -16,8 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +38,7 @@ import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
+import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -43,7 +47,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
     private boolean playersInitialized = false;
     private TableLayout summaryView;
     private HashMap<Integer, Chat.Color> playerColors;
-    private View parentView;
+    private RelativeLayout summaryParentView;
 
     private boolean winnerInitialized = false;
     private SummaryPlayer leader;
@@ -77,8 +81,18 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         if (!winnerInitialized || !playersInitialized) {
             return;
         }
-
-        summaryView.addView(createSummaryRow("", new SummaryPlayer(-1, "", "Login", "Rating", "Rating"), true, false));
+        String loginString = getResources().getString(R.string.login);
+        String ratingString = getResources().getString(R.string.rating);
+        Context context = getActivity();
+//        final TableRow titleRow = new TableRow(context);
+//        TextView titleView = (TextView) LayoutInflater.from(context).inflate(R.layout.spanned_text_view_3, null);
+//        titleView.setText(getResources().getString(R.string.summary));
+//        titleView.setTextSize(getResources().getDimension(R.dimen.summary_title_font_size));
+//        titleView.setGravity(Gravity.CENTER);
+//        titleView.setTextColor(ContextCompat.getColor(context, R.color.black));
+//        titleRow.addView(titleView);
+//        summaryView.addView(titleRow);
+        summaryView.addView(createSummaryRow("", new SummaryPlayer(-1, "", loginString, ratingString, ratingString), true, false));
         summaryView.addView(createSummaryRow("Leader:", leader, true));
         summaryView.addView(createSummaryRow("Winner:", winner, false));
         boolean first = true;
@@ -91,8 +105,8 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
             }
         }
         summaryView.setEnabled(true);
-        //final ProgressBar spinner = (ProgressBar) parentView.findViewById(R.id.initializing_progress_bar);
-        //spinner.setVisibility(View.GONE);
+        final ProgressBar spinner = (ProgressBar) summaryParentView.findViewById(R.id.initializing_progress_bar);
+        spinner.setVisibility(View.GONE);
 
     }
     private View createSummaryRow(String comment, SummaryPlayer player, boolean spanRating) {
@@ -102,9 +116,10 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         Context context = getActivity();
         TableRow row = new TableRow(context);
         row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        // TODO: fix long nicknames causing rating changes to go out of dialog boundaries
         for (int i = 0; i < 4; i++ ) {
             TextView tv = new TextView(context);
-            tv.setTextSize(20);
+            tv.setTextSize(getResources().getDimension(R.dimen.summary_font_size));
             tv.setGravity(Gravity.CENTER);
             tv.setTextColor(ContextCompat.getColor(context, R.color.black));
             row.addView(tv);
@@ -114,7 +129,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         if (color) {
             row.getChildAt(1).setBackgroundResource(getPlayerColor(player.id).getTextViewId());
         }
-        if (spanRating){
+        if (spanRating) {
             setText(row, 2, player.new_rating);
         }
         else {
@@ -153,15 +168,20 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         @Override
         public void run(RequestResult result) {
             // TODO: handle non-OK request result
-            final ArrayList<Player> leaderboard = new ArrayList<>();
             try {
                 JSONObject jsonSummary = new JSONObject(result.getResponse());
                 JSONObject jsonLeader = jsonSummary.getJSONObject("leader");
-                leader = new SummaryPlayer(jsonLeader.getInt("id"), "Leader:", jsonLeader.getString("login"),
-                        jsonLeader.getString("old_rating"), jsonLeader.getString("new_rating"));
+                leader = new SummaryPlayer(jsonLeader.getInt("id"),
+                                           getResources().getString(R.string.leader) + ":",
+                                           jsonLeader.getString("login"),
+                                           jsonLeader.getString("old_rating"),
+                                           jsonLeader.getString("new_rating"));
                 JSONObject jsonWinner = jsonSummary.getJSONObject("winner");
-                winner = new SummaryPlayer(jsonWinner.getInt("id"), "Winner:", jsonWinner.getString("login"),
-                        jsonWinner.getString("old_rating"), jsonWinner.getString("new_rating"));
+                winner = new SummaryPlayer(jsonWinner.getInt("id"),
+                                           getResources().getString(R.string.winner) + ":",
+                                           jsonWinner.getString("login"),
+                                           jsonWinner.getString("old_rating"),
+                                           jsonWinner.getString("new_rating"));
 
             } catch (JSONException e) {
                 Log.d("leaderboardCallback", result.getResponse());
@@ -196,12 +216,19 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.fragment_summary);
-        summaryView = (TableLayout) LayoutInflater.from(getActivity()).inflate(R.layout.fragment_summary, null);
+        summaryParentView = (RelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.fragment_summary, null);
+        Button ok = (Button) summaryParentView.findViewById(R.id.ok_button);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.ok_button) {
+                    dismiss();
+                }
+            }
+        });
+        summaryView = (TableLayout) summaryParentView.findViewById(R.id.summary_view);
         summaryView.setStretchAllColumns(true);
-      //  summaryView = (TableLayout) parentView.findViewById(R.id.summary_view);
-        builder.setCancelable(false)
-               .setPositiveButton("heh", this)
-               .setView(summaryView);
+        builder.setView(summaryParentView);
 
         summaryView.setEnabled(false);
         playerColors = (HashMap<Integer, Chat.Color>)bundle.getSerializable("player_colors");

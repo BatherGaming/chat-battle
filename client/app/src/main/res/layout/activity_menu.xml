@@ -51,7 +51,7 @@
             android:text="@string/play"
             android:textSize="20pt"
             android:layout_marginBottom="90dp"
-            android:background="@drawable/play_button_normal"
+            android:background="@drawable/button_play_normal"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
 

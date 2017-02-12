@@ -12,4 +12,8 @@
     <dimen name="whiteboard_size">125dp</dimen>
     <dimen name="message_spinner">35dp</dimen>
     <dimen name="small_padding">10dp</dimen>
+    <dimen name="leaderboard_font_size">6pt</dimen>
+    <dimen name="leaderboard_row_height">30dp</dimen>
+    <dimen name="summary_font_size">4pt</dimen>
+    <dimen name="summary_title_font_size">15pt</dimen>
 </resources>

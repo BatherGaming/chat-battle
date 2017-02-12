@@ -1,10 +1,13 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -55,14 +58,16 @@ public class LeaderboardActivity extends BasicActivity {
                 Log.e("leaderboardCallback", "json error");
             }
 
+            int position = 0;
             for (Player player : leaderboard) {
+                position++;
                 final TableRow row = (TableRow) LayoutInflater.from(LeaderboardActivity.this).inflate(R.layout.leader, null);
-                TextView tv = (TextView) row.getChildAt(0);
-                tv.setText(String.valueOf(player.getId()));
-                tv = (TextView) row.getChildAt(1);
-                tv.setText(String.valueOf(player.getLogin()));
-                tv = (TextView) row.getChildAt(2);
-                tv.setText(String.valueOf(player.getRating()));
+                if (ProfileManager.getPlayer().getId() == player.getId()) {
+                    row.setBackgroundResource(R.drawable.leader_background_player);
+                }
+                setChildText(row, 0, String.valueOf(position));
+                setChildText(row, 1, String.valueOf(player.getLogin()));
+                setChildText(row, 2, String.valueOf(player.getRating()));
                 leaderboardView.addView(row);
             }
 
@@ -72,6 +77,13 @@ public class LeaderboardActivity extends BasicActivity {
             spinner.setVisibility(View.GONE);
         }
     };
+
+    private void setChildText(ViewGroup view, int index, String text) {
+        TextView tv = (TextView) view.getChildAt(index);
+        tv.setGravity(Gravity.CENTER);
+        tv.setText(text);
+        tv.setTextSize(getResources().getDimension(R.dimen.leaderboard_font_size));
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

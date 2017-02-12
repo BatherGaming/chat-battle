@@ -27,13 +27,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:contentDescription="@string/brush"
-                android:src="@drawable/brush" />
+                android:src="@drawable/whiteboard_brush" />
             <ImageButton
                 android:id="@+id/erase_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:contentDescription="@string/erase"
-                android:src="@drawable/eraser" />
+                android:src="@drawable/whiteboard_eraser" />
             <ImageButton
                 android:id="@+id/send_btn"
                 android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
                     android:background="#FF660000"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FF660000" />
 
                 <ImageButton
@@ -80,7 +80,7 @@
                     android:background="#FFFF0000"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FFFF0000" />
 
                 <ImageButton
@@ -90,7 +90,7 @@
                     android:background="#FFFF6600"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FFFF6600" />
 
                 <ImageButton
@@ -100,7 +100,7 @@
                     android:background="#FFFFCC00"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FFFFCC00" />
 
                 <ImageButton
@@ -110,7 +110,7 @@
                     android:background="#FF009900"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FF009900" />
 
                 <ImageButton
@@ -120,7 +120,7 @@
                     android:background="#FF009999"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FF009999" />
             </LinearLayout>
             <!-- Bottom Row -->
@@ -135,7 +135,7 @@
                     android:background="#FF0000FF"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FF0000FF" />
 
                 <ImageButton
@@ -145,7 +145,7 @@
                     android:background="#FF990099"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FF990099" />
 
                 <ImageButton
@@ -155,7 +155,7 @@
                     android:background="#FFFF6666"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FFFF6666" />
 
                 <ImageButton
@@ -165,7 +165,7 @@
                     android:background="#FFFFFFFF"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FFFFFFFF" />
 
                 <ImageButton
@@ -175,7 +175,7 @@
                     android:background="#FF787878"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FF787878" />
 
                 <ImageButton
@@ -185,7 +185,7 @@
                     android:background="#FF000000"
                     android:contentDescription="@string/paint"
                     android:onClick="paintClicked"
-                    android:src="@drawable/paint"
+                    android:src="@drawable/whiteboard_paint"
                     android:tag="#FF000000" />
             </LinearLayout>
         </LinearLayout>
