@@ -20,4 +20,5 @@
     <color name="light_green">#81C784</color>
     <color name="purple">#B39DDB</color>
     <color name="red">#F44336</color>
+    <color name="transparent">#00000000</color>
 </resources>

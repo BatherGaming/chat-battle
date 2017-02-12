@@ -11,4 +11,5 @@
     <integer name="large_size">30</integer>
     <dimen name="whiteboard_size">125dp</dimen>
     <dimen name="message_spinner">35dp</dimen>
+    <dimen name="small_padding">10dp</dimen>
 </resources>

@@ -14,5 +14,10 @@
         <item name="android:textColorSecondary">@color/blue900</item>
     </style>
 
+    <style name="fragment_summary" parent="Theme.AppCompat.Light.Dialog">
+      <!--  <item name="android:background">@color/pink</item> -->
+
+    </style>
+
 
 </resources>

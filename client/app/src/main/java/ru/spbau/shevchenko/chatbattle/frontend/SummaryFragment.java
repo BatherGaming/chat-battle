@@ -4,10 +4,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.DialogFragment;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,6 +78,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
             return;
         }
 
+        summaryView.addView(createSummaryRow("", new SummaryPlayer(-1, "", "Login", "Rating", "Rating"), true, false));
         summaryView.addView(createSummaryRow("Leader:", leader, true));
         summaryView.addView(createSummaryRow("Winner:", winner, false));
         boolean first = true;
@@ -90,19 +95,31 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         //spinner.setVisibility(View.GONE);
 
     }
-
     private View createSummaryRow(String comment, SummaryPlayer player, boolean spanRating) {
+        return createSummaryRow(comment, player, spanRating, true);
+    }
+    private View createSummaryRow(String comment, SummaryPlayer player, boolean spanRating, boolean color) {
         Context context = getActivity();
         TableRow row = new TableRow(context);
         row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
         for (int i = 0; i < 4; i++ ) {
-            row.addView(new TextView(context));
+            TextView tv = new TextView(context);
+            tv.setTextSize(20);
+            tv.setGravity(Gravity.CENTER);
+            tv.setTextColor(ContextCompat.getColor(context, R.color.black));
+            row.addView(tv);
         }
         setText(row, 0, comment);
         setText(row, 1, player.login);
-        row.getChildAt(1).setBackgroundResource(getPlayerColor(player.id).getTextViewId());
-        setText(row, 2, player.new_rating);
-        setText(row, 3, player.old_rating);
+        if (color) {
+            row.getChildAt(1).setBackgroundResource(getPlayerColor(player.id).getTextViewId());
+        }
+        if (spanRating){
+            setText(row, 2, player.new_rating);
+        }
+        else {
+            setText(row, 2, player.old_rating + "->" + player.new_rating);
+        }
         return row;
     }
 
@@ -141,7 +158,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
                 JSONObject jsonSummary = new JSONObject(result.getResponse());
                 JSONObject jsonLeader = jsonSummary.getJSONObject("leader");
                 leader = new SummaryPlayer(jsonLeader.getInt("id"), "Leader:", jsonLeader.getString("login"),
-                        jsonLeader.getString("old_rating"), "");
+                        jsonLeader.getString("old_rating"), jsonLeader.getString("new_rating"));
                 JSONObject jsonWinner = jsonSummary.getJSONObject("winner");
                 winner = new SummaryPlayer(jsonWinner.getInt("id"), "Winner:", jsonWinner.getString("login"),
                         jsonWinner.getString("old_rating"), jsonWinner.getString("new_rating"));
@@ -158,10 +175,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
     @Override
     public void onStart() {
         super.onStart();
-        getDialog()
-                .getWindow()
-                .setLayout(500,
-                        300);
+        //getDialog().getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.cyan));
 
     }
 
@@ -181,8 +195,9 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.fragment_summary);
         summaryView = (TableLayout) LayoutInflater.from(getActivity()).inflate(R.layout.fragment_summary, null);
+        summaryView.setStretchAllColumns(true);
       //  summaryView = (TableLayout) parentView.findViewById(R.id.summary_view);
         builder.setCancelable(false)
                .setPositiveButton("heh", this)
@@ -205,5 +220,9 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         return builder.create();
     }
 
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(STYLE_NO_TITLE, R.style.fragment_summary);
+    }
 }

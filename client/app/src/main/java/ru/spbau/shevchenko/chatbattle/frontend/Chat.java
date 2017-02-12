@@ -274,6 +274,9 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
 
     public void postMessage() {
         final String messageText = messageInput.getText().toString();
+        if (whiteboardEncoded.isEmpty() && messageText.isEmpty()) {
+            return;
+        }
         messageInput.setText("");
 
         // Save whiteboard locally
