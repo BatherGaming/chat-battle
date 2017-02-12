@@ -1,4 +1,38 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group
+        android:id="@+id/chat_actions_group"
+        android:checkableBehavior="single"
+        >
+        <item
+            android:id="@+id/kick_item"
+            android:icon="@drawable/retry"
+            android:title="@string/kick"
+            app:showAsAction="ifRoom"
+            app:actionViewClass="android.widget.Button"
+
+            />
+        <item
+            android:id="@+id/mute_item"
+            android:icon="@drawable/brush"
+            android:title="@string/mute"
+            app:showAsAction="ifRoom"
+            app:actionViewClass="android.widget.Button"
+            />
+        <item
+            android:id="@+id/choose_item"
+            android:icon="@drawable/brush"
+            android:title="@string/choose"
+            app:showAsAction="ifRoom"
+            app:actionViewClass="android.widget.Button"
+            />
+    </group>
+
+    <group
+        android:id="@+id/basic_functions_group"
+        android:checkableBehavior="single"
+        >
     <item
         android:id="@+id/menu_change_password"
         android:icon="@drawable/drawer_settings"
@@ -11,6 +45,10 @@
         android:id="@+id/menu_log_out"
         android:icon="@drawable/drawer_logout"
         android:title="@string/log_out"/>
+    </group>
+
+
+
 </menu>
 
 

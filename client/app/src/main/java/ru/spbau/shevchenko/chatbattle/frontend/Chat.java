@@ -8,18 +8,26 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -136,6 +144,15 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
             }
             throw  new IllegalArgumentException();
         }
+
+        static Action getAction(int id) {
+            switch (id) {
+                case R.id.kick_item: return KICK;
+                case R.id.mute_item: return MUTE;
+                case R.id.choose_item: return CHOOSE;
+            }
+            throw  new IllegalArgumentException();
+        }
     }
 
     public enum Color {
@@ -167,6 +184,16 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                 case R.id.item_green: return GREEN;
                 case R.id.item_purple: return PURPLE;
                 case R.id.item_yellow: return YELLOW;
+            }
+            throw new IllegalArgumentException();
+        }
+
+        public int getColorId() {
+            switch (this) {
+                case RED: return R.color.red;
+                case PURPLE: return R.color.purple;
+                case YELLOW: return R.color.yellow;
+                case GREEN: return R.color.light_green;
             }
             throw new IllegalArgumentException();
         }
@@ -231,6 +258,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        navigationView = (NavigationView) findViewById(R.id.navigation);
         createDrawer();
         messageInput = (EditText) findViewById(R.id.message_input);
         messagesView = (ListView) findViewById(R.id.messages_view);
@@ -239,7 +267,6 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
         messagesView.setAdapter(messageAdapter);
         messagesView.setOnItemClickListener(this);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
         View headerLayout = navigationView.getHeaderView(0);
         timerView = (TextView) headerLayout.findViewById(R.id.timer_view);
 
@@ -414,7 +441,8 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
             whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
 
             // Change it to display that whiteboard is attached
-            whiteboardBtn.setImageResource(R.mipmap.whiteboard_drawn);
+            whiteboardBtn.setImageResource(R.drawable.whiteboard_red);
+
         }
     }
 
@@ -438,38 +466,70 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     }
 
+    private void navigate(int id) {
+        switch (id) {
+            case R.id.menu_change_password: {
+                MenuActivity.ChangePasswordDialog changePasswordDialog = new MenuActivity.ChangePasswordDialog();
+                changePasswordDialog.show(getFragmentManager(), "");
+                break;
+            }
+            case R.id.menu_leaderboard: {
+                final Intent intent = new Intent(this, LeaderboardActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.menu_log_out: {
+                finish();
+                break;
+            }
+            default: {
+                getItemButton(navigationView.getMenu(), Action.getAction(id)).performClick();
+            }
+        }
+        createDrawer();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
+        navigate(menuItem.getItemId());
+        menuItem.setChecked(false);
+        return true;
+    }
+
 
     private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
 
     void createDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationView.getMenu();
         if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.CHATTING_AS_PLAYER) {
-            menu.getItem(0).setVisible(false);
-            menu.getItem(1).setVisible(false);
-            menu.getItem(2).setVisible(false);
+            menu.getItem(Action.KICK.ordinal()).setVisible(false);
+            menu.getItem(Action.MUTE.ordinal()).setVisible(false);
+            menu.getItem(Action.CHOOSE.ordinal()).setVisible(false);
         } else {
             for (Action action : Action.values())
                 setupMenuItem(menu, action);
         }
+
+        final View headerLayout = navigationView.getHeaderView(0);
+        final TextView loginView = (TextView) headerLayout.findViewById(R.id.menu_header_login);
+        final TextView ratingView = (TextView) headerLayout.findViewById(R.id.menu_header_rating);
+        menu.getItem(5).setVisible(false); // disable_logout
+        loginView.setText(ProfileManager.getPlayer().getLogin());
+        ratingView.setText(String.valueOf(ProfileManager.getPlayer().getRating()));
     }
 
     void setupMenuItem(Menu menu, Action action) {
-        ImageButton locButton = (ImageButton) menu.findItem(action.getItemId()).getActionView();
-        locButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.whiteboard_brush));
+        Button locButton = getItemButton(menu, action);
+        locButton.setVisibility(View.INVISIBLE);
         locButton.setOnClickListener(new MenuItemListener(action));
     }
 
-
-    @Override
-    public boolean onNavigationItemSelected(final MenuItem menuItem) {
-        // update highlighted item in the navigation menu
-        menuItem.setChecked(true);
-//        mDrawerLayout.closeDrawer(GravityCompat.START);
-        return true;
+    private Button getItemButton(Menu menu, Action action) {
+        return (Button) MenuItemCompat.getActionView(menu.findItem(action.getItemId()));
     }
 
 
@@ -521,7 +581,8 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
             showPopup(v);
         }
         private void showPopup(View v) {
-            PopupMenu popup = new PopupMenu(Chat.this, v);
+            Context wrapper = new ContextThemeWrapper(Chat.this, R.style.popupMenuStyle);
+            PopupMenu popup = new PopupMenu(wrapper, v);
             popup.inflate(R.menu.popup_menu);
             Collection<Color> colors = new ArrayList<>();
             Menu menu = popup.getMenu();
@@ -529,9 +590,16 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                 colors.add(getPlayerColor(playerId));
             }
             for (Color color : Color.values()) {
+                MenuItem menuItem = menu.findItem(color.getPopupItemId());
                 if (!colors.contains(color)) {
-                    MenuItem menuItem = menu.findItem(color.getPopupItemId());
                     menuItem.setVisible(false);
+                } else {
+                    //SpannableString s = new SpannableString(menuItem.getTitle());
+                    final SpannableStringBuilder s = new SpannableStringBuilder(menuItem.getTitle());
+                    final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD); // Span to make text bold
+                    s.setSpan(bss, 0, s.length(), 0);
+                    s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(Chat.this, color.getColorId())), 0, s.length(), 0);
+                    menuItem.setTitle(s);
                 }
             }
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

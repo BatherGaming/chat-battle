@@ -17,11 +17,11 @@
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        android:background="@color/white"
+        android:background="@color/gray250"
         tools:context="ru.spbau.shevchenko.chatbattle.frontend.PlayerActivity">
 
         <ListView
@@ -48,22 +48,34 @@
         <LinearLayout
             android:id="@+id/input_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/light_light_blue"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal" >
 
             <ImageButton
                 android:id="@+id/whiteboard_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:paddingRight="10dp"
+                android:paddingEnd="10dp"
+
                 android:layout_height="match_parent"
                 android:src="@drawable/whiteboard"
-                android:background="@color/white"/>
+                android:background="@drawable/chat_message_edit"/>
             <EditText
                 android:id="@+id/message_input"
                 android:layout_weight="0.5"
                 android:layout_width="0dp"
-                android:textSize="8pt"
+                android:hint="@string/type_here"
+                android:textSize="9pt"
+                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
+                android:paddingRight="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:background="@drawable/chat_message_edit"
                 android:textColor="@color/black"
                 android:layout_height="match_parent" />
 
@@ -72,7 +84,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/send"
-                android:background="@color/white"/>
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:paddingRight="10dp"
+                android:paddingEnd="10dp"
+                android:background="@drawable/chat_message_edit"/>
 
 
         </LinearLayout>
@@ -82,10 +98,10 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/yellow"
-        app:headerLayout="@layout/drawer_header"
-        app:itemIconTint="@color/purple"
-        app:itemTextColor="@color/light_blue"
-        app:menu="@menu/drawer"/>
+        app:headerLayout="@layout/menu_drawer_header"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/blue900"
+        app:theme="@style/Theme.Design.Light"
+        app:menu="@menu/menu_drawer"/>
 
 </android.support.v4.widget.DrawerLayout>

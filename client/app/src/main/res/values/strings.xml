@@ -86,4 +86,6 @@
     <string name="want_to_play">I wanna play as</string>
     <string name="summary">Summary</string>
     <string name="ok_caps">OK</string>
+    <string name="type_here">Type message here</string>
+    <string name="time">Time left: </string>
 </resources>
