@@ -5,7 +5,7 @@
     android:fillAfter="true">
 
     <translate
-        android:fromXDelta="0%p"
-        android:toXDelta="-75%p"
-        android:duration="800" />
+        android:fromYDelta="0%p"
+        android:toYDelta="25%p"
+        android:duration="1200" />
 </set>

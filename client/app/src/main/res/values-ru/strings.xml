@@ -72,7 +72,6 @@
     <string name="invalid_login">Неверный логин</string>
     <string name="kick">Исключить</string>
     <string name="mute">Заткнуть</string>
-    <string name="play">Играть!</string>
     <string name="purple">Фиолетовый</string>
     <string name="red">Красный</string>
     <string name="success_reset">Новый пароль был выслан на почту</string>

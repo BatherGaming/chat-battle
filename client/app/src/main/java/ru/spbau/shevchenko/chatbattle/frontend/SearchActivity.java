@@ -1,14 +1,12 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
-import android.media.Image;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,11 +21,22 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        final ImageButton searchAsPlayerButton = (ImageButton) findViewById(R.id.search_as_player_button);
-        searchAsPlayerButton.setOnClickListener(this);
+        final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view);
+        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
 
-        final ImageButton searchAsLeaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
+        final TextView battleTextView = (TextView) findViewById(R.id.battle_text_view);
+        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
+
+        final TextView descView = (TextView) findViewById(R.id.search_desc_text_view);
+        descView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/IMMORTAL.ttf"));
+
+        final Button searchAsPlayerButton = (Button) findViewById(R.id.search_as_player_button);
+        searchAsPlayerButton.setOnClickListener(this);
+        searchAsPlayerButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/IMMORTAL.ttf"));
+
+        final Button searchAsLeaderButton = (Button) findViewById(R.id.search_as_leader_button);
         searchAsLeaderButton.setOnClickListener(this);
+        searchAsLeaderButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/IMMORTAL.ttf"));
 
         final Button stopSearchingButton = (Button) findViewById(R.id.stop_searching_button);
         stopSearchingButton.setOnClickListener(this);
@@ -39,11 +48,11 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
                 break;
             }
             case IN_QUEUE_AS_PLAYER: {
-                searchAs(Player.Role.PLAYER);
+                searchAs(Player.Role.PLAYER, true);
                 break;
             }
             case IN_QUEUE_AS_LEADER: {
-                searchAs(Player.Role.LEADER);
+                searchAs(Player.Role.LEADER, true);
                 break;
             }
         }
@@ -55,12 +64,11 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
 
         switch (view.getId()) {
             case R.id.search_as_player_button: {
-                searchAs(Player.Role.PLAYER);
+                searchAs(Player.Role.PLAYER, false);
                 break;
             }
             case R.id.search_as_leader_button: {
-
-                searchAs(Player.Role.LEADER);
+                searchAs(Player.Role.LEADER, false);
                 break;
             }
             case R.id.stop_searching_button: {
@@ -71,8 +79,8 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
     }
 
     private void stopSearching() {
-        final ImageButton leaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
-        final ImageButton playerButton = (ImageButton) findViewById(R.id.search_as_player_button);
+        final Button leaderButton = (Button) findViewById(R.id.search_as_leader_button);
+        final Button playerButton = (Button) findViewById(R.id.search_as_player_button);
 
         leaderButton.setClickable(true);
         playerButton.setClickable(true);
@@ -88,14 +96,14 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         stopSearching.setVisibility(View.INVISIBLE);
     }
 
-    private void searchAs(Player.Role role) {
-        final ImageButton leaderButton = (ImageButton) findViewById(R.id.search_as_leader_button);
-        final ImageButton playerButton = (ImageButton) findViewById(R.id.search_as_player_button);
+    private void searchAs(Player.Role role, boolean durationZero) {
+        final Button leaderButton = (Button) findViewById(R.id.search_as_leader_button);
+        final Button playerButton = (Button) findViewById(R.id.search_as_player_button);
 
         switch (role) {
             case PLAYER: {
-                move(leaderButton, R.anim.left_big_move);
-                move(playerButton, R.anim.left_small_move);
+                move(leaderButton, R.anim.top_big_move, durationZero);
+                move(playerButton, R.anim.top_small_move, durationZero);
                 leaderButton.setClickable(false);
                 playerButton.setClickable(false);
 
@@ -104,8 +112,8 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
                 break;
             }
             case LEADER: {
-                move(leaderButton, R.anim.right_small_move);
-                move(playerButton, R.anim.right_bit_move);
+                move(leaderButton, R.anim.down_small_move, durationZero);
+                move(playerButton, R.anim.down_big_move, durationZero);
                 leaderButton.setClickable(false);
                 playerButton.setClickable(false);
 
@@ -125,7 +133,7 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         if (declined) {
             stopSearching();
         } else {
-            searchAs(role);
+            searchAs(role, true);
         }
     }
 
@@ -139,11 +147,11 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
                 break;
             }
             case IN_QUEUE_AS_LEADER: {
-                searchAs(Player.Role.LEADER);
+                searchAs(Player.Role.LEADER, true);
                 break;
             }
             case IN_QUEUE_AS_PLAYER: {
-                searchAs(Player.Role.PLAYER);
+                searchAs(Player.Role.PLAYER, true);
                 break;
             }
             case CHATTING_AS_LEADER: {
@@ -158,8 +166,9 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
     }
 
 
-    public void move(ImageView image, int anim){
+    public void move(View image, int anim, boolean durationZero){
         Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(), anim);
+        if (durationZero) animation1.setDuration(0);
         image.startAnimation(animation1);
     }
 }
