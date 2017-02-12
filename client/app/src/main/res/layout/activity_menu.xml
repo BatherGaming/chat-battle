@@ -64,11 +64,12 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/white"
+        app:theme="@style/Theme.Design.Light"
         app:headerLayout="@layout/menu_drawer_header"
         app:menu="@menu/menu_drawer"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/blue900"
+
         />
 
 </android.support.v4.widget.DrawerLayout>

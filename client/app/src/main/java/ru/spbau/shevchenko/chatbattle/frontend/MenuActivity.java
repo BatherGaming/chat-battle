@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
@@ -197,9 +198,14 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         final View headerLayout = navigationView.getHeaderView(0);
         final TextView loginView = (TextView) headerLayout.findViewById(R.id.menu_header_login);
         final TextView ratingView = (TextView) headerLayout.findViewById(R.id.menu_header_rating);
+        navigationView.getMenu().setGroupVisible(R.id.chat_actions_group, false);
 
         loginView.setText(ProfileManager.getPlayer().getLogin());
         ratingView.setText(String.valueOf(ProfileManager.getPlayer().getRating()));
+
+        TextView timerView = (TextView) headerLayout.findViewById(R.id.timer_view);
+        timerView.setVisibility(View.INVISIBLE);
+
     }
 
     private void navigate(int id) {

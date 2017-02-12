@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="75dp"
-    android:background="@color/light_blue">
+    android:background="@color/gray250"
+    >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/message_body"
-
         android:textSize="9pt"
-
         android:textColor="#000"/>
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/message_image"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/message_body"/>
 
 
@@ -24,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/delete_message_btn"
+        android:layout_toStartOf="@+id/delete_message_btn"
         android:id="@+id/retry_sending_btn"
         android:src="@drawable/retry"
         android:visibility="gone"
@@ -33,15 +33,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:src="@drawable/delete"
         android:visibility="gone"
         />
 
     <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/message_spinner"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_toLeftOf="@+id/message_body"
         android:layout_toStartOf="@+id/message_body"
+        android:layout_alignBottom="@id/message_body"
         android:id="@+id/delivering_progress_bar"
         android:visibility="gone"
         android:progressDrawable="@drawable/waiting_circular_bar" />

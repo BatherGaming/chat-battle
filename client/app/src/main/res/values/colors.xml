@@ -21,4 +21,7 @@
     <color name="purple">#B39DDB</color>
     <color name="red">#F44336</color>
     <color name="transparent">#00000000</color>
+    <color name="gray200">#EEEEEE</color>
+    <color name="gray250">#E7E7E7</color>
+    <color name="gray300">#E0E0E0</color>
 </resources>

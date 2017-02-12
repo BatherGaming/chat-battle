@@ -64,6 +64,10 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         holder.retryBtn.setVisibility(actionButtonsVisibility);
     }
 
+    private static final int MARGIN_SMALL_DP = 5;
+    private static final int MARGIN_BIG_DP = 20;
+
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final MessageViewHolder holder;
@@ -94,16 +98,15 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.textView.getLayoutParams();
         lp.addRule(isCur ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
         if (isCur)
-            lp.setMargins(dpAsPixels(20), 0, dpAsPixels(10), dpAsPixels(5));
+            lp.setMargins(dpAsPixels(MARGIN_BIG_DP), 0, dpAsPixels(MARGIN_SMALL_DP), dpAsPixels(MARGIN_SMALL_DP));
         else
-            lp.setMargins(dpAsPixels(10), 0, dpAsPixels(20), dpAsPixels(5));
+            lp.setMargins(dpAsPixels(MARGIN_SMALL_DP), 0, dpAsPixels(MARGIN_BIG_DP), dpAsPixels(MARGIN_SMALL_DP));
         holder.textView.setLayoutParams(lp);
 
         lp = (RelativeLayout.LayoutParams) holder.imageView.getLayoutParams();
         lp.addRule(isCur ? RelativeLayout.ALIGN_RIGHT : RelativeLayout.ALIGN_LEFT, holder.textView.getId());
         holder.imageView.setLayoutParams(lp);
         holder.imageView.setImageResource(android.R.color.transparent);
-        convertView.setBackgroundColor(ContextCompat.getColor(context, R.color.light_blue));
 
         switch (message.getStatus()) {
             case DELIVERED: {

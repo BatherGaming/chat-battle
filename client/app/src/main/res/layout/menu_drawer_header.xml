@@ -9,6 +9,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="17dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/timer_view"
+        android:text="@string/app_name"
+        android:textAppearance="?android:attr/textAppearanceLargeInverse"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/menu_header_login"
         android:layout_marginLeft="16dp"
         android:textColor="@color/white"
@@ -29,6 +43,7 @@
         android:layout_marginBottom="8dp"
         android:id="@+id/menu_header_rating"
         android:textAppearance="?android:attr/textAppearanceLargeInverse"/>
+
 
 
 </RelativeLayout>
