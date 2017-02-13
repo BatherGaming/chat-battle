@@ -17,7 +17,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -57,7 +56,7 @@ import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 
-public class Chat extends BasicActivity implements View.OnClickListener, AdapterView.OnItemClickListener,
+public class ChatActivity extends BasicActivity implements View.OnClickListener, AdapterView.OnItemClickListener,
         NavigationView.OnNavigationItemSelectedListener {
 
     private static final int DRAW_WHITEBOARD = 1;
@@ -230,6 +229,8 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
         public void run() {
             if (chatService != null) {
                 final List<Message> messages = chatService.getMessages();
+                Log.d("getMR", "pek" + messages.size());
+                Log.d("getMR", "a " + alreadyRead);
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     // Add our own messages only on initialization
                     if (!initialized || message.getAuthorId() != ProfileManager.getPlayer().getId()) {
@@ -250,8 +251,16 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
     final private Runnable chatStatusRunnable = new Runnable() {
         @Override
         public void run() {
-            RequestMaker.chatStatus(ProfileManager.getPlayer().getId(),
-                    ProfileManager.getPlayer().getChatId(), chatStatusCallback);
+            int id = ProfileManager.getPlayer().getId();
+            if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IDLE) {
+                // for spectator let's use leader's id
+                id = getIntent().getIntExtra("leader_id", -1);
+                if (id == -1) {
+                    throw new RuntimeException("Trying to spectate without leader_id provided");
+                }
+
+            }
+            RequestMaker.chatStatus(id, ProfileManager.getPlayer().getChatId(), chatStatusCallback);
         }
     };
 
@@ -278,7 +287,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
         whiteboardBtn.setOnClickListener(this);
 
         if (ProfileManager.getPlayer().getChatId() == -1) {
-            throw new RuntimeException("Created Chat without providing chat id.");
+            throw new RuntimeException("Created ChatActivity without providing chat id.");
         }
 
         final Intent chatServiceIntent = new Intent(this, ChatService.class);
@@ -294,6 +303,11 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
         spinner.setVisibility(View.GONE);
         messagesView.setVisibility(View.VISIBLE);
         sendBtn.setEnabled(true);
+        if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IDLE) {
+            // if player is spectator hide input bar
+            View inputBar = findViewById(R.id.input_bar);
+            inputBar.setVisibility(View.GONE);
+        }
     }
 
 
@@ -366,7 +380,6 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                 return;
             }
             try {
-                Log.d("ChatAct.iFHandler.run", requestResult.getResponse());
                 final JSONObject playerObject = new JSONObject(requestResult.getResponse());
                 if (playerObject.has("error")) {
                     Log.d("ChatAct.iFHandler.run", playerObject.getString("error"));
@@ -377,14 +390,14 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                     case "running":
                         if (muted) {
                             muted = false;
-                            Toast.makeText(Chat.this, "Mute time ended, you can speak now.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ChatActivity.this, "Mute time ended, you can speak now.", Toast.LENGTH_LONG).show();
                             sendBtn.setEnabled(true);
                             messageInput.setEnabled(true);
                         }
                         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
                         break;
                     case "kicked":
-                        Toast.makeText(Chat.this, "You were kicked from the chat",
+                        Toast.makeText(ChatActivity.this, "You were kicked from the chat",
                                 Toast.LENGTH_LONG).show();
                         ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
 
@@ -392,7 +405,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                         break;
                     case "muted":
                         if (!muted) {
-                            Toast.makeText(Chat.this, "You were muted", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ChatActivity.this, "You were muted", Toast.LENGTH_LONG).show();
                             muted = true;
                             sendBtn.setEnabled(false);
                             messageInput.setEnabled(false);
@@ -403,7 +416,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                         if (!result.equals("leaderboard_row")) {
                             final int newRating = playerObject.getInt("rating");
                             ProfileManager.getPlayer().setRating(newRating);
-                            Toast.makeText(Chat.this, result +
+                            Toast.makeText(ChatActivity.this, result +
                                     "\nNew rating is " + newRating, Toast.LENGTH_LONG).show();
                         }
                         final Bundle bundle = new Bundle();
@@ -505,7 +518,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
         navigationView.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationView.getMenu();
-        if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.CHATTING_AS_PLAYER) {
+        if (ProfileManager.getPlayerStatus() != ProfileManager.PlayerStatus.CHATTING_AS_LEADER) {
             menu.getItem(Action.KICK.ordinal()).setVisible(false);
             menu.getItem(Action.MUTE.ordinal()).setVisible(false);
             menu.getItem(Action.CHOOSE.ordinal()).setVisible(false);
@@ -552,10 +565,10 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                 try {
                     final JSONObject playerObject = new JSONObject(result.getResponse());
                     if (playerObject.has("error")) {
-                        Toast.makeText(Chat.this, playerObject.getString("error"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(ChatActivity.this, playerObject.getString("error"), Toast.LENGTH_LONG).show();
                     } else {
                         chatService.getPlayersId().remove((Integer)playerId);
-                        Toast.makeText(Chat.this, "kicked", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ChatActivity.this, "kicked", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     Log.e("kickCallback", e.getMessage());
@@ -567,11 +580,11 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
 
     private void mute(int playerId) {
         RequestMaker.mute(playerId, ProfileManager.getPlayer().getChatId(), MUTE_TIME);
-        //Toast.makeText(Chat.this, "muted" + playerId, Toast.LENGTH_LONG).show();
+        //Toast.makeText(ChatActivity.this, "muted" + playerId, Toast.LENGTH_LONG).show();
     }
     private void choose(int playerId) {
         RequestMaker.chooseWinner(playerId, RequestCallback.DO_NOTHING);
-        Toast.makeText(Chat.this, "choose" + playerId, Toast.LENGTH_LONG).show();
+        Toast.makeText(ChatActivity.this, "choose" + playerId, Toast.LENGTH_LONG).show();
     }
 
     private class MenuItemListener implements View.OnClickListener {
@@ -583,7 +596,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
             showPopup(v);
         }
         private void showPopup(View v) {
-            Context wrapper = new ContextThemeWrapper(Chat.this, R.style.popupMenuStyle);
+            Context wrapper = new ContextThemeWrapper(ChatActivity.this, R.style.popupMenuStyle);
             PopupMenu popup = new PopupMenu(wrapper, v);
             popup.inflate(R.menu.popup_menu);
             Collection<Color> colors = new ArrayList<>();
@@ -600,7 +613,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                     final SpannableStringBuilder s = new SpannableStringBuilder(menuItem.getTitle());
                     final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD); // Span to make text bold
                     s.setSpan(bss, 0, s.length(), 0);
-                    s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(Chat.this, color.getColorId())), 0, s.length(), 0);
+                    s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(ChatActivity.this, color.getColorId())), 0, s.length(), 0);
                     menuItem.setTitle(s);
                 }
             }

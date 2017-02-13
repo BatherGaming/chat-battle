@@ -1,13 +1,13 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -17,9 +17,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import ru.spbau.shevchenko.chatbattle.R;
+import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
@@ -29,11 +29,15 @@ public class BattleListActivity extends BasicActivity {
     private ProgressBar spinner;
 
     private class Chat {
+        final public int id;
+        final public int leaderId;
         final public String leader;
         final public ArrayList<String> players;
         final public int averageRating;
 
-        private Chat(String leader, ArrayList<String> players, int averageRating) {
+        private Chat(int id, int leaderId, String leader, ArrayList<String> players, int averageRating) {
+            this.id = id;
+            this.leaderId = leaderId;
             this.leader = leader;
             this.players = players;
             this.averageRating = averageRating;
@@ -54,7 +58,8 @@ public class BattleListActivity extends BasicActivity {
                     for (int j = 0; j < jsonPlayers.length(); j++) {
                         playerLogins.add(jsonPlayers.getString(j));
                     }
-                    final Chat chat = new Chat(jsonChat.getString("leader"),
+                    final Chat chat = new Chat(jsonChat.getInt("chat_id"), jsonChat.getInt("leader_id"),
+                                         jsonChat.getString("leader"),
                                          playerLogins,
                                          jsonChat.getInt("sum_rating") / playerLogins.size());
                     chats.add(chat);
@@ -63,8 +68,17 @@ public class BattleListActivity extends BasicActivity {
                 Log.e("chatsRC", e.getMessage());
             }
             LayoutInflater layoutInflater = LayoutInflater.from(BattleListActivity.this);
-            for (Chat chat : chats) {
+            for (final Chat chat : chats) {
                 final TableRow row = (TableRow) layoutInflater.inflate(R.layout.battle_list_row, null);
+                row.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Intent intent = new Intent(BattleListActivity.this, ChatActivity.class);
+                        intent.putExtra("leader_id", chat.leaderId);
+                        ProfileManager.getPlayer().setChatId(chat.id);
+                        startActivity(intent);
+                    }
+                });
                 row.setBackgroundColor(ContextCompat.getColor(BattleListActivity.this, R.color.red));
                 int blackColor = ContextCompat.getColor(BattleListActivity.this, R.color.black);
                 BasicActivity.addChildTextView(row, chat.leader, null, Gravity.CENTER, blackColor);

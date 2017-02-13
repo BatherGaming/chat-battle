@@ -44,7 +44,7 @@
     <item
         android:id="@+id/menu_battle_list"
         android:icon="@drawable/drawer_pedestal"
-        android:title="@string/log_out"/>
+        android:title="@string/spectate"/>
     <item
         android:id="@+id/menu_log_out"
         android:icon="@drawable/drawer_logout"

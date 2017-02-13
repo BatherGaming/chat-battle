@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
 
 import org.json.JSONArray;
@@ -35,7 +34,7 @@ import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 public class SummaryFragment extends DialogFragment implements DialogInterface.OnClickListener {
     private boolean playersInitialized = false;
     private TableLayout summaryView;
-    private HashMap<Integer, Chat.Color> playerColors;
+    private HashMap<Integer, ChatActivity.Color> playerColors;
     private RelativeLayout summaryParentView;
 
     private boolean winnerInitialized = false;
@@ -176,13 +175,13 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
 
     }
 
-    public Chat.Color getPlayerColor(int playerId) {
+    public ChatActivity.Color getPlayerColor(int playerId) {
         if (playerColors.containsKey(playerId)) {
             Log.d("getPC", "" + playerId);
             Log.d("getPC", "" + playerColors.get(playerId));
             return playerColors.get(playerId);
         }
-        Chat.Color color = Chat.Color.values()[playerColors.size()];
+        ChatActivity.Color color = ChatActivity.Color.values()[playerColors.size()];
         playerColors.put(playerId, color);
         Log.d("getPC", "" + color);
         return color;
@@ -208,7 +207,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         builder.setView(summaryParentView);
 
         summaryView.setEnabled(false);
-        playerColors = (HashMap<Integer, Chat.Color>)bundle.getSerializable("player_colors");
+        playerColors = (HashMap<Integer, ChatActivity.Color>)bundle.getSerializable("player_colors");
 
         int chatId = bundle.getInt("chat_id", -1);
         RequestMaker.getSummary(chatId, summaryResponseCallback);

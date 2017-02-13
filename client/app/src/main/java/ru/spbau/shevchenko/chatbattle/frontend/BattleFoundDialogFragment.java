@@ -164,8 +164,7 @@ public class BattleFoundDialogFragment extends DialogFragment {
                     } else {
                         ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_LEADER);
                     }
-                    final Intent intent = new Intent(getActivity(), Chat.class);
-                    intent.putExtra("chatId", chatId);
+                    final Intent intent = new Intent(getActivity(), ChatActivity.class);
                     startActivity(intent);
                     dismiss();
                     break;

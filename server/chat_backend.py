@@ -306,6 +306,7 @@ def get_chats():
             if player.id != chat.leader_id:
                 sum_rating += player.rating
                 player_logins.append(player.login)
-        chat_list.append({"leader": leader.login, "players": player_logins,
+        chat_list.append({"chat_id": chat.id, "leader_id": leader.id, 
+                          "leader": leader.login, "players": player_logins,
                           "sum_rating": sum_rating})
     return chat_list, 200

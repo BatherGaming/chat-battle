@@ -92,7 +92,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         }
         holder.deleteBtn.setTag(position);
         holder.retryBtn.setTag(position);
-        holder.textView.setBackgroundResource(((Chat) context).getPlayerColor(message.getAuthorId()).getTextViewId());
+        holder.textView.setBackgroundResource(((ChatActivity) context).getPlayerColor(message.getAuthorId()).getTextViewId());
         holder.textView.setText(message.getText());
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.textView.getLayoutParams();
@@ -155,6 +155,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
     }
 
     public void add(Message message) {
+        Log.d("add", message.getText());
         messages.add(message);
         notifyDataSetChanged();
     }
@@ -190,7 +191,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                     }
                 }
                 message.setStatus(Message.Status.SENDING);
-                ((Chat) context).sendMessage(message, whiteboardEncoded);
+                ((ChatActivity) context).sendMessage(message, whiteboardEncoded);
 
                 notifyDataSetChanged();
                 break;
