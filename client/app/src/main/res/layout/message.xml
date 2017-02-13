@@ -19,28 +19,38 @@
 
 
 
+    <!--<ImageButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_toLeftOf="@+id/delete_message_btn"-->
+        <!--android:layout_toStartOf="@+id/delete_message_btn"-->
+        <!--android:id="@+id/retry_sending_btn"-->
+        <!--android:src="@drawable/retry"-->
+        <!--android:visibility="gone"-->
+        <!--/>-->
+    <!--<ImageButton-->
+        <!--android:id="@+id/delete_message_btn"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:src="@drawable/delete"-->
+        <!--android:visibility="gone"-->
+        <!--/>-->
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/delete_message_btn"
-        android:layout_toStartOf="@+id/delete_message_btn"
-        android:id="@+id/retry_sending_btn"
-        android:src="@drawable/retry"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_toLeftOf="@+id/message_body"
+        android:layout_toStartOf="@+id/message_body"
+        android:layout_alignBottom="@id/message_body"
+        android:id="@+id/alert"
         android:visibility="gone"
-        />
-    <ImageButton
-        android:id="@+id/delete_message_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/delete"
-        android:visibility="gone"
+        android:background="@drawable/alert"
         />
 
     <ProgressBar
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_toLeftOf="@+id/message_body"
         android:layout_toStartOf="@+id/message_body"
         android:layout_alignBottom="@id/message_body"

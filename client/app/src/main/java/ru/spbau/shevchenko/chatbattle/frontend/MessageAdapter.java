@@ -6,12 +6,22 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.PopupMenu;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
@@ -35,6 +46,20 @@ import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 
 public class MessageAdapter extends BaseAdapter implements View.OnClickListener {
+
+    private enum Alert {
+        RETRY, DELETE;
+
+        public int getId() {
+            switch (this) {
+                case RETRY: return R.id.alert_retry;
+                case DELETE: return R.id.alert_delete;
+            }
+            throw new IllegalArgumentException();
+        }
+
+
+    }
     final private Context context;
     final private ArrayList<Message> messages;
 
@@ -59,9 +84,9 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
     }
 
     private void setStatusVisibility(MessageViewHolder holder, int loadingVisibility, int actionButtonsVisibility) {
+
         holder.loadingBar.setVisibility(loadingVisibility);
-        holder.deleteBtn.setVisibility(actionButtonsVisibility);
-        holder.retryBtn.setVisibility(actionButtonsVisibility);
+        holder.alertBtn.setVisibility(actionButtonsVisibility);
     }
 
     private static final int MARGIN_SMALL_DP = 5;
@@ -80,18 +105,17 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
             holder = new MessageViewHolder((TextView) convertView.findViewById(R.id.message_body),
                     (ImageView) convertView.findViewById(R.id.message_image),
                     (ProgressBar) convertView.findViewById(R.id.delivering_progress_bar),
-                    (ImageButton) convertView.findViewById(R.id.delete_message_btn),
-                    (ImageButton) convertView.findViewById(R.id.retry_sending_btn),
+                    (ImageButton) convertView.findViewById(R.id.alert),
                     isCur
             );
-            holder.deleteBtn.setOnClickListener(this);
-            holder.retryBtn.setOnClickListener(this);
+            holder.alertBtn.setOnClickListener(this);
         } else {
             holder = (MessageViewHolder) convertView.getTag();
             isCur = holder.isCur;
         }
-        holder.deleteBtn.setTag(position);
-        holder.retryBtn.setTag(position);
+        holder.alertBtn.setTag(position);
+
+
         holder.textView.setBackgroundResource(((Chat) context).getPlayerColor(message.getAuthorId()).getTextViewId());
         holder.textView.setText(message.getText());
 
@@ -119,7 +143,6 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
             }
             case FAILED: {
                 setStatusVisibility(holder, View.GONE, View.VISIBLE);
-                convertView.setBackgroundColor(0xFFFFAAAA);
                 break;
             }
         }
@@ -162,41 +185,69 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.delete_message_btn: {
-                int position = (int) v.getTag();
-                Log.d("delete_message", String.valueOf(position) + " - " + messages.size());
-                messages.remove(position);
-                notifyDataSetChanged();
-                break;
-            }
-            case R.id.retry_sending_btn: {
-                int position = (int) v.getTag();
-                Message message = messages.get(position);
-                String whiteboardEncoded = "";
-                if (!message.getTag().isEmpty()) {
-                    byte[] whiteboardBytes;
-                    try {
-                        File whiteboardFile = new File(MyApplication.storageDir, message.getTag());
-                        FileInputStream whiteboardInStream = new FileInputStream(whiteboardFile);
-                        whiteboardBytes = new byte[(int) whiteboardFile.length()];
-                        whiteboardInStream.read(whiteboardBytes);
-                        whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
-                    } catch (FileNotFoundException e) {
-                        Log.e("retry_sending", "Whiteboard file not found");
-                        return;
-                    } catch (IOException e) {
-                        Log.e("retry_sending", "Error while reading data");
-                        return;
-                    }
-                }
-                message.setStatus(Message.Status.SENDING);
-                ((Chat) context).sendMessage(message, whiteboardEncoded);
-
-                notifyDataSetChanged();
-                break;
+            case R.id.alert: {
+                showPopup(v);
             }
         }
     }
+
+    private void showPopup(final View v) {
+        Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+        PopupMenu popup = new PopupMenu(wrapper, v);
+        popup.inflate(R.menu.popup_alert);
+        for (Alert alert : Alert.values()) {
+            MenuItem menuItem = popup.getMenu().findItem(alert.getId());
+            final SpannableStringBuilder s = new SpannableStringBuilder(menuItem.getTitle());
+            s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.black)), 0, s.length(), 0);
+            menuItem.setTitle(s);
+        }
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.alert_retry: {
+                        int position = (int) v.getTag();
+                        Message message = messages.get(position);
+                        String whiteboardEncoded = "";
+                        if (!message.getTag().isEmpty()) {
+                            byte[] whiteboardBytes;
+                            try {
+                                File whiteboardFile = new File(MyApplication.storageDir, message.getTag());
+                                FileInputStream whiteboardInStream = new FileInputStream(whiteboardFile);
+                                whiteboardBytes = new byte[(int) whiteboardFile.length()];
+                                whiteboardInStream.read(whiteboardBytes);
+                                whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
+                            } catch (FileNotFoundException e) {
+                                Log.e("retry_sending", "Whiteboard file not found");
+                                break;
+                            } catch (IOException e) {
+                                Log.e("retry_sending", "Error while reading data");
+                                break;
+                            }
+                        }
+                        message.setStatus(Message.Status.SENDING);
+                        ((Chat) context).sendMessage(message, whiteboardEncoded);
+
+                        notifyDataSetChanged();
+                        break;
+                    }
+                    case R.id.alert_delete: {
+                        int position = (int) v.getTag();
+                        Log.d("delete_message", String.valueOf(position) + " - " + messages.size());
+                        messages.remove(position);
+                        notifyDataSetChanged();
+                        break;
+                    }
+                }
+                return true;
+
+            }
+        });
+        popup.show();
+    }
+
+
 
     private int dpAsPixels(int sizeInDp) {
         float scale = context.getResources().getDisplayMetrics().density;
@@ -208,19 +259,19 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         final private TextView textView;
         final private ImageView imageView;
         final private ProgressBar loadingBar;
-        private final ImageButton deleteBtn;
-        private final ImageButton retryBtn;
+        private final ImageButton alertBtn;
         private final boolean isCur;
 
         MessageViewHolder(TextView textView, ImageView imageView,
-                          ProgressBar loadingBar, ImageButton deleteBtn, ImageButton retryBtn,
+                          ProgressBar loadingBar, ImageButton alertBtn,
                           boolean isCur) {
             this.textView = textView;
             this.imageView = imageView;
             this.loadingBar = loadingBar;
-            this.deleteBtn = deleteBtn;
-            this.retryBtn = retryBtn;
+            this.alertBtn = alertBtn;
             this.isCur = isCur;
         }
     }
+
+
 }

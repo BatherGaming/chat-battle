@@ -88,4 +88,6 @@
     <string name="ok_caps">OK</string>
     <string name="type_here">Type message here</string>
     <string name="time">Time left: </string>
+    <string name="delete">delete</string>
+    <string name="retry">retry</string>
 </resources>

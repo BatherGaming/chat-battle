@@ -7,7 +7,7 @@
         >
         <item
             android:id="@+id/kick_item"
-            android:icon="@drawable/retry"
+            android:icon="@drawable/kick"
             android:title="@string/kick"
             app:showAsAction="ifRoom"
             app:actionViewClass="android.widget.Button"
@@ -15,14 +15,14 @@
             />
         <item
             android:id="@+id/mute_item"
-            android:icon="@drawable/whiteboard_brush"
+            android:icon="@drawable/mute"
             android:title="@string/mute"
             app:showAsAction="ifRoom"
             app:actionViewClass="android.widget.Button"
             />
         <item
             android:id="@+id/choose_item"
-            android:icon="@drawable/whiteboard_brush"
+            android:icon="@drawable/choose"
             android:title="@string/choose"
             app:showAsAction="ifRoom"
             app:actionViewClass="android.widget.Button"
