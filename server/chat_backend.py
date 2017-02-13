@@ -293,3 +293,19 @@ def get_summary(chat_id):
     leader = session.query(Player).filter_by(id=chat.leader_id).first()
     winner = session.query(Player).filter_by(id=chat.winner_id).first()
     return {"leader": to_dict(leader), "winner": to_dict(winner)}, 200
+
+def get_chats():
+    chats = session.query(Chat).filter_by(is_started=True).filter_by(is_closed=False).all()
+    chat_list = []
+    for chat in chats:
+        chat_players = session.query(Player).filter_by(chat_id=chat.id).all()
+        leader = session.query(Player).filter_by(id=chat.leader_id).first()
+        sum_rating = 0
+        player_logins = []
+        for player in chat_players:
+            if player.id != chat.leader_id:
+                sum_rating += player.rating
+                player_logins.append(player.login)
+        chat_list.append({"leader": leader.login, "players": player_logins,
+                          "sum_rating": sum_rating})
+    return chat_list, 200

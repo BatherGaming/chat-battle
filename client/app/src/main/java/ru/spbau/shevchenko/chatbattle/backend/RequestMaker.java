@@ -159,6 +159,9 @@ public class RequestMaker {
     public static void getLeaderboard(RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/players/leaderboard", Method.GET, callback);
     }
+    public static void getChats(RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/list", Method.GET, callback);
+    }
 
     public static void getSummary(int chatId, RequestCallback callback) {
         sendRequest(RequestMaker.DOMAIN_NAME + "/chat/summary/" + chatId, Method.GET, callback);

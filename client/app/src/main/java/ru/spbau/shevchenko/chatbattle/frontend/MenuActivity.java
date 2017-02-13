@@ -220,6 +220,11 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
                 startActivity(intent);
                 break;
             }
+            case R.id.menu_battle_list: {
+                final Intent intent = new Intent(this, BattleListActivity.class);
+                startActivity(intent);
+                break;
+            }
             case R.id.menu_log_out: {
                 finish();
                 break;

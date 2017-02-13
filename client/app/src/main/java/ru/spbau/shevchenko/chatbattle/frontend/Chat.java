@@ -400,7 +400,7 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
                         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
                         break;
                     default:
-                        if (!result.equals("leader")) {
+                        if (!result.equals("leaderboard_row")) {
                             final int newRating = playerObject.getInt("rating");
                             ProfileManager.getPlayer().setRating(newRating);
                             Toast.makeText(Chat.this, result +
@@ -517,7 +517,9 @@ public class Chat extends BasicActivity implements View.OnClickListener, Adapter
         final View headerLayout = navigationView.getHeaderView(0);
         final TextView loginView = (TextView) headerLayout.findViewById(R.id.menu_header_login);
         final TextView ratingView = (TextView) headerLayout.findViewById(R.id.menu_header_rating);
-        menu.getItem(5).setVisible(false); // disable_logout
+        // TODO: FIX REMOVE CONSTANTS
+        menu.getItem(5).setVisible(false); // disable spectate
+        menu.getItem(6).setVisible(false); // disable_logout
         loginView.setText(ProfileManager.getPlayer().getLogin());
         ratingView.setText(String.valueOf(ProfileManager.getPlayer().getRating()));
     }

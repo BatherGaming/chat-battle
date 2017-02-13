@@ -129,6 +129,11 @@ def get_chat_summary(chat_id):
     return process(chat_backend.get_summary(chat_id))
 
 
+@app.route('/chat/list', methods=['GET'])
+def get_chats():
+    return process(chat_backend.get_chats())
+
+
 @app.route('/profile_manager/ratings/<player_ids>', methods=['GET'])
 def get_ratings(player_ids):
     return process(profile_manager.get_ratings(player_ids))
