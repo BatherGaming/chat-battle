@@ -1,6 +1,7 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -63,9 +64,11 @@ public class LeaderboardActivity extends BasicActivity {
                 else {
                     row.setBackgroundResource(R.drawable.leader_background);
                 }
-                BasicActivity.addChildTextView(row, String.valueOf(position));
-                BasicActivity.addChildTextView(row, String.valueOf(player.getLogin()));
-                BasicActivity.addChildTextView(row, String.valueOf(player.getRating()));
+                final String[] childTexts = new String[]{String.valueOf(position),
+                        String.valueOf(player.getLogin()), String.valueOf(player.getRating())};
+                for (String text : childTexts) {
+                    BasicActivity.addChildTextView(row, text, 20f, null, ContextCompat.getColor(LeaderboardActivity.this, R.color.black));
+                }
                 leaderboardView.addView(row);
             }
 
