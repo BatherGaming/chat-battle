@@ -12,24 +12,57 @@
     android:weightSum="5"
     tools:context="ru.spbau.shevchenko.chatbattle.frontend.LeaderboardActivity">
     <TextView
-        android:id="@+id/leaderboard_text"
+        android:id="@+id/chat_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="@string/chat"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"
+        android:textSize="25pt"
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:id="@+id/battle_text_view"
+        android:layout_below="@id/chat_text_view"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:text="@string/battle"
+        android:textSize="20pt"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/leaderboard"
-        android:textSize="15pt"
+        android:textSize="10pt"
         android:textColor="@color/black"
+        android:layout_below="@+id/battle_text_view"
+        android:layout_marginTop="25dp"
+        android:id="@+id/leaderboard_text"
         android:layout_centerHorizontal="true"
         />
-    <TableLayout
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="80dp"
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/leaderboard_view"
+        android:layout_marginTop="25dp"
         android:layout_below="@+id/leaderboard_text"
-        android:divider="@drawable/divider_3dp"
-        android:showDividers="middle"
-    />
+        android:layout_marginBottom="20dp"
+
+        >
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/leaderboard_view"
+            android:divider="@drawable/divider_3dp"
+            android:showDividers="middle"
+            />
+
+    </ScrollView>
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"

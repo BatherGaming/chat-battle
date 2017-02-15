@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+    android:minHeight="30dp"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingStart="5dp"
+        android:paddingLeft="5dp"
+        android:paddingEnd="5dp"
+        android:textSize="7pt"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:background="@drawable/table_row_position_rect"
+        android:id="@+id/row_position"/>
+    <TextView
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="7pt"
+        android:paddingStart="5dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:background="@drawable/table_row_login_rect"
+        android:paddingEnd="5dp"
+        android:maxWidth="70dp"
+        android:textColor="@color/black"
+        android:id="@+id/row_login"/>
+    <TextView
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="7pt"
+        android:background="@drawable/table_row_rating_rect"
+        android:gravity="center"
+        android:paddingStart="5dp"
+        android:paddingLeft="5dp"
+        android:paddingEnd="5dp"
+        android:textColor="@color/black"
+        android:id="@+id/row_rating"/>
+
+</TableRow>

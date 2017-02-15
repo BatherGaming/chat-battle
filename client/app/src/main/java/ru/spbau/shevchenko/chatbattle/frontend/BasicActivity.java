@@ -74,12 +74,17 @@ public class BasicActivity extends AppCompatActivity {
         if (equals(currActivity))
             myApplication.setCurrentActivity(null);
     }
-    public static void addChildTextView(ViewGroup viewGroup, CharSequence childText) {
-        addChildTextView(viewGroup, childText, null, null, null);
-    }
-    public static void addChildTextView(ViewGroup viewGroup, CharSequence childText, Float textSize, Integer gravity, Integer textColor) {
+//    public static void addChildTextView(ViewGroup viewGroup, CharSequence childText) {
+//        addChildTextView(viewGroup, childText, null, null, null);
+//    }
+    public static void addChildTextView(ViewGroup viewGroup, CharSequence childText, Float textSize,
+                                        Integer gravity, Integer textColor, Integer padding, Integer background) {
         final TextView child = new TextView(viewGroup.getContext());
         child.setText(childText);
+        if (padding != null)
+            child.setPadding(padding, padding, padding, padding);
+        if (background != null)
+            child.setBackgroundColor(background);
         if (textSize != null) child.setTextSize(textSize);
         if (gravity != null) child.setGravity(gravity);
         if (textColor != null) child.setTextColor(textColor);
