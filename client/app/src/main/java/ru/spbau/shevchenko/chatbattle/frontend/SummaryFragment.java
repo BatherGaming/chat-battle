@@ -146,7 +146,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
             // TODO: handle non-OK request result
             try {
                 JSONObject jsonSummary = new JSONObject(result.getResponse());
-                JSONObject jsonLeader = jsonSummary.getJSONObject("leaderboard_row");
+                JSONObject jsonLeader = jsonSummary.getJSONObject("leader");
                 leader = new SummaryPlayer(jsonLeader.getInt("id"),
                                            getResources().getString(R.string.leader) + ":",
                                            jsonLeader.getString("login"),

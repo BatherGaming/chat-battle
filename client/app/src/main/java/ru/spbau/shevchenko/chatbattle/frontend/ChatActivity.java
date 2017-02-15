@@ -229,8 +229,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         public void run() {
             if (chatService != null) {
                 final List<Message> messages = chatService.getMessages();
-                Log.d("getMR", "pek" + messages.size());
-                Log.d("getMR", "a " + alreadyRead);
                 for (Message message : messages.subList(alreadyRead, messages.size())) {
                     // Add our own messages only on initialization
                     if (!initialized || message.getAuthorId() != ProfileManager.getPlayer().getId()) {
@@ -313,7 +311,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
     public void postMessage() {
         final String messageText = messageInput.getText().toString();
-        if (whiteboardEncoded.isEmpty() && messageText.isEmpty()) {
+        if (whiteboardEncoded.isEmpty() && messageText.trim().isEmpty()) {
             return;
         }
         messageInput.setText("");
