@@ -8,22 +8,29 @@ import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,6 +42,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
@@ -43,6 +54,9 @@ import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static java.lang.Math.min;
 
 
 public class MessageAdapter extends BaseAdapter implements View.OnClickListener {
@@ -84,13 +98,14 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
     }
 
     private void setStatusVisibility(MessageViewHolder holder, int loadingVisibility, int actionButtonsVisibility) {
-
         holder.loadingBar.setVisibility(loadingVisibility);
         holder.alertBtn.setVisibility(actionButtonsVisibility);
     }
 
     private static final int MARGIN_SMALL_DP = 5;
-    private static final int MARGIN_BIG_DP = 20;
+    private static final int MARGIN_BIG_DP = 40;
+    private final Collection<View> setDelta = new HashSet<>();
+
 
 
     @Override
@@ -100,7 +115,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         boolean isCur = message.getAuthorId() == ProfileManager.getPlayer().getId();
         if (convertView == null || isCur != ((MessageViewHolder) convertView.getTag()).isCur) {
             isCur = message.getAuthorId() == ProfileManager.getPlayer().getId();
-            LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
             convertView = messageInflater.inflate(R.layout.message, null);
             holder = new MessageViewHolder((TextView) convertView.findViewById(R.id.message_body),
                     (ImageView) convertView.findViewById(R.id.message_image),
@@ -121,10 +136,12 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.textView.getLayoutParams();
         lp.addRule(isCur ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
-        if (isCur)
-            lp.setMargins(dpAsPixels(MARGIN_BIG_DP), 0, dpAsPixels(MARGIN_SMALL_DP), dpAsPixels(MARGIN_SMALL_DP));
-        else
-            lp.setMargins(dpAsPixels(MARGIN_SMALL_DP), 0, dpAsPixels(MARGIN_BIG_DP), dpAsPixels(MARGIN_SMALL_DP));
+        if (isCur) {
+            lp.setMargins(0, 0, 0, dpAsPixels(MARGIN_SMALL_DP));
+        }
+        else {
+            lp.setMargins(0, 0, MARGIN_BIG_DP, dpAsPixels(MARGIN_SMALL_DP));
+        }
         holder.textView.setLayoutParams(lp);
 
         lp = (RelativeLayout.LayoutParams) holder.imageView.getLayoutParams();
@@ -199,6 +216,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
             MenuItem menuItem = popup.getMenu().findItem(alert.getId());
             final SpannableStringBuilder s = new SpannableStringBuilder(menuItem.getTitle());
             s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.black)), 0, s.length(), 0);
+            s.setSpan(new RelativeSizeSpan(1.2f), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             menuItem.setTitle(s);
         }
 

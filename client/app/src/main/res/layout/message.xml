@@ -10,7 +10,6 @@
         android:id="@+id/message_body"
         android:textSize="9pt"
         android:textColor="#000"/>
-
     <ImageView
         android:layout_width="wrap_content"
         android:id="@+id/message_image"
@@ -45,6 +44,10 @@
         android:layout_alignBottom="@id/message_body"
         android:id="@+id/alert"
         android:visibility="gone"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:background="@drawable/alert"
         />
 
@@ -56,6 +59,10 @@
         android:layout_alignBottom="@id/message_body"
         android:id="@+id/delivering_progress_bar"
         android:visibility="gone"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:progressDrawable="@drawable/waiting_circular_bar" />
 
 
