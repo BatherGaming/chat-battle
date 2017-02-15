@@ -4,49 +4,37 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.DialogFragment;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
-import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 
 public class SummaryFragment extends DialogFragment implements DialogInterface.OnClickListener {
     private boolean playersInitialized = false;
     private TableLayout summaryView;
-    private HashMap<Integer, Chat.Color> playerColors;
+    private HashMap<Integer, ChatActivity.Color> playerColors;
     private RelativeLayout summaryParentView;
 
     private boolean winnerInitialized = false;
@@ -117,30 +105,18 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         TableRow row = new TableRow(context);
         row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
         // TODO: fix long nicknames causing rating changes to go out of dialog boundaries
-        for (int i = 0; i < 4; i++ ) {
-            TextView tv = new TextView(context);
-            tv.setTextSize(getResources().getDimension(R.dimen.summary_font_size));
-            tv.setGravity(Gravity.CENTER);
-            tv.setTextColor(ContextCompat.getColor(context, R.color.black));
-            row.addView(tv);
+        String[] childStrings = new String[] {comment, player.login,
+                spanRating ? player.new_rating : player.old_rating + "->" + player.new_rating};
+        for (String childText : childStrings) {
+            BasicActivity.addChildTextView(row, childText,
+                    getResources().getDimension(R.dimen.summary_font_size), Gravity.CENTER,
+                    ContextCompat.getColor(context, R.color.black));
         }
-        setText(row, 0, comment);
-        setText(row, 1, player.login);
         if (color) {
+            // Set background for login TextView
             row.getChildAt(1).setBackgroundResource(getPlayerColor(player.id).getTextViewId());
         }
-        if (spanRating) {
-            setText(row, 2, player.new_rating);
-        }
-        else {
-            setText(row, 2, player.old_rating + "->" + player.new_rating);
-        }
         return row;
-    }
-
-
-    private void setText(TableRow view, int index, String text) {
-        ((TextView) view.getChildAt(index)).setText(text);
     }
 
     private RequestCallback ratingsResponseCallback = new RequestCallback() {
@@ -170,7 +146,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
             // TODO: handle non-OK request result
             try {
                 JSONObject jsonSummary = new JSONObject(result.getResponse());
-                JSONObject jsonLeader = jsonSummary.getJSONObject("leader");
+                JSONObject jsonLeader = jsonSummary.getJSONObject("leaderboard_row");
                 leader = new SummaryPlayer(jsonLeader.getInt("id"),
                                            getResources().getString(R.string.leader) + ":",
                                            jsonLeader.getString("login"),
@@ -199,13 +175,13 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
 
     }
 
-    public Chat.Color getPlayerColor(int playerId) {
+    public ChatActivity.Color getPlayerColor(int playerId) {
         if (playerColors.containsKey(playerId)) {
             Log.d("getPC", "" + playerId);
             Log.d("getPC", "" + playerColors.get(playerId));
             return playerColors.get(playerId);
         }
-        Chat.Color color = Chat.Color.values()[playerColors.size()];
+        ChatActivity.Color color = ChatActivity.Color.values()[playerColors.size()];
         playerColors.put(playerId, color);
         Log.d("getPC", "" + color);
         return color;
@@ -231,7 +207,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         builder.setView(summaryParentView);
 
         summaryView.setEnabled(false);
-        playerColors = (HashMap<Integer, Chat.Color>)bundle.getSerializable("player_colors");
+        playerColors = (HashMap<Integer, ChatActivity.Color>)bundle.getSerializable("player_colors");
 
         int chatId = bundle.getInt("chat_id", -1);
         RequestMaker.getSummary(chatId, summaryResponseCallback);

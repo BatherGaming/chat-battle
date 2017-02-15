@@ -90,4 +90,5 @@
     <string name="time">Time left: </string>
     <string name="delete">Delete</string>
     <string name="retry">Retry</string>
+    <string name="spectate">Spectate</string>
 </resources>

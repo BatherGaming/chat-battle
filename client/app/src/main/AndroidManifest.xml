@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".frontend.SearchActivity" />
-        <activity android:name=".frontend.Chat" />
+        <activity android:name=".frontend.ChatActivity" />
         <activity android:name=".frontend.MenuActivity" />
         <activity android:name=".frontend.SignupActivity" />
 
@@ -30,7 +30,7 @@
 
         <activity android:name=".frontend.WhiteboardActivity" />
         <activity android:name=".frontend.LeaderboardActivity" />
-        <activity android:name=".frontend.SummaryActivity" />
+        <activity android:name=".frontend.BattleListActivity" />
     </application>
 
 </manifest>

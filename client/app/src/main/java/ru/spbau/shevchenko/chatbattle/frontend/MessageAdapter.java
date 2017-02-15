@@ -1,7 +1,6 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -22,9 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -131,7 +127,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         holder.alertBtn.setTag(position);
 
 
-        holder.textView.setBackgroundResource(((Chat) context).getPlayerColor(message.getAuthorId()).getTextViewId());
+        holder.textView.setBackgroundResource(((ChatActivity) context).getPlayerColor(message.getAuthorId()).getTextViewId());
         holder.textView.setText(message.getText());
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.textView.getLayoutParams();
@@ -195,6 +191,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
     }
 
     public void add(Message message) {
+        Log.d("add", message.getText());
         messages.add(message);
         notifyDataSetChanged();
     }
@@ -245,7 +242,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                             }
                         }
                         message.setStatus(Message.Status.SENDING);
-                        ((Chat) context).sendMessage(message, whiteboardEncoded);
+                        ((ChatActivity) context).sendMessage(message, whiteboardEncoded);
 
                         notifyDataSetChanged();
                         break;
@@ -259,7 +256,6 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                     }
                 }
                 return true;
-
             }
         });
         popup.show();

@@ -17,9 +17,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,7 +28,6 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
@@ -120,7 +116,7 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
                         break;
                     }
                     default: {
-                        startActivity(new Intent(this, Chat.class));
+                        startActivity(new Intent(this, ChatActivity.class));
                     }
                 }
                 break;
@@ -143,7 +139,7 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         // call it again because of new rating
         createDrawer();
         Class<?> previousClass = BasicActivity.getLastActivityClass();
-        if (ProfileManager.getPlayer().getChatId() == -1 && previousClass != null && Chat.class.isAssignableFrom(previousClass)) {
+        if (ProfileManager.getPlayer().getChatId() == -1 && previousClass != null && ChatActivity.class.isAssignableFrom(previousClass)) {
             Log.d("My app", previousClass.getName());
             final Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
@@ -217,6 +213,11 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
             }
             case R.id.menu_leaderboard: {
                 final Intent intent = new Intent(this, LeaderboardActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.menu_battle_list: {
+                final Intent intent = new Intent(this, BattleListActivity.class);
                 startActivity(intent);
                 break;
             }

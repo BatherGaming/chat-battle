@@ -5,6 +5,10 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import ru.spbau.shevchenko.chatbattle.Player;
 import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
@@ -69,6 +73,17 @@ public class BasicActivity extends AppCompatActivity {
         final BasicActivity currActivity = myApplication.getCurrentActivity();
         if (equals(currActivity))
             myApplication.setCurrentActivity(null);
+    }
+    public static void addChildTextView(ViewGroup viewGroup, CharSequence childText) {
+        addChildTextView(viewGroup, childText, null, null, null);
+    }
+    public static void addChildTextView(ViewGroup viewGroup, CharSequence childText, Float textSize, Integer gravity, Integer textColor) {
+        final TextView child = new TextView(viewGroup.getContext());
+        child.setText(childText);
+        if (textSize != null) child.setTextSize(textSize);
+        if (gravity != null) child.setGravity(gravity);
+        if (textColor != null) child.setTextColor(textColor);
+        viewGroup.addView(child);
     }
 
     public static class BattleFoundRunnable implements Runnable {

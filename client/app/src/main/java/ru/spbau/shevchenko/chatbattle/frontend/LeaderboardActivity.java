@@ -1,14 +1,11 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -17,7 +14,6 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -61,13 +57,18 @@ public class LeaderboardActivity extends BasicActivity {
             int position = 0;
             for (Player player : leaderboard) {
                 position++;
-                final TableRow row = (TableRow) LayoutInflater.from(LeaderboardActivity.this).inflate(R.layout.leader, null);
+                final TableRow row = new TableRow(LeaderboardActivity.this);
                 if (ProfileManager.getPlayer().getId() == player.getId()) {
                     row.setBackgroundResource(R.drawable.leader_background_player);
                 }
-                setChildText(row, 0, String.valueOf(position));
-                setChildText(row, 1, String.valueOf(player.getLogin()));
-                setChildText(row, 2, String.valueOf(player.getRating()));
+                else {
+                    row.setBackgroundResource(R.drawable.leader_background);
+                }
+                final String[] childTexts = new String[]{String.valueOf(position),
+                        String.valueOf(player.getLogin()), String.valueOf(player.getRating())};
+                for (String text : childTexts) {
+                    BasicActivity.addChildTextView(row, text, 20f, null, ContextCompat.getColor(LeaderboardActivity.this, R.color.black));
+                }
                 leaderboardView.addView(row);
             }
 
@@ -77,13 +78,6 @@ public class LeaderboardActivity extends BasicActivity {
             spinner.setVisibility(View.GONE);
         }
     };
-
-    private void setChildText(ViewGroup view, int index, String text) {
-        TextView tv = (TextView) view.getChildAt(index);
-        tv.setGravity(Gravity.CENTER);
-        tv.setText(text);
-        tv.setTextSize(getResources().getDimension(R.dimen.leaderboard_font_size));
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
