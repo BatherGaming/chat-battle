@@ -11,10 +11,10 @@
         android:layout_height="match_parent"
         android:background="@color/gray250"
         android:orientation="vertical"
-        android:paddingEnd="8dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingStart="8dp"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="ru.spbau.shevchenko.chatbattle.frontend.PlayerActivity">
 

@@ -84,7 +84,7 @@ public class SummaryFragment extends DialogFragment {
         for (String childText : childStrings) {
             BasicActivity.addChildTextView(row, childText,
                     getResources().getDimension(R.dimen.summary_font_size), Gravity.CENTER,
-                    ContextCompat.getColor(context, R.color.black), null, null);
+                    ContextCompat.getColor(context, R.color.black));
         }
         if (color) {
             // Set background for login TextView

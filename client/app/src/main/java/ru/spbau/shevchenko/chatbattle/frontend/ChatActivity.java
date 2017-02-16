@@ -60,10 +60,81 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener {
 
     private static final int DRAW_WHITEBOARD = 1;
-    private final static long HANDLER_DELAY = 100;
+    private static final long HANDLER_DELAY = 100;
 
     private ListView messagesView;
     private ImageButton sendBtn;
+    private TextView timerView;
+
+    @SuppressLint("UseSparseArrays")
+    private final Map<Integer, Color> playerColor = new HashMap<>();
+    private int usedColors = 0;
+
+    private boolean initialized = false;
+
+    final private ServiceConnection chatServiceConection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            chatService = ((ChatService.ChatBinder) service).getChatService();
+            handler.postDelayed(getMessagesRunnable, HANDLER_DELAY);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            chatService = null;
+        }
+    };
+    protected ChatService chatService = null;
+
+    protected EditText messageInput;
+    protected MessageAdapter messageAdapter;
+
+    private ImageButton whiteboardBtn;
+    private int alreadyRead = 0;
+    private String whiteboardEncoded = "";
+
+    final private Handler handler = new Handler();
+    private boolean timerInitialized = false;
+    private int timeLeft = 0;
+
+    final private Handler chatStatusHandler = new Handler();
+    final private Runnable chatStatusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            int id = ProfileManager.getPlayer().getId();
+            if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IDLE) {
+                // for spectator let's use leader's id
+                id = getIntent().getIntExtra("leader_id", -1);
+                if (id == -1) {
+                    throw new RuntimeException("Trying to spectate without leader_id provided");
+                }
+
+            }
+            RequestMaker.chatStatus(id, ProfileManager.getPlayer().getChatId(), chatStatusCallback);
+        }
+    };
+    final private Runnable getMessagesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (chatService != null) {
+                final List<Message> messages = chatService.getMessages();
+                for (Message message : messages.subList(alreadyRead, messages.size())) {
+                    // Add our own messages only on initialization
+                    if (!initialized || message.getAuthorId() != ProfileManager.getPlayer().getId()) {
+                        messageAdapter.add(message);
+                    }
+                }
+                alreadyRead = messages.size();
+                if (!initialized && timerInitialized && chatService.initialized()) {
+                    initialized = true;
+                    completeInitialization();
+                }
+            }
+            handler.postDelayed(this, HANDLER_DELAY);
+        }
+    };
+
+
     private Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
@@ -96,43 +167,9 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         }
     };
 
-    private void setTime(int timeLeft) {
-        String minutes = String.valueOf(timeLeft % 60);
-        if (minutes.length() == 1) minutes = '0' + minutes;
-        timerView.setText(String.valueOf(timeLeft / 60) + ":" + minutes);
-    }
-
-    private TextView timerView;
-
-
-    private boolean initialized = false;
-
-    @SuppressLint("UseSparseArrays")
-    private final Map<Integer, Color> playerColor = new HashMap<>();
-    private int usedColors = 0;
-
-    Color getPlayerColor(int playerId) {
-        Color color = playerColor.get(playerId);
-        if (color != null) return color;
-        color = Color.values()[usedColors++];
-        playerColor.put(playerId, color);
-        Log.e("entry", ")))");
-        for (Map.Entry<Integer, Color> entry : playerColor.entrySet()) {
-            Log.e("entry", entry.getKey() + "-" + entry.getValue());
-        }
-        return color;
-    }
-
-    int getPlayerByColor(Color color) {
-        for (Map.Entry<Integer, Color> entry : playerColor.entrySet()) {
-            if (entry.getValue().equals(color)) {
-                return entry.getKey();
-            }
-        }
-        throw new IllegalArgumentException();
-    }
 
     public enum Action {
+
         KICK, MUTE, CHOOSE;
 
         public int getItemId() {
@@ -155,6 +192,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     }
 
     public enum Color {
+
         RED, PURPLE, YELLOW, GREEN;
 
         public int getTextViewId() {
@@ -197,70 +235,9 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
             throw new IllegalArgumentException();
         }
 
-
     }
 
-    final private ServiceConnection chatServiceConection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            chatService = ((ChatService.ChatBinder) service).getChatService();
-            handler.postDelayed(getMessagesRunnable, HANDLER_DELAY);
-        }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            chatService = null;
-        }
-    };
-    protected ChatService chatService = null;
-
-    protected EditText messageInput;
-    protected MessageAdapter messageAdapter;
-
-    private ImageButton whiteboardBtn;
-    private int alreadyRead = 0;
-    private String whiteboardEncoded = "";
-
-    final private Handler handler = new Handler();
-    private boolean timerInitialized = false;
-    private int timeLeft = 0;
-    final private Runnable getMessagesRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (chatService != null) {
-                final List<Message> messages = chatService.getMessages();
-                for (Message message : messages.subList(alreadyRead, messages.size())) {
-                    // Add our own messages only on initialization
-                    if (!initialized || message.getAuthorId() != ProfileManager.getPlayer().getId()) {
-                        messageAdapter.add(message);
-                    }
-                }
-                alreadyRead = messages.size();
-                if (!initialized && timerInitialized && chatService.initialized()) {
-                    initialized = true;
-                    completeInitialization();
-                }
-            }
-            handler.postDelayed(this, HANDLER_DELAY);
-        }
-    };
-
-    final private Handler chatStatusHandler = new Handler();
-    final private Runnable chatStatusRunnable = new Runnable() {
-        @Override
-        public void run() {
-            int id = ProfileManager.getPlayer().getId();
-            if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IDLE) {
-                // for spectator let's use leader's id
-                id = getIntent().getIntExtra("leader_id", -1);
-                if (id == -1) {
-                    throw new RuntimeException("Trying to spectate without leader_id provided");
-                }
-
-            }
-            RequestMaker.chatStatus(id, ProfileManager.getPlayer().getChatId(), chatStatusCallback);
-        }
-    };
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -471,6 +448,36 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
             }
         }
     }
+
+    private void setTime(int timeLeft) {
+        String minutes = String.valueOf(timeLeft % 60);
+        if (minutes.length() == 1) minutes = '0' + minutes;
+        timerView.setText(String.valueOf(timeLeft / 60) + ":" + minutes);
+    }
+
+
+
+    private Color getPlayerColor(int playerId) {
+        Color color = playerColor.get(playerId);
+        if (color != null) return color;
+        color = Color.values()[usedColors++];
+        playerColor.put(playerId, color);
+        Log.e("entry", ")))");
+        for (Map.Entry<Integer, Color> entry : playerColor.entrySet()) {
+            Log.e("entry", entry.getKey() + "-" + entry.getValue());
+        }
+        return color;
+    }
+
+    private int getPlayerByColor(Color color) {
+        for (Map.Entry<Integer, Color> entry : playerColor.entrySet()) {
+            if (entry.getValue().equals(color)) {
+                return entry.getKey();
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
 
 
     @Override

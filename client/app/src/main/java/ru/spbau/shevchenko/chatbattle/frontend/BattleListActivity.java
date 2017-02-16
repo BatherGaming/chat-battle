@@ -90,9 +90,9 @@ public class BattleListActivity extends BasicActivity {
                 });
                 row.setBackgroundColor(ContextCompat.getColor(BattleListActivity.this, R.color.red));
                 int blackColor = ContextCompat.getColor(BattleListActivity.this, R.color.black);
-                BasicActivity.addChildTextView(row, chat.leader, null, Gravity.CENTER, blackColor, null, null);
-                BasicActivity.addChildTextView(row, chat.players.toString(), null, Gravity.CENTER, blackColor, null, null);
-                BasicActivity.addChildTextView(row, String.valueOf(chat.averageRating), null, Gravity.CENTER, blackColor, null, null);
+                BasicActivity.addChildTextView(row, chat.leader, null, Gravity.CENTER, blackColor);
+                BasicActivity.addChildTextView(row, chat.players.toString(), null, Gravity.CENTER, blackColor);
+                BasicActivity.addChildTextView(row, String.valueOf(chat.averageRating), null, Gravity.CENTER, blackColor);
                 battleListView.addView(row);
             }
             spinner.setVisibility(View.GONE);
