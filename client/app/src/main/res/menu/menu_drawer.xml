@@ -3,54 +3,47 @@
 
     <group
         android:id="@+id/chat_actions_group"
-        android:checkableBehavior="single"
-        >
+        android:checkableBehavior="single">
         <item
             android:id="@+id/kick_item"
             android:icon="@drawable/kick"
             android:title="@string/kick"
-            app:showAsAction="ifRoom"
             app:actionViewClass="android.widget.Button"
-
-            />
+            app:showAsAction="ifRoom" />
         <item
             android:id="@+id/mute_item"
             android:icon="@drawable/mute"
             android:title="@string/mute"
-            app:showAsAction="ifRoom"
             app:actionViewClass="android.widget.Button"
-            />
+            app:showAsAction="ifRoom" />
         <item
             android:id="@+id/choose_item"
             android:icon="@drawable/choose"
             android:title="@string/choose"
-            app:showAsAction="ifRoom"
             app:actionViewClass="android.widget.Button"
-            />
+            app:showAsAction="ifRoom" />
     </group>
 
     <group
         android:id="@+id/basic_functions_group"
-        android:checkableBehavior="single"
-        >
-    <item
-        android:id="@+id/menu_change_password"
-        android:icon="@drawable/drawer_settings"
-        android:title="@string/change_password"/>
-    <item
-        android:id="@+id/menu_leaderboard"
-        android:icon="@drawable/drawer_pedestal"
-        android:title="@string/leaderboard"/>
-    <item
-        android:id="@+id/menu_battle_list"
-        android:icon="@drawable/drawer_pedestal"
-        android:title="@string/spectate"/>
-    <item
-        android:id="@+id/menu_log_out"
-        android:icon="@drawable/drawer_logout"
-        android:title="@string/log_out"/>
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_change_password"
+            android:icon="@drawable/drawer_settings"
+            android:title="@string/change_password" />
+        <item
+            android:id="@+id/menu_leaderboard"
+            android:icon="@drawable/drawer_pedestal"
+            android:title="@string/leaderboard" />
+        <item
+            android:id="@+id/menu_battle_list"
+            android:icon="@drawable/drawer_pedestal"
+            android:title="@string/spectate" />
+        <item
+            android:id="@+id/menu_log_out"
+            android:icon="@drawable/drawer_logout"
+            android:title="@string/log_out" />
     </group>
-
 
 
 </menu>
