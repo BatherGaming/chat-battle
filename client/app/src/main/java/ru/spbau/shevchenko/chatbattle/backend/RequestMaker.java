@@ -177,7 +177,7 @@ public class RequestMaker {
 
     @SuppressWarnings("WeakerAccess")
     public static void signIn(String password, String login, RequestCallback callback) { // ++++
-        sendRequest(RequestMaker.DOMAIN_NAME + "/sign_in/" + login + "/" + password, Method.GET, callback, 10000);
+        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/sign_in/" + login + "/" + password, Method.GET, callback, 10000);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -192,7 +192,7 @@ public class RequestMaker {
 
     @SuppressWarnings("WeakerAccess")
     public static void getWhiteboard(String whiteboardTag, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/whiteboards/" + whiteboardTag, Method.GET, callback);
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/get_whiteboard/" + whiteboardTag, Method.GET, callback);
     }
 
     public static void deleteFromQueue(int id) {
@@ -209,7 +209,7 @@ public class RequestMaker {
 
     public static void changePassword(int id, String oldPassword, String newPassword, RequestCallback callback) {
         Log.d("ch Pass", RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword);
-        sendRequest(RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword,
+        sendRequest(RequestMaker.DOMAIN_NAME + "/players/change_pass/" + id + "/" + oldPassword + "/" + newPassword,
                 Method.POST, callback, 5000);
     }
     public static void getTimeLeft(int chatId, RequestCallback callback){
