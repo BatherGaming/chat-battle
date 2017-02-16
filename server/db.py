@@ -12,8 +12,6 @@ engine = create_engine('sqlite:///chat-battle.db')
 Base = declarative_base()
 
 
-
-
 class Message(Base):
     __tablename__ = 'messages'
 
@@ -50,7 +48,8 @@ class Player(Base):
     login = Column(String, nullable=False)
     password_hash = Column(String)
     chat_id = Column(Integer, ForeignKey('chats.id'))
-    status = Column(Enum('IDLE', 'CHATTING_AS_PLAYER', 'CHATTING_AS_LEADER', 'IN_QUEUE_AS_LEADER', 'IN_QUEUE_AS_PLAYER'))
+    status = Column(Enum('IDLE', 'CHATTING_AS_PLAYER', 'CHATTING_AS_LEADER',
+                         'IN_QUEUE_AS_LEADER', 'IN_QUEUE_AS_PLAYER'))
     penalty = Column(Enum('NONE', 'MUTED', 'KICKED'))
     mute_end_time = Column(DateTime)
     rating = Column(Integer)
@@ -69,7 +68,8 @@ class Player(Base):
     @staticmethod
     def from_dict(player_dict):
         return Player(id=player_dict["id"], login=player_dict["login"],
-                      chat_id=player_dict["chatId"], status=player_dict["status"],
+                      chat_id=player_dict["chatId"],
+                      status=player_dict["status"],
                       rating=player_dict["rating"])
 
 
@@ -103,7 +103,8 @@ class Chat(Base):
     @staticmethod
     def from_dict(chat_dict):
         return Chat(id=chat_dict["id"],
-                    creation_time=datetime.datetime.strptime(chat_dict["time"], '%Y-%m-%d %H:%M:%S.%f'),
+                    creation_time=datetime.datetime.strptime(chat_dict["time"],
+                                                    '%Y-%m-%d %H:%M:%S.%f'),
                     type=chat_dict["type"],
                     is_started=chat_dict["is_started"],
                     is_closed=chat_dict["is_closed"],

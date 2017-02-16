@@ -21,9 +21,12 @@ def process(response):
 def get_players():
     return process(profile_manager.get_players())
 
-@app.route('/player/change_pass/<int:player_id>/<old_password>/<new_password>', methods=['POST'])
+
+@app.route('/player/change_pass/<int:player_id>/<old_password>/<new_password>',
+           methods=['POST'])
 def change_password(player_id, old_password, new_password):
-    return process(profile_manager.change_password(player_id, old_password, new_password))
+    return process(profile_manager.change_password(player_id, old_password,
+                                                   new_password))
 
 
 @app.route('/players/<int:player_id>', methods=['GET'])
@@ -34,6 +37,7 @@ def get_player(player_id):
 @app.route('/players/leaderboard', methods=['GET'])
 def get_leaderboard():
     return process(profile_manager.get_leaderboard())
+
 
 @app.route('/sign_in/<login>/<password>', methods=['GET'])
 def sign_in(login, password):
@@ -83,7 +87,8 @@ def get_chat_players(chat_id):
     return process(profile_manager.get_chat_players(chat_id))
 
 
-@app.route('/chat/mute/<int:chat_id>/<int:player_id>/<int:mute_time>', methods=['POST'])
+@app.route('/chat/mute/<int:chat_id>/<int:player_id>/<int:mute_time>',
+           methods=['POST'])
 def mute_player(player_id, chat_id, mute_time):
     return process(chat_backend.mute_player(player_id, chat_id, mute_time))
 
@@ -106,7 +111,7 @@ def decline(player_id):
 @app.route('/whiteboards/<whiteboard_tag>')
 def get_whiteboard(whiteboard_tag):
     # No process() needed because of raw return value
-    return chat_backend.get_whiteboard(whiteboard_tag) 
+    return chat_backend.get_whiteboard(whiteboard_tag)
 
 
 @app.route('/chat/<int:chat_id>', methods=['GET'])

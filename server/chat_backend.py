@@ -7,7 +7,7 @@ from random import randrange
 from db import session, Message, Player, Chat, datetime
 
 WHITEBOARD_FOLDER = 'whiteboards'
-DOMAIN_NAME = "qwsafex.pythonanywhere.com"  
+DOMAIN_NAME = "qwsafex.pythonanywhere.com"
 
 WINNER_DELTA = 1
 LOSER_DELTA = -1
@@ -15,7 +15,6 @@ BATTLE_TIME = 30
 
 
 def create_chat(chat_type, players_ids, leader_id):
-    print("create_chat")
     chat = Chat(type=chat_type, creation_time=datetime.datetime.now(),
                 is_closed=False, leader_id=leader_id, accepted=0)
     session.add(chat)
@@ -23,13 +22,13 @@ def create_chat(chat_type, players_ids, leader_id):
         player = session.query(Player).filter_by(id=playerId).first()
         player.chat_id = chat.id
         player.penalty = "NONE"
-        player.status = "CHATTING_AS_LEADER" if player.id == leader_id else "CHATTING_AS_PLAYER"
+        player.status = "CHATTING_AS_LEADER" if player.id == leader_id
+                                            else "CHATTING_AS_PLAYER"
     session.commit()
     return chat.id
 
 
 def close(chat, winner_id):
-    print("closing")
     if chat.is_closed:
         return
     chat.is_closed = True
@@ -37,12 +36,12 @@ def close(chat, winner_id):
         player.chat_id = None
         player.status = "IDLE"
         if chat.is_started and player.id != chat.leader_id:
-            player.rating += WINNER_DELTA if player.id == winner_id else LOSER_DELTA
+            player.rating += WINNER_DELTA if player.id == winner_id
+                                        else LOSER_DELTA
     session.commit()
 
 
 def close_chat(leader_id, winner_id):
-    print("close_chat")
     leader = session.query(Player).filter_by(id=leader_id).first()
     if not leader:
         return {"error": "player with provided leader_id doesn't exist"}, 400
@@ -79,14 +78,13 @@ def save_whiteboard(whiteboard_body):
 
 
 def send_message(json):
-    print("send_message")
     if not json or 'authorId' not in json\
             or 'text' not in json\
             or 'chatId' not in json\
             or not str(json["chatId"]).isdigit()\
             or not str(json["authorId"]).isdigit()\
-            or not json["text"] and ('whiteboard' not in json
-                                     or json['whiteboard'] == ""):
+            or (not json["text"] and
+                ('whiteboard' not in json or json['whiteboard'] == "")):
         return {}, 400
 
     player = session.query(Player).filter_by(id=int(json["authorId"])).first()
@@ -120,7 +118,6 @@ def get_messages(chat_id, num):
 
 
 def verify(chat):
-    print("verifying")
     if chat.is_closed:
         return
     if chat.is_started:
@@ -128,28 +125,25 @@ def verify(chat):
         if chat.end_time < datetime.datetime.now():
             print("trying to close")
             player_amount = len(chat.players)
-            winner_n = randrange(0,player_amount-1)
+            winner_n = randrange(0, player_amount-1)
             winner_id = -1
             for player in chat.players:
                 if player.id != chat.leader_id:
                     if winner_n == 0:
                         winner_id = player.id
-                        break;
+                        break
                     winner_n -= 1
-            print("winner: ", winner_id)
             close_chat(chat.leader_id, winner_id)
         return
     if (datetime.datetime.now() - chat.creation_time).total_seconds() > 25:
-        print("mamku ebal")
         close(chat, -1)
 
 
-
 def chat_status(player_id, chat_id):
-    print("chat_status")
     player = session.query(Player).filter_by(id=player_id).first()
     chat = session.query(Chat).filter_by(id=chat_id).first()
-    if player.penalty == "MUTED" and  player.mute_end_time < datetime.datetime.now():
+    if player.penalty == "MUTED"\
+       and player.mute_end_time < datetime.datetime.now():
         player.penalty = "NONE"
     verify(chat)
     if not chat:
@@ -187,12 +181,12 @@ def accept(player_id):
         return {"error": "Player is not in chat"}, 400
     chat = session.query(Chat).filter_by(id=player.chat_id).first()
     verify(chat)
-   
+
     chat.accepted += 1
     if chat.accepted == len(chat.players):
-        print('chat is created')
         chat.is_started = True
-        chat.end_time = datetime.datetime.now() + datetime.timedelta(seconds=BATTLE_TIME)
+        chat.end_time = datetime.datetime.now() + datetime.timedelta(
+                                                        seconds=BATTLE_TIME)
     session.commit()
     return {}, 200
 
@@ -221,8 +215,8 @@ def get_whiteboard(whiteboard_tag):
         whiteboard = f.read()
         return base64.b64encode(whiteboard)
 
+
 def mute_player(player_id, chat_id, mute_time):
-    print("mute_player")
     player = session.query(Player).filter_by(id=player_id).first()
     if not player:
         return {"error": "Player doesn't exist"}, 400
@@ -232,13 +226,13 @@ def mute_player(player_id, chat_id, mute_time):
     if chat.is_closed:
         return {}, 200
     player.penalty = "MUTED"
-    player.mute_end_time = datetime.datetime.now() + datetime.timedelta(seconds=mute_time)
-    print("mute2")
+    player.mute_end_time = datetime.datetime.now() + datetime.timedelta(
+                                                        seconds=mute_time)
     session.commit()
     return {}, 200
 
+
 def kick_player(player_id, chat_id):
-    print("kick_player")
     player = session.query(Player).filter_by(id=player_id).first()
     if not player:
         return {"error": "Player doesn't exist"}, 400
@@ -248,7 +242,7 @@ def kick_player(player_id, chat_id):
 
     # TODO: think about desired behaviour in this case
     if len(chat.players) == 2:
-        return {"error": "You can't kick last player"}, 400 
+        return {"error": "You can't kick last player"}, 400
 
     if chat.is_closed:
         return {}, 200
@@ -260,8 +254,8 @@ def kick_player(player_id, chat_id):
 
     return {}, 200
 
+
 def get_time_left(chat_id):
-    print("get_time_left")
     chat = session.query(Chat).filter_by(id=chat_id).first()
     if not chat:
         return {"error": "Chat doesn't exist"}, 400
@@ -270,11 +264,13 @@ def get_time_left(chat_id):
     if not chat.is_started:
         return {"error": "Chat has not yet started"}, 400
 
-    return {"time": (chat.end_time - datetime.datetime.now()).total_seconds()}, 200
+    return {"time": (chat.end_time - datetime.datetime.now()).total_seconds()},
+            200
+
 
 def get_summary(chat_id):
-    print("get_summary")
     chat = session.query(Chat).filter_by(id=chat_id).first()
+
     def to_dict(player):
         delta = 0
         if player.id == chat.winner_id:
@@ -283,8 +279,9 @@ def get_summary(chat_id):
             delta = 0
         else:
             delta = LOSER_DELTA
-        return {"id": player.id, "login": player.login, "new_rating": player.rating,
-                            "old_rating": player.rating - delta}
+        return {"id": player.id, "login": player.login,
+                "new_rating": player.rating,
+                "old_rating": player.rating - delta}
     if not chat:
         return {"error": "Chat doesn't exist"}, 400
     if not chat.is_started or not chat.is_closed:
@@ -294,8 +291,11 @@ def get_summary(chat_id):
     winner = session.query(Player).filter_by(id=chat.winner_id).first()
     return {"leader": to_dict(leader), "winner": to_dict(winner)}, 200
 
+
 def get_chats():
-    chats = session.query(Chat).filter_by(is_started=True).filter_by(is_closed=False).all()
+    chats = session.query(Chat)\
+                   .filter_by(is_started=True)\
+                   .filter_by(is_closed=False).all()
     chat_list = []
     for chat in chats:
         chat_players = session.query(Player).filter_by(chat_id=chat.id).all()
@@ -306,7 +306,7 @@ def get_chats():
             if player.id != chat.leader_id:
                 sum_rating += player.rating
                 player_logins.append(player.login)
-        chat_list.append({"chat_id": chat.id, "leader_id": leader.id, 
+        chat_list.append({"chat_id": chat.id, "leader_id": leader.id,
                           "leader": leader.login, "players": player_logins,
                           "sum_rating": sum_rating})
     return chat_list, 200

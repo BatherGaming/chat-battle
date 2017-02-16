@@ -69,6 +69,7 @@ def del_player_from_queue(player_id):
         return {"error": "There's no such player."}, 400
     players_queue, leaders_queue = read_queues_from_file()
     player.status = "IDLE"
-    queues = [list(filter(lambda x: x != player_id, queue)) for queue in [players_queue, leaders_queue]]
+    queues = [list(filter(lambda x: x != player_id, queue))
+              for queue in [players_queue, leaders_queue]]
     write_queues_in_file(queues[0], queues[1])
     return {}, 200
