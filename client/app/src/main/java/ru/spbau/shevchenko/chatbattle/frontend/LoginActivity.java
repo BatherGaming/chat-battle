@@ -71,12 +71,15 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         switch (status) {
             case OK: {
                 completeLogin();
+                break;
             }
             case FAILED_CONNECTION: {
                 failedLogin(getResources().getString(R.string.internet_troubles));
+                break;
             }
             case ERROR: {
                 failedLogin(getResources().getString(R.string.unknown_error));
+                break;
             }
         }
     }

@@ -11,20 +11,18 @@ import ru.spbau.shevchenko.chatbattle.frontend.SignupActivity;
 
 public class ProfileManager {
     private static Player currentPlayer = null;
-
-
-    static private PlayerStatus playerStatus;
-
-    static public PlayerStatus getPlayerStatus() {
-        return playerStatus;
-    }
-
-    static public void setPlayerStatus(PlayerStatus newPlayerStatus) {
-        playerStatus = newPlayerStatus;
-    }
+    private static PlayerStatus playerStatus;
 
     public enum PlayerStatus {
         IDLE, IN_QUEUE_AS_LEADER, IN_QUEUE_AS_PLAYER, CHATTING_AS_LEADER, CHATTING_AS_PLAYER, WAITING
+    }
+
+    public static PlayerStatus getPlayerStatus() {
+        return playerStatus;
+    }
+
+    public static void setPlayerStatus(PlayerStatus newPlayerStatus) {
+        playerStatus = newPlayerStatus;
     }
 
     public static void signIn(String login, String password, final LoginActivity loginActivity) {
@@ -46,29 +44,7 @@ public class ProfileManager {
         RequestMaker.signUp(jsonPlayer.toString(), new SignUpCallback(signupActivity));
     }
 
-    private static void onSignUpResponse(RequestResult requestResult, SignupActivity signupActivity) {
-        if (requestResult.getStatus() != RequestResult.Status.OK) {
-            signupActivity.signupResponse(requestResult.getStatus());
-
-        }
-        try {
-            Log.d("kek", requestResult.getResponse());
-            final JSONObject playerObject = new JSONObject(requestResult.getResponse());
-            if (playerObject.has("error")) {
-                signupActivity.failedSignup(playerObject.getString("error"));
-                return;
-            }
-            currentPlayer = Player.fromJSON(playerObject);
-            playerStatus = PlayerStatus.valueOf(playerObject.getString("status"));
-            signupActivity.completeSignup();
-        } catch (Exception e) {
-            Log.e("onSignUpResponse()", e.getMessage());
-            signupActivity.failedSignup(e.getMessage()); // TODO: change this somehow
-        }
-    }
-
     public static Player getPlayer() {
-        // TODO: deal with possible null values
         return currentPlayer;
     }
 
@@ -92,7 +68,27 @@ public class ProfileManager {
         }
     }
 
-    static private class SignInCallback implements RequestCallback {
+    private static void onSignUpResponse(RequestResult requestResult, SignupActivity signupActivity) {
+        if (requestResult.getStatus() != RequestResult.Status.OK) {
+            signupActivity.signupResponse(requestResult.getStatus());
+
+        }
+        try {
+            final JSONObject playerObject = new JSONObject(requestResult.getResponse());
+            if (playerObject.has("error")) {
+                signupActivity.failedSignup(playerObject.getString("error"));
+                return;
+            }
+            currentPlayer = Player.fromJSON(playerObject);
+            playerStatus = PlayerStatus.valueOf(playerObject.getString("status"));
+            signupActivity.completeSignup();
+        } catch (Exception e) {
+            Log.e("onSignUpResponse()", e.getMessage());
+            signupActivity.failedSignup(e.getMessage()); // TODO: change this somehow
+        }
+    }
+
+    private static class SignInCallback implements RequestCallback {
         private LoginActivity loginActivity;
 
         SignInCallback(LoginActivity loginActivity) {
@@ -105,7 +101,7 @@ public class ProfileManager {
         }
     }
 
-    static private class SignUpCallback implements RequestCallback {
+    private static class SignUpCallback implements RequestCallback {
         private SignupActivity signupActivity;
 
         SignUpCallback(SignupActivity signupActivity) {
@@ -117,6 +113,4 @@ public class ProfileManager {
             onSignUpResponse(requestResult, signupActivity);
         }
     }
-
-
 }
