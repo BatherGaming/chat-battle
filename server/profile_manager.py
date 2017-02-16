@@ -20,7 +20,7 @@ def get_players():
 def get_chat_players(chat_id):
     chat = session.query(Chat).filter_by(id=chat_id).first()
     if not chat:
-        return {"error": "Chat doesn't exist"}, 404
+        return {"error": "Chat doesn't exist"}, 400
     players = session.query(Player)\
                      .filter(and_(Player.chat_id == chat_id,
                                   Player.id != chat.leader_id))\
@@ -31,7 +31,7 @@ def get_chat_players(chat_id):
 def get_player(player_id):
     player = session.query(Player).filter_by(id=player_id).first()
     if not player:
-        return {}, 404
+        return {}, 400
     return player.to_dict(), 200
 
 
