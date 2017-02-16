@@ -1,7 +1,8 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
-
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
@@ -11,22 +12,17 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.util.Base64;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,11 +33,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import ru.spbau.shevchenko.chatbattle.Message;
 import ru.spbau.shevchenko.chatbattle.R;
@@ -52,30 +43,35 @@ import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static java.lang.Math.min;
 
-
+@SuppressWarnings("WeakerAccess")
 public class MessageAdapter extends BaseAdapter implements View.OnClickListener {
 
-    private enum Alert {
-        RETRY, DELETE;
+    private static final int DRAWABLE_PADDING_DP = 2;
+    private static final int PADDING_FOR_SPINNER_DP = 30;
 
-        public int getId() {
-            switch (this) {
-                case RETRY: return R.id.alert_retry;
-                case DELETE: return R.id.alert_delete;
-            }
-            throw new IllegalArgumentException();
-        }
-
-
-    }
     final private Context context;
     final private ArrayList<Message> messages;
 
     MessageAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
         this.messages = messages;
+    }
+
+    private enum Alert {
+
+        RETRY, DELETE;
+
+        public int getId() {
+            switch (this) {
+                case RETRY:
+                    return R.id.alert_retry;
+                case DELETE:
+                    return R.id.alert_delete;
+            }
+            throw new IllegalArgumentException();
+        }
+
     }
 
     @Override
@@ -93,59 +89,66 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         return i;
     }
 
-    private void setStatusVisibility(MessageViewHolder holder, int loadingVisibility, int actionButtonsVisibility) {
-        holder.loadingBar.setVisibility(loadingVisibility);
-        holder.alertBtn.setVisibility(actionButtonsVisibility);
+    public void add(Message message) {
+        messages.add(message);
+        notifyDataSetChanged();
     }
 
-    private static final int MARGIN_SMALL_DP = 5;
-    private static final int MARGIN_BIG_DP = 40;
-    private final Collection<View> setDelta = new HashSet<>();
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.alert: {
+                showPopup(v);
+                break;
+            }
+        }
+    }
 
-
-
+    @SuppressLint("InflateParams")
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final MessageViewHolder holder;
         final Message message = messages.get(position);
-        boolean isCur = message.getAuthorId() == ProfileManager.getPlayer().getId();
-        if (convertView == null || isCur != ((MessageViewHolder) convertView.getTag()).isCur) {
-            isCur = message.getAuthorId() == ProfileManager.getPlayer().getId();
-            LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        boolean isCurPlayer = message.getAuthorId() == ProfileManager.getPlayer().getId();
+        if (convertView == null || isCurPlayer != ((MessageViewHolder) convertView.getTag()).isCurPlayer) {
+            final LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
             convertView = messageInflater.inflate(R.layout.message, null);
             holder = new MessageViewHolder((TextView) convertView.findViewById(R.id.message_body),
                     (ImageView) convertView.findViewById(R.id.message_image),
                     (ProgressBar) convertView.findViewById(R.id.delivering_progress_bar),
                     (ImageButton) convertView.findViewById(R.id.alert),
-                    isCur
+                    isCurPlayer
             );
             holder.alertBtn.setOnClickListener(this);
         } else {
             holder = (MessageViewHolder) convertView.getTag();
-            isCur = holder.isCur;
+            isCurPlayer = holder.isCurPlayer;
         }
         holder.alertBtn.setTag(position);
 
-
         holder.textView.setBackgroundResource(((ChatActivity) context).getPlayerColor(message.getAuthorId()).getTextViewId());
         holder.textView.setText(message.getText());
-        holder.textView.setMaxWidth(dpAsPixels(60));
 
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.textView.getLayoutParams();
-        lp.addRule(isCur ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
-        if (isCur) {
-            lp.setMargins(0, 0, 0, dpAsPixels(MARGIN_SMALL_DP));
-        }
-        else {
-            lp.setMargins(0, 0, MARGIN_BIG_DP, dpAsPixels(MARGIN_SMALL_DP));
-        }
-        holder.textView.setLayoutParams(lp);
+        Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int displayWidth = size.x;
+        @SuppressWarnings("NumericCastThatLosesPrecision")
+        int padding = (int) context.getResources().getDimension(R.dimen.activity_horizontal_margin);
+        holder.textView.setMaxWidth(displayWidth - 2 * padding - dpAsPixels(PADDING_FOR_SPINNER_DP));
 
-        lp = (RelativeLayout.LayoutParams) holder.imageView.getLayoutParams();
-        lp.addRule(isCur ? RelativeLayout.ALIGN_RIGHT : RelativeLayout.ALIGN_LEFT, holder.textView.getId());
-        holder.imageView.setLayoutParams(lp);
+        setLayoutParams(holder.textView, isCurPlayer, RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.ALIGN_PARENT_LEFT);
+        setLayoutParams(holder.imageView, isCurPlayer, RelativeLayout.ALIGN_RIGHT, RelativeLayout.ALIGN_LEFT);
+
         holder.imageView.setImageResource(android.R.color.transparent);
 
+        setVisibility(message, holder);
+        setTextViewDrawable(message, holder);
+        convertView.setTag(holder);
+        return convertView;
+    }
+
+    private void setVisibility(Message message, MessageViewHolder holder) {
         switch (message.getStatus()) {
             case DELIVERED: {
                 setStatusVisibility(holder, View.GONE, View.GONE);
@@ -160,9 +163,17 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                 break;
             }
         }
+    }
 
+    private void setLayoutParams(View view, boolean isCurPlayer, int isCurAttribute, int isNotCurAttribute) {
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
+        lp.addRule(isCurPlayer ? isCurAttribute : isNotCurAttribute);
+        view.setLayoutParams(lp);
+    }
+
+    private void setTextViewDrawable(Message message, MessageViewHolder holder) {
         if (!message.getTag().isEmpty()) {
-            Uri whiteboardURI = ChatService.getWhiteboardURI(message.getTag(), new RequestCallback(){
+            final Uri whiteboardURI = ChatService.getWhiteboardURI(message.getTag(), new RequestCallback() {
                 @Override
                 public void run(RequestResult requestResult) {
                     notifyDataSetChanged();
@@ -174,44 +185,30 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                 try {
                     inputStream = context.getContentResolver().openInputStream(whiteboardURI);
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    Log.e("setTextViewDrawable", "can't open input stream");
                 }
                 pic = Drawable.createFromStream(inputStream, whiteboardURI.toString());
             } else {
                 pic = ContextCompat.getDrawable(context, R.drawable.grey_square);
             }
-            holder.textView.setCompoundDrawablePadding(2);
+            holder.textView.setCompoundDrawablePadding(DRAWABLE_PADDING_DP);
             holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, pic);
-
         } else {
             holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-
         }
-        convertView.setTag(holder);
-        return convertView;
     }
 
-    public void add(Message message) {
-        Log.d("add", message.getText());
-        messages.add(message);
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.alert: {
-                showPopup(v);
-            }
-        }
+    private void setStatusVisibility(MessageViewHolder holder, int loadingVisibility, int actionButtonsVisibility) {
+        holder.loadingBar.setVisibility(loadingVisibility);
+        holder.alertBtn.setVisibility(actionButtonsVisibility);
     }
 
     private void showPopup(final View v) {
-        Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-        PopupMenu popup = new PopupMenu(wrapper, v);
+        final Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+        final PopupMenu popup = new PopupMenu(wrapper, v);
         popup.inflate(R.menu.popup_alert);
         for (Alert alert : Alert.values()) {
-            MenuItem menuItem = popup.getMenu().findItem(alert.getId());
+            final MenuItem menuItem = popup.getMenu().findItem(alert.getId());
             final SpannableStringBuilder s = new SpannableStringBuilder(menuItem.getTitle());
             s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.black)), 0, s.length(), 0);
             s.setSpan(new RelativeSizeSpan(1.2f), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -224,14 +221,22 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                 switch (item.getItemId()) {
                     case R.id.alert_retry: {
                         int position = (int) v.getTag();
-                        Message message = messages.get(position);
+                        final Message message = messages.get(position);
                         String whiteboardEncoded = "";
                         if (!message.getTag().isEmpty()) {
-                            byte[] whiteboardBytes;
+                            final byte[] whiteboardBytes;
                             try {
                                 File whiteboardFile = new File(MyApplication.storageDir, message.getTag());
                                 FileInputStream whiteboardInStream = new FileInputStream(whiteboardFile);
+
+                                /**
+                                 * Ilya claims that size of file can not be very big, so
+                                 * these warnings refer to impossible situations.
+                                 */
+
+                                //noinspection NumericCastThatLosesPrecision
                                 whiteboardBytes = new byte[(int) whiteboardFile.length()];
+                                //noinspection ResultOfMethodCallIgnored
                                 whiteboardInStream.read(whiteboardBytes);
                                 whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
                             } catch (FileNotFoundException e) {
@@ -244,14 +249,11 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
                         }
                         message.setStatus(Message.Status.SENDING);
                         ((ChatActivity) context).sendMessage(message, whiteboardEncoded);
-
                         notifyDataSetChanged();
                         break;
                     }
                     case R.id.alert_delete: {
-                        int position = (int) v.getTag();
-                        Log.d("delete_message", String.valueOf(position) + " - " + messages.size());
-                        messages.remove(position);
+                        messages.remove((int) v.getTag());
                         notifyDataSetChanged();
                         break;
                     }
@@ -262,31 +264,28 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         popup.show();
     }
 
-
-
     private int dpAsPixels(int sizeInDp) {
         float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (sizeInDp*scale + 0.5f);
+        //noinspection NumericCastThatLosesPrecision
+        return (int) (sizeInDp * scale + 0.5f);
     }
 
     private static class MessageViewHolder {
 
-        final private TextView textView;
-        final private ImageView imageView;
-        final private ProgressBar loadingBar;
+        private final TextView textView;
+        private final ImageView imageView;
+        private final ProgressBar loadingBar;
         private final ImageButton alertBtn;
-        private final boolean isCur;
+        private final boolean isCurPlayer;
 
-        MessageViewHolder(TextView textView, ImageView imageView,
-                          ProgressBar loadingBar, ImageButton alertBtn,
-                          boolean isCur) {
+        MessageViewHolder(TextView textView, ImageView imageView, ProgressBar loadingBar,
+                          ImageButton alertBtn, boolean isCur) {
             this.textView = textView;
             this.imageView = imageView;
             this.loadingBar = loadingBar;
             this.alertBtn = alertBtn;
-            this.isCur = isCur;
+            this.isCurPlayer = isCur;
         }
     }
-
 
 }

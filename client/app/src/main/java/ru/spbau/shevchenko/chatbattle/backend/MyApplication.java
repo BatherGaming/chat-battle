@@ -7,14 +7,15 @@ import java.io.File;
 import ru.spbau.shevchenko.chatbattle.frontend.BasicActivity;
 
 public class MyApplication extends Application {
+
     public static File storageDir;
+
+    private BasicActivity mCurrentActivity = null;
 
     public void onCreate() {
         super.onCreate();
         storageDir = getApplicationContext().getFilesDir();
     }
-
-    private BasicActivity mCurrentActivity = null;
 
     public BasicActivity getCurrentActivity() {
         return mCurrentActivity;

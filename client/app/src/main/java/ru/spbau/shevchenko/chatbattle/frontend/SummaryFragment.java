@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -111,7 +110,7 @@ public class SummaryFragment extends DialogFragment implements DialogInterface.O
         for (String childText : childStrings) {
             BasicActivity.addChildTextView(row, childText,
                     getResources().getDimension(R.dimen.summary_font_size), Gravity.CENTER,
-                    ContextCompat.getColor(context, R.color.black), null, null);
+                    ContextCompat.getColor(context, R.color.black));
         }
         if (color) {
             // Set background for login TextView

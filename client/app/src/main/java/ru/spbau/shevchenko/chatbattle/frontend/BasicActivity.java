@@ -5,9 +5,7 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import ru.spbau.shevchenko.chatbattle.Player;
@@ -15,13 +13,13 @@ import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 
 public class BasicActivity extends AppCompatActivity {
-    final public static long BATTLE_FOUND_HANDLE_DELAY = 100;
 
+    public static final long BATTLE_FOUND_HANDLE_DELAY = 100;
+    private static Class<?> lastActivityClass = null;
+
+    private final Handler battleFoundHandler = new Handler();
     private MyApplication myApplication;
     private boolean isVisible = false;
-    private static Class<?> lastActivityClass = null;
-    final private Handler battleFoundHandler = new Handler();
-
 
     public boolean visible() {
         return isVisible;
@@ -69,29 +67,24 @@ public class BasicActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void clearReferences() {
-        final BasicActivity currActivity = myApplication.getCurrentActivity();
-        if (equals(currActivity))
-            myApplication.setCurrentActivity(null);
-    }
-//    public static void addChildTextView(ViewGroup viewGroup, CharSequence childText) {
-//        addChildTextView(viewGroup, childText, null, null, null);
-//    }
     public static void addChildTextView(ViewGroup viewGroup, CharSequence childText, Float textSize,
-                                        Integer gravity, Integer textColor, Integer padding, Integer background) {
+                                        Integer gravity, Integer textColor) {
         final TextView child = new TextView(viewGroup.getContext());
         child.setText(childText);
-        if (padding != null)
-            child.setPadding(padding, padding, padding, padding);
-        if (background != null)
-            child.setBackgroundColor(background);
         if (textSize != null) child.setTextSize(textSize);
         if (gravity != null) child.setGravity(gravity);
         if (textColor != null) child.setTextColor(textColor);
         viewGroup.addView(child);
     }
 
+    private void clearReferences() {
+        final BasicActivity currActivity = myApplication.getCurrentActivity();
+        if (equals(currActivity))
+            myApplication.setCurrentActivity(null);
+    }
+
     public static class BattleFoundRunnable implements Runnable {
+
         private Player.Role role;
         private FragmentManager fragmentManager;
 
@@ -110,7 +103,5 @@ public class BasicActivity extends AppCompatActivity {
             dialogFragment.show(fragmentManager, "");
         }
     }
-
-
 }
 
