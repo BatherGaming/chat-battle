@@ -6,6 +6,4 @@
     android:textColor="#000000"
     android:textSize="20sp"
     android:gravity="center"
-    android:background="@color/yellow"
-    />
-    <!--android:background="@drawable/menu_spinner_rectangle"-->
+    android:background="@color/yellow" />

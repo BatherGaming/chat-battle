@@ -1,69 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="75dp"
-    android:background="@color/gray250"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:background="@color/gray250">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/message_body"
-        android:textSize="9pt"
-        android:textColor="#000"/>
-    <ImageView
         android:layout_width="wrap_content"
-        android:id="@+id/message_image"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/message_body"/>
+        android:textColor="#000"
+        android:textSize="9pt" />
 
+    <ImageView
+        android:id="@+id/message_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/message_body"
+        android:contentDescription="@string/message_image_desc" />
 
-
-    <!--<ImageButton-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_toLeftOf="@+id/delete_message_btn"-->
-        <!--android:layout_toStartOf="@+id/delete_message_btn"-->
-        <!--android:id="@+id/retry_sending_btn"-->
-        <!--android:src="@drawable/retry"-->
-        <!--android:visibility="gone"-->
-        <!--/>-->
-    <!--<ImageButton-->
-        <!--android:id="@+id/delete_message_btn"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:src="@drawable/delete"-->
-        <!--android:visibility="gone"-->
-        <!--/>-->
     <ImageButton
+        android:id="@+id/alert"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_toLeftOf="@+id/message_body"
-        android:layout_toStartOf="@+id/message_body"
         android:layout_alignBottom="@id/message_body"
-        android:id="@+id/alert"
-        android:visibility="gone"
-        android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginStart="5dp"
+        android:layout_toLeftOf="@+id/message_body"
+        android:layout_toStartOf="@+id/message_body"
         android:background="@drawable/alert"
-        />
+        android:contentDescription="@string/alert_btn_desc"
+        android:visibility="gone" />
 
     <ProgressBar
+        android:id="@+id/delivering_progress_bar"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_toLeftOf="@+id/message_body"
-        android:layout_toStartOf="@+id/message_body"
         android:layout_alignBottom="@id/message_body"
-        android:id="@+id/delivering_progress_bar"
-        android:visibility="gone"
-        android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginStart="5dp"
-        android:progressDrawable="@drawable/waiting_circular_bar" />
-
+        android:layout_toLeftOf="@+id/message_body"
+        android:layout_toStartOf="@+id/message_body"
+        android:progressDrawable="@drawable/waiting_circular_bar"
+        android:visibility="gone" />
 
 </RelativeLayout>

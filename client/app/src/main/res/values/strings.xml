@@ -91,4 +91,8 @@
     <string name="delete">Delete</string>
     <string name="retry">Retry</string>
     <string name="spectate">Spectate</string>
+    <string name="whiteboard_btn_desc">whiteboard button</string>
+    <string name="send_btn_desc">send button</string>
+    <string name="message_image_desc">message image</string>
+    <string name="alert_btn_desc">alert exclamation point</string>
 </resources>

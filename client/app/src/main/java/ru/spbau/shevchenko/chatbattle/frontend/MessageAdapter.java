@@ -129,6 +129,7 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
 
         holder.textView.setBackgroundResource(((ChatActivity) context).getPlayerColor(message.getAuthorId()).getTextViewId());
         holder.textView.setText(message.getText());
+        holder.textView.setMaxWidth(dpAsPixels(60));
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.textView.getLayoutParams();
         lp.addRule(isCur ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);

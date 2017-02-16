@@ -3,48 +3,40 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/abc_action_bar_default_height_material"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        />
-
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="8dp"
+        android:background="@color/gray250"
+        android:orientation="vertical"
+        android:paddingEnd="8dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:orientation="vertical"
-        android:background="@color/gray250"
         tools:context="ru.spbau.shevchenko.chatbattle.frontend.PlayerActivity">
 
         <ListView
-            android:layout_marginTop="10dp"
+            android:id="@+id/messages_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/messages_view"
-            android:layout_alignParentTop="true"
+            android:layout_above="@+id/input_bar"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:transcriptMode="alwaysScroll"
-            android:dividerHeight="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
             android:divider="@null"
-            android:layout_above="@+id/input_bar" />
+            android:dividerHeight="0dp"
+            android:transcriptMode="alwaysScroll" />
 
         <ProgressBar
+            android:id="@+id/initializing_progress_bar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:id="@+id/initializing_progress_bar"
             android:progressDrawable="@drawable/waiting_circular_bar" />
 
         <LinearLayout
@@ -52,49 +44,52 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/whiteboard_btn"
                 android:layout_width="50dp"
-                android:paddingLeft="10dp"
-                android:paddingStart="10dp"
-                android:paddingRight="10dp"
-                android:paddingEnd="10dp"
-
                 android:layout_height="match_parent"
-                android:src="@drawable/whiteboard"
-                android:background="@drawable/chat_message_edit"/>
+                android:background="@drawable/chat_message_edit"
+                android:contentDescription="@string/whiteboard_btn_desc"
+                android:paddingEnd="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingStart="10dp"
+                android:src="@drawable/whiteboard" />
+
             <EditText
                 android:id="@+id/message_input"
-                android:layout_weight="0.5"
                 android:layout_width="0dp"
-                android:hint="@string/type_here"
-                android:textSize="9pt"
-                android:paddingLeft="5dp"
-                android:paddingStart="5dp"
-                android:paddingRight="5dp"
-                android:paddingEnd="5dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
                 android:background="@drawable/chat_message_edit"
+                android:hint="@string/type_here"
+                android:paddingBottom="4dp"
+                android:paddingEnd="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingStart="5dp"
+                android:paddingTop="4dp"
                 android:textColor="@color/black"
-                android:layout_height="match_parent" />
+                android:textSize="9pt" />
 
             <ImageButton
                 android:id="@+id/send_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/send"
-                android:paddingLeft="10dp"
-                android:paddingStart="10dp"
-                android:paddingRight="10dp"
+                android:background="@drawable/chat_message_edit"
+                android:contentDescription="@string/send_btn_desc"
                 android:paddingEnd="10dp"
-                android:background="@drawable/chat_message_edit"/>
-
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingStart="10dp"
+                android:src="@drawable/send" />
 
         </LinearLayout>
+
     </RelativeLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"
         android:layout_width="wrap_content"
@@ -103,7 +98,7 @@
         app:headerLayout="@layout/menu_drawer_header"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/blue900"
-        app:theme="@style/Theme.Design.Light"
-        app:menu="@menu/menu_drawer"/>
+        app:menu="@menu/menu_drawer"
+        app:theme="@style/Theme.Design.Light" />
 
 </android.support.v4.widget.DrawerLayout>
