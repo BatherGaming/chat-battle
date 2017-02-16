@@ -17,7 +17,7 @@ def get_players():
     return list(map(Player.to_dict, players)), 200
 
 
-def get_chat_players(chat_id):
+def get_chat_players(chat_id): #1
     chat = session.query(Chat).filter_by(id=chat_id).first()
     if not chat:
         return {"error": "Chat doesn't exist"}, 404
