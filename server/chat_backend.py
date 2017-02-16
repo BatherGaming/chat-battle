@@ -83,7 +83,7 @@ def send_message(json):
             or 'chatId' not in json\
             or not str(json["chatId"]).isdigit()\
             or not str(json["authorId"]).isdigit()\
-            or (not json["text"] and
+            or (json["text"] == "" and
                 ('whiteboard' not in json or json['whiteboard'] == "")):
         return {}, 400
 
@@ -95,7 +95,7 @@ def send_message(json):
             or player not in chat.players:
         return {}, 422
 
-    if player.penalty == "MUTED":
+    if check_mute(player)
         return {"error": "You're muted"}, 400
     message = Message(chat_id=chat.id, text=json["text"], author_id=player.id,
                       time=datetime.datetime.now())
@@ -109,11 +109,11 @@ def send_message(json):
 
 
 def get_messages(chat_id, num):
-    messages = session.query(Message).\
-                        filter_by(chat_id=chat_id).\
-                        order_by(Message.time).\
-                        offset(num).\
-                        all()
+    messages = session.query(Message)\
+                        .filter_by(chat_id=chat_id).
+                        .order_by(Message.time)\
+                        .offset(num)\
+                        .all()
     return list(map(Message.to_dict, messages)), 200
 
 
@@ -139,12 +139,17 @@ def verify(chat):
         close(chat, -1)
 
 
+def check_mute(player):
+    if player.penalty == "MUTED"\
+       and player.mute_end_time < datetime.datetime.now():
+        player.penalty = "NONE"    
+    return player.penalty == "MUTED"
+
+
 def chat_status(player_id, chat_id):
     player = session.query(Player).filter_by(id=player_id).first()
     chat = session.query(Chat).filter_by(id=chat_id).first()
-    if player.penalty == "MUTED"\
-       and player.mute_end_time < datetime.datetime.now():
-        player.penalty = "NONE"
+    check_mute(player)
     verify(chat)
     if not chat:
         return {"error": "Chat doesn't exist"}, 400
@@ -173,7 +178,6 @@ def chat_status(player_id, chat_id):
 
 
 def accept(player_id):
-    print('accepted', player_id)
     player = session.query(Player).filter_by(id=player_id).first()
     if player is None:
         return {"error": "Player doesn't exist"}, 400
@@ -192,7 +196,6 @@ def accept(player_id):
 
 
 def decline(player_id):
-    print('declined', player_id)
     player = session.query(Player).filter_by(id=player_id).first()
     if not player:
         return {"error": "Player doesn't exist"}, 400

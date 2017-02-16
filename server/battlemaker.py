@@ -11,6 +11,7 @@ open(queue_filename, "a").close()
 
 def read_queues_from_file():
     with open(queue_filename, "r") as queue_file:
+        # Read line, remove \n and split by ","
         queues = [queue_file.readline()[:-1].split(",") for _ in range(2)]
     queues = [list(map(int, filter(lambda s: str(s).isdigit(), queue)))
               for queue in queues]
@@ -52,7 +53,7 @@ def add_player_to_queue(role, player_id):
     else:
         return {"error": "Can't parse role"}, 400
 
-    while len(players_queue) >= player_amount and leaders_queue != []:
+    while len(players_queue) >= player_amount and leaders_queue:
         players = []
         for i in range(player_amount):
             players.append(players_queue.pop(0))

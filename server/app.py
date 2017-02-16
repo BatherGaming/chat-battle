@@ -10,8 +10,6 @@ import chat_backend
 
 app = Flask(__name__)
 
-WHITEBOARD_FOLDER = 'whiteboards'
-
 
 def process(response):
     return jsonify(response[0]), response[1]
