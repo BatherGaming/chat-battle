@@ -95,4 +95,7 @@
     <string name="send_btn_desc">send button</string>
     <string name="message_image_desc">message image</string>
     <string name="alert_btn_desc">alert exclamation point</string>
+    <string name="KeyCapsFont">fonts/KeyCapsFLF.ttf</string>
+    <string name="ImmortalFont">fonts/IMMORTAL.ttf</string>
+
 </resources>

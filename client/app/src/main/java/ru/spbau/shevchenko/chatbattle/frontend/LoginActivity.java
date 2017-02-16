@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
@@ -21,26 +20,26 @@ import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 import ru.spbau.shevchenko.chatbattle.backend.RequestCallback;
 import ru.spbau.shevchenko.chatbattle.backend.RequestMaker;
 import ru.spbau.shevchenko.chatbattle.backend.SearcherRunnable;
-import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
 import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 public class LoginActivity extends BasicActivity implements View.OnClickListener {
 
     private static final String PREFS_FILE_NAME = "MyPrefsFile";
-    static private boolean triedAutoLogin = true;
-    static private Thread SearcherThread;
+    private static boolean triedAutoLogin = true;
+    private static Thread SearcherThread;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view);
-        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
+        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(),
+                getResources().getString(R.string.KeyCapsFont)));
 
         final TextView battleTextView = (TextView) findViewById(R.id.battle_text_view);
-        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
+        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(),
+                getResources().getString(R.string.KeyCapsFont)));
 
         showLayout(View.VISIBLE, View.GONE);
 
@@ -48,28 +47,27 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
 
         final Button signInButton = (Button) findViewById(R.id.signin_button);
         signInButton.setOnClickListener(this);
+
         final Button signUpButton = (Button) findViewById(R.id.signup_button);
         signUpButton.setOnClickListener(this);
+
         final Button resetPasswordButton = (Button) findViewById(R.id.reset_password_button);
         resetPasswordButton.setOnClickListener(this);
 
         SearcherThread = new Thread(new SearcherRunnable((MyApplication) getApplication()));
         SearcherThread.start();
-
-        initStringConstants();
     }
 
     public void completeLogin() {
-        ((EditText) findViewById(R.id.login_edit)).setText("");
-        ((EditText) findViewById(R.id.password_edit)).setText("");
+        ((TextView) findViewById(R.id.login_edit)).setText("");
+        ((TextView) findViewById(R.id.password_edit)).setText("");
         ((TextView) findViewById(R.id.status_view)).setText("");
-
 
         final Intent intent = new Intent(this, MenuActivity.class);
         startActivityForResult(intent, 1);
     }
 
-    public void failedLogin(String reason) {
+    public void failedLogin(CharSequence reason) {
         if (triedAutoLogin) {
             triedAutoLogin = false;
             showLayout(View.GONE, View.VISIBLE);
@@ -80,14 +78,19 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
     }
 
     @Override
-    public void onClick(View v) {
+    public void onResume() {
+        super.onResume();
+        if (!triedAutoLogin) showLayout(View.GONE, View.VISIBLE);
+    }
 
+    @Override
+    public void onClick(View v) {
         switch (v.getId()) {
             case R.id.signin_button: {
                 final TextView statusView = (TextView) findViewById(R.id.status_view);
                 statusView.setText(R.string.signin_in);
-                final String login = ((EditText) findViewById(R.id.login_edit)).getText().toString().trim();
-                final String password = ((EditText) findViewById(R.id.password_edit)).getText().toString().trim();
+                final String login = ((TextView) findViewById(R.id.login_edit)).getText().toString().trim();
+                final String password = ((TextView) findViewById(R.id.password_edit)).getText().toString().trim();
                 ProfileManager.signIn(login, password, this);
                 save(login, password);
                 break;
@@ -98,7 +101,7 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
                 break;
             }
             case R.id.reset_password_button: {
-                final String login = ((EditText) findViewById(R.id.login_edit)).getText().toString().trim();
+                final String login = ((TextView) findViewById(R.id.login_edit)).getText().toString().trim();
                 if (login.equals("")) {
                     final TextView statusView = (TextView) findViewById(R.id.status_view);
                     statusView.setText(getString(R.string.invalid_login));
@@ -124,6 +127,18 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         }
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER ||
+                ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER) {
+            RequestMaker.deleteFromQueue(ProfileManager.getPlayer().getId());
+        }
+        triedAutoLogin = false;
+        if (data != null && data.getBooleanExtra("exit", false)) {
+            SearcherThread.interrupt();
+            finish();
+        }
+    }
+
     private void save(String login, String password) {
         final SharedPreferences settings = getSharedPreferences(PREFS_FILE_NAME, 0);
         final SharedPreferences.Editor editor = settings.edit();
@@ -133,8 +148,6 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
     }
 
     private void showLayout(int spinnerVisibility, int layoutVisibility) {
-
-
         final ProgressBar spinner = (ProgressBar) findViewById(R.id.login_initializing_progress_bar);
         final Button signInButton = (Button) findViewById(R.id.signin_button);
         final Button signUpButton = (Button) findViewById(R.id.signup_button);
@@ -166,48 +179,4 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         return false;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!triedAutoLogin) showLayout(View.GONE, View.VISIBLE);
-    }
-
-    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-        if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IN_QUEUE_AS_LEADER ||
-                ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IN_QUEUE_AS_PLAYER) {
-            RequestMaker.deleteFromQueue(ProfileManager.getPlayer().getId());
-        }
-        triedAutoLogin = false;
-        if (data != null && data.getBooleanExtra("exit", false)) {
-            SearcherThread.interrupt();
-            finish();
-        }
-    }
-
-    void initStringConstants() {
-        StringConstants.setHELLO(getString(R.string.hello));
-        StringConstants.setPROFILE(getString(R.string.profile));
-        StringConstants.setLOG_OUT(getString(R.string.log_out));
-        StringConstants.setMALE(getString(R.string.male));
-        StringConstants.setFEMALE(getString(R.string.female));
-        StringConstants.setNAME(getString(R.string.name));
-        StringConstants.setRATING(getString(R.string.rating));
-        StringConstants.setLEADERBOARD(getString(R.string.leaderboard));
-        StringConstants.setCHANGE_PASSWORD(getString(R.string.change_password));
-
-    }
-
-    public void loginResponse(RequestResult.Status status) {
-        switch (status) {
-            case OK: {
-                completeLogin();
-            }
-            case FAILED_CONNECTION: {
-                failedLogin(getResources().getString(R.string.internet_troubles));
-            }
-            case ERROR: {
-                failedLogin(getResources().getString(R.string.unknown_error));
-            }
-        }
-    }
 }

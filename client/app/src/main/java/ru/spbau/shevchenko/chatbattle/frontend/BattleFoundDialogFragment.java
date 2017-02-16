@@ -26,14 +26,22 @@ import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 import static ru.spbau.shevchenko.chatbattle.Player.*;
 
 public class BattleFoundDialogFragment extends DialogFragment {
-    final static private long HANDLER_DELAY = 100;
-    final private static int MAX_IDLENESS_TIME = 5000;
+    private static final long HANDLER_DELAY = 100;
+    private static final int MAX_IDLENESS_TIME = 5000;
+
+    final private Handler getStatusHandler = new Handler();
+    final private Runnable getStatusRunnable = new Runnable() {
+        public void run() {
+            RequestMaker.chatStatus(ProfileManager.getPlayer().getId(),
+                    chatId, getStatusCallback);
+        }
+    };
 
     private int chatId;
     private Role role;
     private long startTime;
     private boolean hasAccepted;
-    private final Handler getStatusHandler = new Handler();
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -91,14 +99,6 @@ public class BattleFoundDialogFragment extends DialogFragment {
         startTime = System.currentTimeMillis();
     }
 
-
-    private final Runnable getStatusRunnable = new Runnable() {
-        public void run() {
-            RequestMaker.chatStatus(ProfileManager.getPlayer().getId(),
-                    chatId, getStatusCallback);
-        }
-    };
-
     private final RequestCallback getStatusCallback = new RequestCallback() {
         @Override
         public void run(RequestResult requestResult) {
@@ -149,16 +149,6 @@ public class BattleFoundDialogFragment extends DialogFragment {
                     break;
                 }
                 default: {
-                    switch (role) {
-                        case PLAYER: {
-                            ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_PLAYER);
-                            break;
-                        }
-                        case LEADER: {
-                            ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_LEADER);
-                            break;
-                        }
-                    }
                     if (role == Role.PLAYER) {
                         ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.CHATTING_AS_PLAYER);
                     } else {

@@ -1,12 +1,9 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import ru.spbau.shevchenko.chatbattle.Player;
@@ -25,10 +22,12 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
         signupButton.setOnClickListener(this);
 
         final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view);
-        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
+        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(),
+                getResources().getString(R.string.KeyCapsFont)));
 
         final TextView battleTextView = (TextView) findViewById(R.id.battle_text_view);
-        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
+        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(),
+                getResources().getString(R.string.KeyCapsFont)));
     }
 
     @Override
@@ -36,10 +35,10 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
         switch (v.getId()) {
             case R.id.signup_button: {
                 // Getting all the data from form
-                final String login = ((EditText) findViewById(R.id.login_edit)).getText().toString();
-                final String password = ((EditText) findViewById(R.id.password_edit)).getText().toString();
-                final String passwordConfirm = ((EditText) findViewById(R.id.password_confirm_edit)).getText().toString();
-                final String email = ((EditText) findViewById(R.id.email_edit)).getText().toString();
+                final String login = ((TextView) findViewById(R.id.login_edit)).getText().toString();
+                final String password = ((TextView) findViewById(R.id.password_edit)).getText().toString();
+                final String passwordConfirm = ((TextView) findViewById(R.id.password_confirm_edit)).getText().toString();
+                final String email = ((TextView) findViewById(R.id.email_edit)).getText().toString();
 
                 // Check password equality
                 if (!password.equals(passwordConfirm)) {
@@ -58,17 +57,17 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
 
     public void completeSignup() {
         ((TextView) findViewById(R.id.status_view)).setText("");
-        ((EditText) findViewById(R.id.login_edit)).setText("");
-        ((EditText) findViewById(R.id.password_edit)).setText("");
-        ((EditText) findViewById(R.id.password_confirm_edit)).setText("");
-
+        ((TextView) findViewById(R.id.login_edit)).setText("");
+        ((TextView) findViewById(R.id.password_edit)).setText("");
+        ((TextView) findViewById(R.id.password_confirm_edit)).setText("");
         finish();
     }
 
-    public void failedSignup(String reason) {
+    public void failedSignup(CharSequence reason) {
         final TextView statusView = (TextView) findViewById(R.id.status_view);
         statusView.setText(reason);
     }
+
     public void signupResponse(RequestResult.Status status) {
         switch (status) {
             case OK: {

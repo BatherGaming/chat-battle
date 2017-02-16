@@ -22,26 +22,30 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         setContentView(R.layout.activity_search);
 
         final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view);
-        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
+        chatTextView.setTypeface(Typeface.createFromAsset(getAssets(),
+                getResources().getString(R.string.KeyCapsFont)));
 
         final TextView battleTextView = (TextView) findViewById(R.id.battle_text_view);
-        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/KeyCapsFLF.ttf"));
+        battleTextView.setTypeface(Typeface.createFromAsset(getAssets(),
+                getResources().getString(R.string.KeyCapsFont)));
 
         final TextView descView = (TextView) findViewById(R.id.search_desc_text_view);
-        descView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/IMMORTAL.ttf"));
+        descView.setTypeface(Typeface.createFromAsset(getAssets(),
+                getResources().getString(R.string.ImmortalFont)));
 
         final Button searchAsPlayerButton = (Button) findViewById(R.id.search_as_player_button);
         searchAsPlayerButton.setOnClickListener(this);
-        searchAsPlayerButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/IMMORTAL.ttf"));
+        searchAsPlayerButton.setTypeface(Typeface.createFromAsset(getAssets(),
+                getResources().getString(R.string.ImmortalFont)));
 
         final Button searchAsLeaderButton = (Button) findViewById(R.id.search_as_leader_button);
         searchAsLeaderButton.setOnClickListener(this);
-        searchAsLeaderButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/IMMORTAL.ttf"));
+        searchAsLeaderButton.setTypeface(Typeface.createFromAsset(getAssets(),
+                getResources().getString(R.string.ImmortalFont)));
 
         final Button stopSearchingButton = (Button) findViewById(R.id.stop_searching_button);
         stopSearchingButton.setOnClickListener(this);
 
-        Log.d("Player status:", ProfileManager.getPlayerStatus().toString());
         switch (ProfileManager.getPlayerStatus()) {
             case IDLE: {
                 stopSearching();
@@ -61,7 +65,6 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.search_as_player_button: {
                 searchAs(Player.Role.PLAYER, false);
@@ -141,7 +144,7 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
     public void onResume() {
         super.onResume();
         Log.d("Search", "onResume");
-        switch(ProfileManager.getPlayerStatus()) {
+        switch (ProfileManager.getPlayerStatus()) {
             case IDLE: {
                 stopSearching();
                 break;
@@ -165,8 +168,7 @@ public class SearchActivity extends BasicActivity implements View.OnClickListene
         }
     }
 
-
-    public void move(View image, int anim, boolean durationZero){
+    public void move(View image, int anim, boolean durationZero) {
         Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(), anim);
         if (durationZero) animation1.setDuration(0);
         image.startAnimation(animation1);

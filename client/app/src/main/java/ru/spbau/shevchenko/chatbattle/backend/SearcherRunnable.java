@@ -18,12 +18,12 @@ import ru.spbau.shevchenko.chatbattle.frontend.BasicActivity;
 import ru.spbau.shevchenko.chatbattle.frontend.LoginActivity;
 
 public class SearcherRunnable implements Runnable {
-    static private final int SLEEPING_TIME = 200; // mills
+    private static final int SLEEPING_TIME = 200; // mills
+    private static final int PRIORITY_HIGH = 5;
     private MyApplication myApplication;
     private boolean waitingCallback = false;
-    private int lastChatId = -1;
     private boolean needDialog = false;
-
+    private int lastChatId = -1;
 
     public SearcherRunnable(MyApplication myApplication) {
         this.myApplication = myApplication;
@@ -54,7 +54,7 @@ public class SearcherRunnable implements Runnable {
 
         @Override
         public void run(RequestResult requestResult) {
-            if (requestResult.getStatus() == RequestResult.Status.FAILED_CONNECTION){
+            if (requestResult.getStatus() == RequestResult.Status.FAILED_CONNECTION) {
                 Log.d("chIfFoCallb", "Internet troubles");
                 waitingCallback = false;
                 return;
@@ -77,8 +77,6 @@ public class SearcherRunnable implements Runnable {
                 if (playerId != ProfileManager.getPlayer().getId()) return;
                 final String chatId = playerObject.getString("chatId");
                 ProfileManager.PlayerStatus status = ProfileManager.PlayerStatus.valueOf(playerObject.getString("status"));
-
-
                 if (!chatId.equals("null")) {
                     int chatIdInt = Integer.valueOf(chatId);
                     final BasicActivity currentActivity = getActivity();
@@ -113,12 +111,11 @@ public class SearcherRunnable implements Runnable {
         ProfileManager.getPlayer().setChatId(chatIdInt);
         currentActivity.getBattleFoundHandler().postDelayed(
                 new BasicActivity.BattleFoundRunnable(
-                        status == ProfileManager.PlayerStatus.CHATTING_AS_LEADER ? Player.Role.LEADER : Player.Role.PLAYER,
+                        status == ProfileManager.PlayerStatus.CHATTING_AS_LEADER ?
+                                Player.Role.LEADER : Player.Role.PLAYER,
                         currentActivity.getFragmentManager()),
                 BasicActivity.BATTLE_FOUND_HANDLE_DELAY);
     }
-
-    private static final int PRIORITY_HIGH = 5;
 
     private void notifyUser() {
         final BasicActivity curActivity = getActivity();
@@ -135,12 +132,14 @@ public class SearcherRunnable implements Runnable {
                 .setContentText("Battle has been found!")
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
-        final NotificationManager mNotificationManager = (NotificationManager) curActivity.getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationManager mNotificationManager =
+                (NotificationManager) curActivity.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(0, mBuilder.build());
     }
 
     private void removeNotifications() {
-        NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancelAll();
     }
 }
