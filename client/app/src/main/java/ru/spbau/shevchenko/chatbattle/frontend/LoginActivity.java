@@ -67,6 +67,20 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         startActivityForResult(intent, 1);
     }
 
+    public void loginResponse(RequestResult.Status status) {
+        switch (status) {
+            case OK: {
+                completeLogin();
+            }
+            case FAILED_CONNECTION: {
+                failedLogin(getResources().getString(R.string.internet_troubles));
+            }
+            case ERROR: {
+                failedLogin(getResources().getString(R.string.unknown_error));
+            }
+        }
+    }
+
     public void failedLogin(CharSequence reason) {
         if (triedAutoLogin) {
             triedAutoLogin = false;

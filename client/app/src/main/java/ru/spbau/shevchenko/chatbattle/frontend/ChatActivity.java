@@ -480,7 +480,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     private void navigate(int id) {
         switch (id) {
             case R.id.menu_change_password: {
-                MenuActivity.ChangePasswordDialog changePasswordDialog = new MenuActivity.ChangePasswordDialog();
+                ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog();
                 changePasswordDialog.show(getFragmentManager(), "");
                 break;
             }
