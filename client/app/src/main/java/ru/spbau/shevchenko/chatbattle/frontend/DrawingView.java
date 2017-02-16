@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -19,7 +20,7 @@ import ru.spbau.shevchenko.chatbattle.R;
 public class DrawingView extends View {
     private Path drawPath;
     private Paint drawPaint, canvasPaint;
-    private int paintColor = 0xFF660000;
+    private int paintColor = ContextCompat.getColor(getContext(), R.color.black);
     private Canvas drawCanvas;
     private Bitmap canvasBitmap;
     private float brushSize;

@@ -330,7 +330,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
         // Post image to list view
         final Message message = new Message(-1, messageText, ProfileManager.getPlayer().getId(),
-                ProfileManager.getPlayer().getChatId(), whiteboardTag);
+                whiteboardTag);
         message.setStatus(Message.Status.SENDING);
         sendMessage(message, whiteboardEncoded);
         whiteboardEncoded = "";
@@ -411,7 +411,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
                         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
                         break;
                     default:
-                        if (!result.equals("leaderboard_row")) {
+                        if (!result.equals("leader")) {
                             final int newRating = playerObject.getInt("rating");
                             ProfileManager.getPlayer().setRating(newRating);
                             Toast.makeText(ChatActivity.this, result +

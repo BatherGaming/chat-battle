@@ -7,5 +7,6 @@ public interface RequestCallback {
 
         }
     };
+
     void run(RequestResult result);
 }

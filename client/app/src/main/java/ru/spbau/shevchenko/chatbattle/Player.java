@@ -5,12 +5,9 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ru.spbau.shevchenko.chatbattle.backend.StringConstants;
-
 public class Player {
-
-    final private int id;
-    final private String login;
+    private final int id;
+    private final String login;
     private int rating;
     private int chatId;
 
@@ -22,7 +19,7 @@ public class Player {
     }
 
     public enum Role {
-        PLAYER, LEADER;
+        PLAYER, LEADER
     }
 
     public static Player fromJSON(JSONObject playerObject) throws JSONException {
@@ -33,7 +30,7 @@ public class Player {
                     playerObject.getInt("rating")
             );
         } catch (JSONException e) {
-            Log.e("Player.fromJSON", "Failed to initialize Player from JSON: " + e.getMessage());
+            Log.e("Player.fromJSON", "Failed to initialize player from JSON: " + e.getMessage());
             throw e;
         }
     }

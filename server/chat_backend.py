@@ -22,8 +22,10 @@ def create_chat(chat_type, players_ids, leader_id):
         player = session.query(Player).filter_by(id=playerId).first()
         player.chat_id = chat.id
         player.penalty = "NONE"
-        player.status = "CHATTING_AS_LEADER" if player.id == leader_id
-                                            else "CHATTING_AS_PLAYER"
+        if player.id == leader_id:
+            player.status = "CHATTING_AS_LEADER"
+        else:
+            player.status = "CHATTING_AS_PLAYER"
     session.commit()
     return chat.id
 
@@ -36,8 +38,10 @@ def close(chat, winner_id):
         player.chat_id = None
         player.status = "IDLE"
         if chat.is_started and player.id != chat.leader_id:
-            player.rating += WINNER_DELTA if player.id == winner_id
-                                        else LOSER_DELTA
+            if player.id == winner_id:
+                player.rating += WINNER_DELTA
+            else:
+                player.rating += LOSER_DELTA
     session.commit()
 
 
@@ -95,7 +99,7 @@ def send_message(json):
             or player not in chat.players:
         return {}, 422
 
-    if check_mute(player)
+    if check_mute(player):
         return {"error": "You're muted"}, 400
     message = Message(chat_id=chat.id, text=json["text"], author_id=player.id,
                       time=datetime.datetime.now())
@@ -110,7 +114,7 @@ def send_message(json):
 
 def get_messages(chat_id, num):
     messages = session.query(Message)\
-                        .filter_by(chat_id=chat_id).
+                        .filter_by(chat_id=chat_id)\
                         .order_by(Message.time)\
                         .offset(num)\
                         .all()
@@ -267,8 +271,7 @@ def get_time_left(chat_id):
     if not chat.is_started:
         return {"error": "Chat has not yet started"}, 400
 
-    return {"time": (chat.end_time - datetime.datetime.now()).total_seconds()},
-            200
+    return {"time": (chat.end_time - datetime.datetime.now()).total_seconds()}, 200
 
 
 def get_summary(chat_id):

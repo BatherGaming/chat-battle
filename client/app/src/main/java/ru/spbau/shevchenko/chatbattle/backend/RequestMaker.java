@@ -10,10 +10,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -32,6 +32,119 @@ public class RequestMaker {
 
     private enum Method {
         GET, POST, PUT, DELETE
+    }
+
+
+    @SuppressWarnings("WeakerAccess")
+    public static void pullMessages(int chatId, int messageCount, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/get/" + chatId + "/" + messageCount,
+                Method.GET,
+                callback);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static void sendMessage(String messageData, RequestCallback callback) { // TODO: improve internet trouble handling
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, callback, 5000, messageData);
+    }
+
+    public static void getChats(RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/list", Method.GET, callback);
+    }
+
+    public static void getSummary(int chatId, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/summary/" + chatId, Method.GET, callback);
+    }
+
+    public static void chooseWinner(int chosen, RequestCallback choseCallback) { // ++++
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/close/" + ProfileManager.getPlayer().getId() + "/" + chosen, Method.POST, choseCallback);
+    }
+
+    public static void chatStatus(int id, int chatId, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/chat_status/" + id + "/" + chatId,
+                RequestMaker.Method.GET, callback);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static void getWhiteboard(String whiteboardTag, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/get_whiteboard/" + whiteboardTag, Method.GET, callback);
+    }
+
+    public static void getTimeLeft(int chatId, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/time_left/" + chatId, Method.GET, callback);
+    }
+
+    public static void kick(int playerId, int chatId, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/kick/" + chatId + "/" + playerId, Method.POST, callback);
+    }
+
+    public static void accept(int id) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/accept/" + id, Method.POST, RequestCallback.DO_NOTHING);
+    }
+
+    public static void decline(int id) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/decline/" + id, Method.POST, RequestCallback.DO_NOTHING);
+    }
+
+    public static void mute(int playerId, int chatId, int muteTime) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/mute/" + chatId + "/" + playerId + "/" + muteTime,
+                Method.POST, RequestCallback.DO_NOTHING);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static void findBattle(Player.Role role, int id) {
+        Log.d("FindBattle", "TRUE");
+        // TODO: handle internet troubles
+        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + role.toString().toLowerCase() + "/" + Integer.toString(id), Method.POST, RequestCallback.DO_NOTHING, 50000);
+    }
+
+    public static void deleteFromQueue(int id) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + id, Method.DELETE, RequestCallback.DO_NOTHING);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static void checkIfFound(int id, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/players/" + Integer.toString(id), Method.GET, callback);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static void getLeaderboard(RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/players/leaderboard", Method.GET, callback);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static void signUp(String player_data, RequestCallback callback) { // ++++
+        sendRequest(RequestMaker.DOMAIN_NAME + "/players", Method.POST, callback, 10000, player_data);
+    }
+
+    public static void changePassword(int id, String oldPassword, String newPassword, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/players/change_pass/" + id + "/" + oldPassword + "/" + newPassword,
+                Method.POST, callback, 5000);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static void getPlayersIds(int chatId, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/players/" + chatId, Method.GET, callback);
+    }
+
+    public static void getRatings(String idsString, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/ratings/" + idsString, Method.GET, callback);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static void signIn(String password, String login, RequestCallback callback) { // ++++
+        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/sign_in/" + login + "/" + password, Method.GET, callback, 10000);
+    }
+
+    public static void reset_password(String login, RequestCallback callback) {
+        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/reset_password/" + login, Method.POST, callback);
+    }
+
+    private static void sendRequest(final String url, Method method, final RequestCallback callback, int timeout) {
+        sendRequest(url, method, callback, timeout, "");
+    }
+
+    private static void sendRequest(String url, Method method, final RequestCallback callback) {
+        sendRequest(url, method, callback, 1);
     }
 
     private static void sendRequest(final String url, final Method method, final RequestCallback callback,
@@ -78,20 +191,14 @@ public class RequestMaker {
                         e.printStackTrace();
                     }
                     request.setHeader("Content-Type", "application/json");
-                    ((HttpEntityEnclosingRequestBase)request).setEntity(dataEntity);
+                    ((HttpEntityEnclosingRequest) request).setEntity(dataEntity);
                 }
                 while (true) {
                     try {
-                        if (url.contains("battlemaker")){
-                            Log.d("doInBackground", "Searching for battle");
-                        }
                         response = client.execute(request);
                         break;
                     } catch (IOException e) {
                         if (System.currentTimeMillis() - startTime > timeout) {
-                            if (url.contains("battlemaker")){
-                                Log.d("doInBackground", "Searching for battle FAIL");
-                            }
                             return new RequestResult(data, RequestResult.Status.FAILED_CONNECTION);
                         }
                     }
@@ -103,7 +210,7 @@ public class RequestMaker {
                     while ((line = rd.readLine()) != null) {
                         plainResponse.append(line);
                     }
-                } catch (IOException e){
+                } catch (IOException e) {
                     Log.e("sendRequest()", e.getMessage());
                     return new RequestResult("", RequestResult.Status.ERROR);
                 }
@@ -116,114 +223,5 @@ public class RequestMaker {
                 callback.run(result);
             }
         }.execute();
-    }
-
-
-    private static void sendRequest(final String url, Method method, final RequestCallback callback, int timeout) {
-        sendRequest(url, method, callback, timeout, "");
-    }
-
-    private static void sendRequest(String url, Method method, final RequestCallback callback) {
-        sendRequest(url, method, callback, 1);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static void findBattle(Player.Role role, int id) {
-        Log.d("FindBattle", "TRUE");
-        // TODO: HANDLE THIS SHIT
-        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + role.toString().toLowerCase() + "/" + Integer.toString(id), Method.POST, RequestCallback.DO_NOTHING, 50000);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static void checkIfFound(int id, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/players/" + Integer.toString(id), Method.GET, callback);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static void pullMessages(int chatId, int messageCount, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/get/" + chatId + "/" + messageCount,
-                Method.GET,
-                callback);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static void sendMessage(String messageData, RequestCallback callback) { // TODO: improve internet trouble handling
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/send", Method.POST, callback, 5000, messageData);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static void getPlayersIds(int chatId, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/players/" + chatId, Method.GET, callback);
-    }
-    @SuppressWarnings("WeakerAccess")
-    public static void getLeaderboard(RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/players/leaderboard", Method.GET, callback);
-    }
-    public static void getChats(RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/list", Method.GET, callback);
-    }
-
-    public static void getSummary(int chatId, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/summary/" + chatId, Method.GET, callback);
-    }
-
-    public static void getRatings(String idsString, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/ratings/" + idsString, Method.GET, callback);
-    }
-
-    public static void chooseWinner(int chosen, RequestCallback choseCallback) { // ++++
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/close/" + ProfileManager.getPlayer().getId() + "/" + chosen, Method.POST, choseCallback);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static void signIn(String password, String login, RequestCallback callback) { // ++++
-        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/sign_in/" + login + "/" + password, Method.GET, callback, 10000);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static void signUp(String player_data, RequestCallback callback) { // ++++
-        sendRequest(RequestMaker.DOMAIN_NAME + "/players", Method.POST, callback, 10000, player_data);
-    }
-
-    public static void chatStatus(int id, int chatId, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/chat_status/" + id + "/" + chatId,
-                RequestMaker.Method.GET, callback);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public static void getWhiteboard(String whiteboardTag, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/get_whiteboard/" + whiteboardTag, Method.GET, callback);
-    }
-
-    public static void deleteFromQueue(int id) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/battlemaker/" + id, Method.DELETE, RequestCallback.DO_NOTHING);
-    }
-
-    public static void accept(int id) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/accept/" + id, Method.POST, RequestCallback.DO_NOTHING);
-    }
-
-    public static void decline(int id) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/decline/" + id, Method.POST, RequestCallback.DO_NOTHING);
-    }
-
-    public static void changePassword(int id, String oldPassword, String newPassword, RequestCallback callback) {
-        Log.d("ch Pass", RequestMaker.DOMAIN_NAME + "/player/change_pass/" + id + "/" + oldPassword + "/" + newPassword);
-        sendRequest(RequestMaker.DOMAIN_NAME + "/players/change_pass/" + id + "/" + oldPassword + "/" + newPassword,
-                Method.POST, callback, 5000);
-    }
-    public static void getTimeLeft(int chatId, RequestCallback callback){
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/time_left/" + chatId, Method.GET, callback);
-    }
-    public static void reset_password(String login, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/profile_manager/reset_password/" + login, Method.POST, callback);
-    }
-
-    public static void kick(int playerId, int chatId, RequestCallback callback) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/kick/" + chatId + "/" + playerId, Method.POST, callback);
-    }
-    public static void mute(int playerId, int chatId, int muteTime) {
-        sendRequest(RequestMaker.DOMAIN_NAME + "/chat/mute/" + chatId + "/" + playerId + "/" + muteTime,
-                Method.POST, RequestCallback.DO_NOTHING);
     }
 }
