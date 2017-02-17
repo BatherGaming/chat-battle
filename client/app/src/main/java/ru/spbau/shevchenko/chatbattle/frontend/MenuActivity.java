@@ -129,6 +129,8 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) return;
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
         int ord = data.getIntExtra("goto", -1);
         goTo(ord);
     }

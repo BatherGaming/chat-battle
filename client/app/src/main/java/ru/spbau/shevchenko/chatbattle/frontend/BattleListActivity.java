@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -27,12 +26,25 @@ public class BattleListActivity extends BasicActivity {
     private TableLayout battleListView;
     private ProgressBar spinner;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_battle_list);
+        createDrawer();
+
+        battleListView = (TableLayout) findViewById(R.id.battle_list_view);
+        battleListView.setStretchAllColumns(true);
+        spinner = (ProgressBar) findViewById(R.id.initializing_progress_bar);
+        RequestMaker.getChats(chatsResponseCallback);
+    }
+
+    @SuppressWarnings("WeakerAccess")
     private class Chat {
-        final public int id;
-        final public int leaderId;
-        final public String leader;
-        final public ArrayList<String> players;
-        final public int averageRating;
+        public final int id;
+        public final int leaderId;
+        public final String leader;
+        public final ArrayList<String> players;
+        public final int averageRating;
 
         private Chat(int id, int leaderId, String leader, ArrayList<String> players, int averageRating) {
             this.id = id;
@@ -57,7 +69,8 @@ public class BattleListActivity extends BasicActivity {
                     for (int j = 0; j < jsonPlayers.length(); j++) {
                         playerLogins.add(jsonPlayers.getString(j));
                     }
-                    final Chat chat = new Chat(jsonChat.getInt("chat_id"), jsonChat.getInt("leader_id"),
+                    final Chat chat = new Chat(jsonChat.getInt("chat_id"),
+                                         jsonChat.getInt("leader_id"),
                                          jsonChat.getString("leader"),
                                          playerLogins,
                                          jsonChat.getInt("sum_rating") / playerLogins.size());
@@ -66,7 +79,6 @@ public class BattleListActivity extends BasicActivity {
             } catch (JSONException e) {
                 Log.e("chatsRC", e.getMessage());
             }
-//            LayoutInflater layoutInflater = LayoutInflater.from(BattleListActivity.this);
             for (final Chat chat : chats) {
                 final TableRow row = new TableRow(BattleListActivity.this);
                 row.setOnClickListener(new View.OnClickListener() {
@@ -88,17 +100,5 @@ public class BattleListActivity extends BasicActivity {
             spinner.setVisibility(View.GONE);
         }
     };
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_battle_list);
-        createDrawer();
-
-        battleListView = (TableLayout) findViewById(R.id.battle_list_view);
-        battleListView.setStretchAllColumns(true);
-        spinner = (ProgressBar) findViewById(R.id.initializing_progress_bar);
-        RequestMaker.getChats(chatsResponseCallback);
-    }
 
 }
