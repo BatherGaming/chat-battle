@@ -30,6 +30,8 @@ public class BattleListActivity extends BasicActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle_list);
+        createDrawer();
+
         battleListView = (TableLayout) findViewById(R.id.battle_list_view);
         battleListView.setStretchAllColumns(true);
         spinner = (ProgressBar) findViewById(R.id.initializing_progress_bar);
@@ -85,7 +87,7 @@ public class BattleListActivity extends BasicActivity {
                         final Intent intent = new Intent(BattleListActivity.this, ChatActivity.class);
                         intent.putExtra("leader_id", chat.leaderId);
                         ProfileManager.getPlayer().setChatId(chat.id);
-                        startActivity(intent);
+                        startActivityForResult(intent, 0);
                     }
                 });
                 row.setBackgroundColor(ContextCompat.getColor(BattleListActivity.this, R.color.red500));
@@ -98,4 +100,5 @@ public class BattleListActivity extends BasicActivity {
             spinner.setVisibility(View.GONE);
         }
     };
+
 }

@@ -40,6 +40,7 @@ public class LeaderboardActivity extends BasicActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
+        createDrawer();
 
         final TextView chatTextView = (TextView) findViewById(R.id.chat_text_view);
         chatTextView.setTypeface(Typeface.createFromAsset(getAssets(), getResources().getString(R.string.KeyCapsFont)));

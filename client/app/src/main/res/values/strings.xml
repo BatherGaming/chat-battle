@@ -99,5 +99,6 @@
     <string name="ImmortalFont">fonts/IMMORTAL.ttf</string>
     <string name="eraser_size">Eraser size:</string>
     <string name="brush_size">Brush size:</string>
+    <string name="home">Home</string>
 
 </resources>

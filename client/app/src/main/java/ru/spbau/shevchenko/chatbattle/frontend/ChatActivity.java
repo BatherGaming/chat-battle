@@ -8,7 +8,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -61,6 +60,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
     private static final int DRAW_WHITEBOARD = 1;
     private static final long HANDLER_DELAY = 100;
+    private static final int MUTE_TIME = 30;
 
     private ListView messagesView;
     private ImageButton sendBtn;
@@ -106,7 +106,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
                 // for spectator let's use leader's id
                 id = getIntent().getIntExtra("leader_id", -1);
                 if (id == -1) {
-                    throw new RuntimeException("Trying to spectate without leader_id provided");
+                    throw new RuntimeException("Trying to drawer_spectate without leader_id provided");
                 }
 
             }
@@ -167,30 +167,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         }
     };
 
-
-    public enum Action {
-
-        KICK, MUTE, CHOOSE;
-
-        public int getItemId() {
-            switch (this) {
-                case KICK: return R.id.kick_item;
-                case MUTE: return R.id.mute_item;
-                case CHOOSE: return R.id.choose_item;
-            }
-            throw  new IllegalArgumentException();
-        }
-
-        static Action getAction(int id) {
-            switch (id) {
-                case R.id.kick_item: return KICK;
-                case R.id.mute_item: return MUTE;
-                case R.id.choose_item: return CHOOSE;
-            }
-            throw  new IllegalArgumentException();
-        }
-    }
-
     public enum Color {
 
         RED, PURPLE, YELLOW, GREEN;
@@ -242,8 +218,9 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        navigationView = (NavigationView) findViewById(R.id.navigation);
         createDrawer();
+
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
         messageInput = (EditText) findViewById(R.id.message_input);
         messagesView = (ListView) findViewById(R.id.messages_view);
         messagesView.setVisibility(View.GONE);
@@ -419,6 +396,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("chat", "onActivityResult");
         if (requestCode == DRAW_WHITEBOARD) {
             if (resultCode != RESULT_OK) {
                 return;
@@ -431,6 +409,8 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
             // Change it to display that whiteboard is attached
             whiteboardBtn.setImageResource(R.drawable.whiteboard_red);
 
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -484,83 +464,73 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     }
 
-    private void navigate(int id) {
-        switch (id) {
-            case R.id.menu_change_password: {
-                ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog();
-                changePasswordDialog.show(getFragmentManager(), "");
-                break;
-            }
-            case R.id.menu_leaderboard: {
-                final Intent intent = new Intent(this, LeaderboardActivity.class);
-                startActivity(intent);
-                break;
-            }
-            case R.id.menu_log_out: {
-                finish();
-                break;
-            }
-            default: {
-                getItemButton(navigationView.getMenu(), Action.getAction(id)).performClick();
-            }
-        }
-        createDrawer();
-    }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
-        navigate(menuItem.getItemId());
-        menuItem.setChecked(false);
-        return true;
-    }
-
-
-    private DrawerLayout mDrawerLayout;
-    private NavigationView navigationView;
-
-    void createDrawer() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    protected void createDrawer() {
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationView.getMenu();
         if (ProfileManager.getPlayerStatus() != ProfileManager.PlayerStatus.CHATTING_AS_LEADER) {
-            menu.getItem(Action.KICK.ordinal()).setVisible(false);
-            menu.getItem(Action.MUTE.ordinal()).setVisible(false);
-            menu.getItem(Action.CHOOSE.ordinal()).setVisible(false);
+            navigationView.getMenu().setGroupVisible(R.id.chat_actions_group, false);
         } else {
-            for (Action action : Action.values())
+            for (DrawerAction.LeaderAction action : DrawerAction.LeaderAction.values())
                 setupMenuItem(menu, action);
         }
 
         final View headerLayout = navigationView.getHeaderView(0);
         final TextView loginView = (TextView) headerLayout.findViewById(R.id.menu_header_login);
         final TextView ratingView = (TextView) headerLayout.findViewById(R.id.menu_header_rating);
-        // TODO: FIX REMOVE CONSTANTS
-        menu.getItem(5).setVisible(false); // disable spectate
-        menu.getItem(6).setVisible(false); // disable_logout
+        menu.getItem(DrawerAction.SwitchActivityAction.SPECTATE.getPosition()).setVisible(false);
         loginView.setText(ProfileManager.getPlayer().getLogin());
         ratingView.setText(String.valueOf(ProfileManager.getPlayer().getRating()));
     }
 
-    void setupMenuItem(Menu menu, Action action) {
+    void setupMenuItem(Menu menu, DrawerAction.LeaderAction action) {
         Button locButton = getItemButton(menu, action);
         locButton.setVisibility(View.INVISIBLE);
         locButton.setOnClickListener(new MenuItemListener(action));
     }
 
-    private Button getItemButton(Menu menu, Action action) {
+    private Button getItemButton(Menu menu, DrawerAction.LeaderAction action) {
         return (Button) MenuItemCompat.getActionView(menu.findItem(action.getItemId()));
     }
 
 
     @Override
     public void onBackPressed() {
+        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
         finish();
+    }
+
+    @Override
+    protected void navigate(int id) {
+        for (DrawerAction.SwitchActivityAction action : DrawerAction.SwitchActivityAction.values()) {
+            if (action.getItemId() == id) {
+                if (action.getCorrespondingClass().isInstance(this)) return;
+                Intent intent = new Intent();
+                intent.putExtra("goto", action.ordinal());
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected boolean specialCheck(int id) {
+        Log.e("chat", "special check");
+        if (DrawerAction.SwitchActivityAction.LEADERBOARD.getItemId() == id) {
+            Log.e("chat", "special check");
+            final Intent intent = new Intent(this, LeaderboardActivity.class);
+            startActivityForResult(intent, NO_MATTER_CODE);
+            return true;
+        }
+        return false;
     }
 
     private void kick(final int playerId) {
@@ -581,7 +551,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
             }
         });
     }
-    private static final int MUTE_TIME = 30;
 
     private void mute(int playerId) {
         RequestMaker.mute(playerId, ProfileManager.getPlayer().getChatId(), MUTE_TIME);
@@ -593,8 +562,8 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     }
 
     private class MenuItemListener implements View.OnClickListener {
-        private final Action action;
-        private MenuItemListener(Action action) {
+        private final DrawerAction.LeaderAction action;
+        private MenuItemListener(DrawerAction.LeaderAction action) {
             this.action = action;
         }
         public void onClick(View v) {

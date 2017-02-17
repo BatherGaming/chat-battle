@@ -7,13 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -25,21 +22,20 @@ import ru.spbau.shevchenko.chatbattle.R;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 
 
-public class MenuActivity extends BasicActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class MenuActivity extends BasicActivity implements View.OnClickListener {
 
     private static final int NORMAL_PLAY_BUTTON_SIZE_DP = 180;
     private static final int NORMAL_MARGIN_BOTTOM_DP = 90;
     private static final int PRESSED_PLAY_BUTTON_SIZE_DP = 170;
     private static final int PRESSED_MARGIN_BOTTOM_DP = 95;
 
-    private DrawerLayout mDrawerLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-
         createDrawer();
+
         setupPlayButton();
 
         final ImageButton drawerButton = (ImageButton) findViewById(R.id.menu_drawer_button);
@@ -90,20 +86,20 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
                     case IN_QUEUE_AS_PLAYER:
                     case IDLE: {
                         final Intent intent = new Intent(this, SearchActivity.class);
-                        startActivity(intent);
+                        startActivityForResult(intent, NO_MATTER_CODE);
                         break;
                     }
                     default: {
-                        startActivity(new Intent(this, ChatActivity.class));
+                        startActivityForResult(new Intent(this, ChatActivity.class), NO_MATTER_CODE);
                     }
                 }
                 break;
             }
             case R.id.menu_drawer_button: {
+                final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
             }
-
         }
     }
 
@@ -120,7 +116,7 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
         if (ProfileManager.getPlayer().getChatId() == -1 &&
                 previousClass != null && ChatActivity.class.isAssignableFrom(previousClass)) {
             final Intent intent = new Intent(this, SearchActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, NO_MATTER_CODE);
         }
     }
 
@@ -131,51 +127,36 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener,
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
-        menuItem.setChecked(true);
-        navigate(menuItem.getItemId());
-        return true;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) return;
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+        int ord = data.getIntExtra("goto", -1);
+        goTo(ord);
     }
 
-    private void createDrawer() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().setGroupVisible(R.id.chat_actions_group, false);
-
-        final View headerLayout = navigationView.getHeaderView(0);
-        final TextView loginView = (TextView) headerLayout.findViewById(R.id.menu_header_login);
-        final TextView ratingView = (TextView) headerLayout.findViewById(R.id.menu_header_rating);
-        final TextView timerView = (TextView) headerLayout.findViewById(R.id.timer_view);
-
-        loginView.setText(ProfileManager.getPlayer().getLogin());
-        ratingView.setText(String.valueOf(ProfileManager.getPlayer().getRating()));
-        timerView.setVisibility(View.INVISIBLE);
-    }
-
-    private void navigate(int id) {
-        switch (id) {
-            case R.id.menu_change_password: {
-                ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog();
-                changePasswordDialog.show(getFragmentManager(), "");
-                break;
-            }
-            case R.id.menu_leaderboard: {
-                final Intent intent = new Intent(this, LeaderboardActivity.class);
-                startActivity(intent);
-                break;
-            }
-            case R.id.menu_battle_list: {
-                final Intent intent = new Intent(this, BattleListActivity.class);
-                startActivity(intent);
-                break;
-            }
-            case R.id.menu_log_out: {
-                finish();
-                break;
+    @Override
+    protected void navigate(int id) {
+        for (DrawerAction.SwitchActivityAction action : DrawerAction.SwitchActivityAction.values()) {
+            if (action.getItemId() == id) {
+                goTo(action.ordinal());
+                return;
             }
         }
     }
+
+    private void goTo(int ord) {
+        if (ord == DrawerAction.SwitchActivityAction.LEADERBOARD.ordinal()) {
+            final Intent intent = new Intent(this, LeaderboardActivity.class);
+            startActivityForResult(intent, ord);
+        } else if (ord == DrawerAction.SwitchActivityAction.SPECTATE.ordinal()) {
+            final Intent intent = new Intent(this, BattleListActivity.class);
+            startActivityForResult(intent, ord);
+        } else if (ord == DrawerAction.SwitchActivityAction.LOG_OUT.ordinal()) {
+            finish();
+        }
+    }
+
 
     private int toPixels(int dp) {
         //noinspection NumericCastThatLosesPrecision

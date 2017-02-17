@@ -64,7 +64,7 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
         ((TextView) findViewById(R.id.status_view)).setText("");
 
         final Intent intent = new Intent(this, MenuActivity.class);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, NO_MATTER_CODE);
     }
 
     public void loginResponse(RequestResult.Status status) {
