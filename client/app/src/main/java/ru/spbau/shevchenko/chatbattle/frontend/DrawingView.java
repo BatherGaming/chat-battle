@@ -10,7 +10,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -26,56 +25,21 @@ public class DrawingView extends View {
     private float brushSize;
     private float lastBrushSize;
 
-    private  boolean erase = false;
+    private boolean erase = false;
 
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setupDrawing();
     }
 
-    private void setupDrawing() {
-        //get drawing area setup for interaction
-        lastBrushSize = brushSize = getResources().getInteger(R.integer.medium_size);
-
-        drawPath = new Path();
-        drawPaint = new Paint();
-        //setLayerType(LAYER_TYPE_SOFTWARE, drawPaint);
-        drawPaint.setColor(paintColor);
-        drawPaint.setAntiAlias(true);
-        drawPaint.setStrokeWidth(brushSize);
-        drawPaint.setStyle(Paint.Style.STROKE);
-        drawPaint.setStrokeJoin(Paint.Join.ROUND);
-        drawPaint.setStrokeCap(Paint.Cap.ROUND);
-
-        canvasPaint = new Paint(Paint.DITHER_FLAG);
-
-
-    }
-
     public void setBrushSize(float newSize) {
-        //update size
         lastBrushSize = brushSize;
-        brushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                newSize, getResources().getDisplayMetrics());
+        brushSize = newSize;
         drawPaint.setStrokeWidth(brushSize);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        drawCanvas = new Canvas(canvasBitmap);
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
-        canvas.drawPath(drawPath, drawPaint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //detect user touch
         final float touchX = event.getX();
         final float touchY = event.getY();
         switch (event.getAction()) {
@@ -84,7 +48,7 @@ public class DrawingView extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 drawPath.lineTo(touchX, touchY);
-                if (erase){
+                if (erase) {
                     drawCanvas.drawPath(drawPath, drawPaint);
                     drawPath.reset();
                 }
@@ -102,22 +66,20 @@ public class DrawingView extends View {
     }
 
     public void setColor(String newColor) {
-        //set color
         invalidate();
         paintColor = Color.parseColor(newColor);
         drawPaint.setColor(paintColor);
-
     }
 
     public void setErase(boolean erase) {
         this.erase = erase;
-        if (erase){
+        if (erase) {
             drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        }
-        else{
+        } else {
             drawPaint.setXfermode(null);
         }
     }
+
     public boolean isErase() {
         return erase;
     }
@@ -128,5 +90,36 @@ public class DrawingView extends View {
 
     public float getLastBrushSize() {
         return lastBrushSize;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        drawCanvas = new Canvas(canvasBitmap);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
+        canvas.drawPath(drawPath, drawPaint);
+    }
+
+    private void setupDrawing() {
+        //get drawing area setup for interaction
+        lastBrushSize = brushSize = getResources().getInteger(R.integer.medium_size);
+
+        drawPath = new Path();
+        drawPaint = new Paint();
+        drawPaint.setColor(paintColor);
+        drawPaint.setAntiAlias(true);
+        drawPaint.setStrokeWidth(brushSize);
+        drawPaint.setStyle(Paint.Style.STROKE);
+        drawPaint.setStrokeJoin(Paint.Join.ROUND);
+        drawPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        canvasPaint = new Paint(Paint.DITHER_FLAG);
+
+
     }
 }

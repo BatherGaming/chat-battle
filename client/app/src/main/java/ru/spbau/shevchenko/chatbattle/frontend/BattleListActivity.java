@@ -88,7 +88,7 @@ public class BattleListActivity extends BasicActivity {
                         startActivity(intent);
                     }
                 });
-                row.setBackgroundColor(ContextCompat.getColor(BattleListActivity.this, R.color.red));
+                row.setBackgroundColor(ContextCompat.getColor(BattleListActivity.this, R.color.red500));
                 int blackColor = ContextCompat.getColor(BattleListActivity.this, R.color.black);
                 BasicActivity.addChildTextView(row, chat.leader, null, Gravity.CENTER, blackColor);
                 BasicActivity.addChildTextView(row, chat.players.toString(), null, Gravity.CENTER, blackColor);

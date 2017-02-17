@@ -227,7 +227,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
         public int getColorId() {
             switch (this) {
-                case RED: return R.color.red;
+                case RED: return R.color.red500;
                 case PURPLE: return R.color.purple;
                 case YELLOW: return R.color.yellow;
                 case GREEN: return R.color.light_green;
@@ -457,7 +457,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
 
 
-    private Color getPlayerColor(int playerId) {
+    public Color getPlayerColor(int playerId) {
         Color color = playerColor.get(playerId);
         if (color != null) return color;
         color = Color.values()[usedColors++];

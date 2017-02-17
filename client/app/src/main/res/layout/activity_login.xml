@@ -80,7 +80,7 @@
         android:layout_alignStart="@id/password_edit"
         android:layout_below="@+id/password_edit"
         android:layout_marginTop="5dp"
-        android:background="@color/red"
+        android:background="@color/red500"
         android:text="@string/signin_button"
         android:textColor="@color/white" />
 

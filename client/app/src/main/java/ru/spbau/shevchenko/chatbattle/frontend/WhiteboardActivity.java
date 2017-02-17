@@ -1,6 +1,7 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.content.res.ResourcesCompat;
@@ -20,19 +21,26 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
     private float smallBrush, mediumBrush, largeBrush;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_whiteboard);
         drawView = (DrawingView) findViewById(R.id.drawing);
 
         // Set initial color
-        final LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
-        currPaint = (ImageButton) paintLayout.getChildAt(0);
-        currPaint.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.whiteboard_paint_pressed, null));
+        final LinearLayout paintLayout1 = (LinearLayout) findViewById(R.id.paint_colors1);
+        paintClicked(paintLayout1.getChildAt(0));
 
-        smallBrush = getResources().getInteger(R.integer.small_size);
-        mediumBrush = getResources().getInteger(R.integer.medium_size);
-        largeBrush = getResources().getInteger(R.integer.large_size);
+        final LinearLayout paintLayout2 = (LinearLayout) findViewById(R.id.paint_colors2);
+        for (int i = 0; i < paintLayout1.getChildCount(); i++) {
+            paintLayout1.getChildAt(i).setOnClickListener(this);
+        }
+        for (int i = 0; i < paintLayout2.getChildCount(); i++) {
+            paintLayout2.getChildAt(i).setOnClickListener(this);
+        }
+
+        smallBrush = getResources().getDimension(R.dimen.small_brush);
+        mediumBrush = getResources().getDimension(R.dimen.medium_brush);
+        largeBrush = getResources().getDimension(R.dimen.large_brush);
 
         final ImageButton drawBtn = (ImageButton) findViewById(R.id.draw_btn);
         drawBtn.setOnClickListener(this);
@@ -46,24 +54,23 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void paintClicked(View view) {
-        //use chosen color
         if (drawView.isErase()){
             drawView.setErase(false);
             drawView.setBrushSize(drawView.getLastBrushSize());
         }
         if (view != currPaint) {
-            //update color
             final ImageButton imgView = (ImageButton) view;
             final String color = view.getTag().toString();
             drawView.setColor(color);
             imgView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.whiteboard_paint_pressed, null));
-            currPaint.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.whiteboard_paint, null));
+            if (currPaint != null) {
+                currPaint.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.whiteboard_paint, null));
+            }
             currPaint = (ImageButton) view;
 
         }
     }
 
-    //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -79,12 +86,15 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
                 onEraseButtonClick();
                 break;
             }
+            default: { // paintClicked
+                paintClicked(view);
+            }
         }
     }
 
     private void onDrawButtonClick() {
         final Dialog brushDialog = new Dialog(this);
-        brushDialog.setTitle("Brush size:");
+        brushDialog.setTitle(getResources().getString(R.string.brush_size));
         brushDialog.setContentView(R.layout.brush_chooser);
 
         setupButtons(false, brushDialog);
@@ -95,8 +105,6 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
     private void onSendButtonClick() {
         final ByteArrayOutputStream pngOutStream = new ByteArrayOutputStream();
         final Bitmap bitmap = drawView.getCanvasBitmap();
-        //bitmap.setHeight(1);
-        //bitmap.setWidth(1);
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, pngOutStream);
 
         final Intent intent = new Intent();
@@ -107,7 +115,7 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
 
     private void onEraseButtonClick() {
         final Dialog brushDialog = new Dialog(this);
-        brushDialog.setTitle("Eraser size:");
+        brushDialog.setTitle(getResources().getString(R.string.eraser_size));
         brushDialog.setContentView(R.layout.brush_chooser);
 
         setupButtons(true, brushDialog);
@@ -126,7 +134,7 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setupButton(ImageButton imageButton, final boolean eraserMode,
-                             final float brushSize, final Dialog brushDialog) {
+                             final float brushSize, final DialogInterface brushDialog) {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

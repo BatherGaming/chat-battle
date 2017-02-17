@@ -18,7 +18,7 @@ import ru.spbau.shevchenko.chatbattle.frontend.BasicActivity;
 import ru.spbau.shevchenko.chatbattle.frontend.LoginActivity;
 
 public class SearcherRunnable implements Runnable {
-    private static final int SLEEPING_TIME = 200; // mills
+    private static final int SLEEPING_TIME = 1000; // mills
     private static final int PRIORITY_HIGH = 5;
     private MyApplication myApplication;
     private boolean waitingCallback = false;

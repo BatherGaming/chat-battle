@@ -97,5 +97,7 @@
     <string name="alert_btn_desc">alert exclamation point</string>
     <string name="KeyCapsFont">fonts/KeyCapsFLF.ttf</string>
     <string name="ImmortalFont">fonts/IMMORTAL.ttf</string>
+    <string name="eraser_size">Eraser size:</string>
+    <string name="brush_size">Brush size:</string>
 
 </resources>

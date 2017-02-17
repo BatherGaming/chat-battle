@@ -19,9 +19,19 @@
     <color name="cyan">#80DEEA</color>
     <color name="light_green">#81C784</color>
     <color name="purple">#B39DDB</color>
-    <color name="red">#F44336</color>
+    <color name="red500">#F44336</color>
+    <color name="red">#FF0000</color>
     <color name="transparent">#00000000</color>
     <color name="gray200">#EEEEEE</color>
     <color name="gray250">#E7E7E7</color>
     <color name="gray300">#E0E0E0</color>
+    <color name="gray600">#FF757575</color>
+    <color name="blue">#FF0000FF</color>
+    <color name="brown">#FF660000</color>
+    <color name="orange500">#FF9800</color>
+    <color name="yellow500">#FFEB3B</color>
+    <color name="green900">#1B5E20</color>
+    <color name="teal500">#009688</color>
+    <color name="purple500">#9C27B0</color>
+    <color name="pink500">#E91E63</color>
 </resources>

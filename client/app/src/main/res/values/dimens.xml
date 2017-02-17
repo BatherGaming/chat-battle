@@ -16,4 +16,5 @@
     <dimen name="leaderboard_row_height">30dp</dimen>
     <dimen name="summary_font_size">4pt</dimen>
     <dimen name="summary_title_font_size">15pt</dimen>
+    <dimen name="very_small_margin">2dp</dimen>
 </resources>
