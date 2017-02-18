@@ -11,7 +11,7 @@ DOMAIN_NAME = "qwsafex.pythonanywhere.com"
 
 WINNER_DELTA = 1
 LOSER_DELTA = -1
-BATTLE_TIME = 30
+BATTLE_TIME = 3000
 
 
 def create_chat(chat_type, players_ids, leader_id):
@@ -315,4 +315,5 @@ def get_chats():
         chat_list.append({"chat_id": chat.id, "leader_id": leader.id,
                           "leader": leader.login, "players": player_logins,
                           "sum_rating": sum_rating})
+    chat_list.sort(key=lambda chat: chat["sum_rating"], reverse=True)
     return chat_list, 200

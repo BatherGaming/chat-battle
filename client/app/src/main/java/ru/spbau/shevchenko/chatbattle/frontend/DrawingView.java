@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Region;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -48,10 +49,8 @@ public class DrawingView extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 drawPath.lineTo(touchX, touchY);
-                if (erase) {
-                    drawCanvas.drawPath(drawPath, drawPaint);
-                    drawPath.reset();
-                }
+                drawCanvas.drawPath(drawPath, drawPaint);
+                drawPath.reset();
                 drawPath.moveTo(touchX, touchY);
                 break;
             case MotionEvent.ACTION_UP:
@@ -97,6 +96,18 @@ public class DrawingView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         drawCanvas = new Canvas(canvasBitmap);
+
+        int minX = getPaddingLeft();
+        int maxX = getWidth() - getPaddingRight();
+        int minY = getPaddingTop();
+        int maxY = getHeight() - getPaddingTop();
+        drawCanvas.clipRect(minX, minY, maxX, maxY, Region.Op.REPLACE);
+
+        // Fill canvas with white
+        Paint fillWhite = new Paint();
+        fillWhite.setColor(Color.WHITE);
+        fillWhite.setStyle(Paint.Style.FILL);
+        drawCanvas.drawPaint(fillWhite);
     }
 
     @Override

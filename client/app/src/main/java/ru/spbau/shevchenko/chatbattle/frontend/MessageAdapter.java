@@ -14,6 +14,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -22,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,7 +47,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 @SuppressWarnings("WeakerAccess")
 public class MessageAdapter extends BaseAdapter implements View.OnClickListener {
 
-    private static final int DRAWABLE_PADDING_DP = 2;
+    private static final int DRAWABLE_PADDING_DP = 0;
     private static final int PADDING_FOR_SPINNER_DP = 30;
 
     final private Context context;
@@ -114,7 +114,6 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
             final LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
             convertView = messageInflater.inflate(R.layout.message, null);
             holder = new MessageViewHolder((TextView) convertView.findViewById(R.id.message_body),
-                    (ImageView) convertView.findViewById(R.id.message_image),
                     (ProgressBar) convertView.findViewById(R.id.delivering_progress_bar),
                     (ImageButton) convertView.findViewById(R.id.alert),
                     isCurPlayer
@@ -127,6 +126,14 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         holder.alertBtn.setTag(position);
 
         holder.textView.setBackgroundResource(((ChatActivity) context).getPlayerColor(message.getAuthorId()).getTextViewId());
+
+        if (message.getText().isEmpty()) {
+            holder.textView.setTextSize(0);
+        }
+        else{
+            holder.textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    context.getResources().getDimension(R.dimen.message_text_size));
+        }
         holder.textView.setText(message.getText());
 
         Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -138,9 +145,6 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         holder.textView.setMaxWidth(displayWidth - 2 * padding - dpAsPixels(PADDING_FOR_SPINNER_DP));
 
         setLayoutParams(holder.textView, isCurPlayer, RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.ALIGN_PARENT_LEFT);
-        setLayoutParams(holder.imageView, isCurPlayer, RelativeLayout.ALIGN_RIGHT, RelativeLayout.ALIGN_LEFT);
-
-        holder.imageView.setImageResource(android.R.color.transparent);
 
         setVisibility(message, holder);
         setTextViewDrawable(message, holder);
@@ -273,15 +277,13 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
     private static class MessageViewHolder {
 
         private final TextView textView;
-        private final ImageView imageView;
         private final ProgressBar loadingBar;
         private final ImageButton alertBtn;
         private final boolean isCurPlayer;
 
-        MessageViewHolder(TextView textView, ImageView imageView, ProgressBar loadingBar,
+        MessageViewHolder(TextView textView, ProgressBar loadingBar,
                           ImageButton alertBtn, boolean isCur) {
             this.textView = textView;
-            this.imageView = imageView;
             this.loadingBar = loadingBar;
             this.alertBtn = alertBtn;
             this.isCurPlayer = isCur;
