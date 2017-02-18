@@ -173,46 +173,61 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
         public int getTextViewId() {
             switch (this) {
-                case RED: return R.drawable.textview_red;
-                case PURPLE: return R.drawable.textview_purple;
-                case YELLOW: return R.drawable.textview_yellow;
-                case GREEN: return R.drawable.textview_green;
+                case RED:
+                    return R.drawable.textview_red;
+                case PURPLE:
+                    return R.drawable.textview_purple;
+                case YELLOW:
+                    return R.drawable.textview_yellow;
+                case GREEN:
+                    return R.drawable.textview_green;
             }
             throw new IllegalArgumentException();
         }
 
         public int getPopupItemId() {
             switch (this) {
-                case RED: return R.id.item_red;
-                case PURPLE: return R.id.item_purple;
-                case YELLOW: return R.id.item_yellow;
-                case GREEN: return R.id.item_green;
+                case RED:
+                    return R.id.item_red;
+                case PURPLE:
+                    return R.id.item_purple;
+                case YELLOW:
+                    return R.id.item_yellow;
+                case GREEN:
+                    return R.id.item_green;
             }
             throw new IllegalArgumentException();
         }
 
         static public Color getColorByItem(int id) {
             switch (id) {
-                case R.id.item_red: return RED;
-                case R.id.item_green: return GREEN;
-                case R.id.item_purple: return PURPLE;
-                case R.id.item_yellow: return YELLOW;
+                case R.id.item_red:
+                    return RED;
+                case R.id.item_green:
+                    return GREEN;
+                case R.id.item_purple:
+                    return PURPLE;
+                case R.id.item_yellow:
+                    return YELLOW;
             }
             throw new IllegalArgumentException();
         }
 
         public int getColorId() {
             switch (this) {
-                case RED: return R.color.red500;
-                case PURPLE: return R.color.purple;
-                case YELLOW: return R.color.yellow;
-                case GREEN: return R.color.light_green;
+                case RED:
+                    return R.color.red500;
+                case PURPLE:
+                    return R.color.purple;
+                case YELLOW:
+                    return R.color.yellow;
+                case GREEN:
+                    return R.color.light_green;
             }
             throw new IllegalArgumentException();
         }
 
     }
-
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -248,6 +263,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
         RequestMaker.getTimeLeft(ProfileManager.getPlayer().getChatId(), timeLeftCallback);
         chatStatusHandler.postDelayed(timerRunnable, 1000); // run each second
+        Log.e("chat", "created");
     }
 
     private void completeInitialization() {
@@ -436,7 +452,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     }
 
 
-
     public Color getPlayerColor(int playerId) {
         Color color = playerColor.get(playerId);
         if (color != null) return color;
@@ -457,7 +472,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         }
         throw new IllegalArgumentException();
     }
-
 
 
     @Override
@@ -542,7 +556,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
                     if (playerObject.has("error")) {
                         Toast.makeText(ChatActivity.this, playerObject.getString("error"), Toast.LENGTH_LONG).show();
                     } else {
-                        chatService.getPlayersId().remove((Integer)playerId);
+                        chatService.getPlayersId().remove((Integer) playerId);
                         Toast.makeText(ChatActivity.this, "kicked", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
@@ -556,6 +570,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         RequestMaker.mute(playerId, ProfileManager.getPlayer().getChatId(), MUTE_TIME);
         //Toast.makeText(ChatActivity.this, "muted" + playerId, Toast.LENGTH_LONG).show();
     }
+
     private void choose(int playerId) {
         RequestMaker.chooseWinner(playerId, RequestCallback.DO_NOTHING);
         Toast.makeText(ChatActivity.this, "choose" + playerId, Toast.LENGTH_LONG).show();
@@ -563,12 +578,15 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
     private class MenuItemListener implements View.OnClickListener {
         private final DrawerAction.LeaderAction action;
+
         private MenuItemListener(DrawerAction.LeaderAction action) {
             this.action = action;
         }
+
         public void onClick(View v) {
             showPopup(v);
         }
+
         private void showPopup(View v) {
             Context wrapper = new ContextThemeWrapper(ChatActivity.this, R.style.popupMenuStyle);
             PopupMenu popup = new PopupMenu(wrapper, v);

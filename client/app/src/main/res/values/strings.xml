@@ -100,5 +100,12 @@
     <string name="eraser_size">Eraser size:</string>
     <string name="brush_size">Brush size:</string>
     <string name="home">Home</string>
+    <string name="battle_list">Top 10 running battles</string>
+    <string name="spectate_desc">spectate button (eye pic)</string>
+    <string name="update">Update</string>
+    <string name="no_chats">There are no running chats now :(</string>
+    <string name="players">Players</string>
+    <string name="average_rating">Average rating</string>
+    <string name="battle2">Battle</string>
 
 </resources>
