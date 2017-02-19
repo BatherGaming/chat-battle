@@ -6,13 +6,11 @@ import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +23,6 @@ import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 
 public class BasicActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private final static String ARG_ID = "player_id";
-    private final static String ARG_LOGIN = "player_login";
-    private final static String ARG_RATING = "player_rating";
-    private final static String ARG_CHAT_ID = "player_chat_id";
 
     public static final String PREFS_FILE_NAME = "MyPrefsFile";
 
@@ -120,9 +113,7 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (!(this instanceof LoginActivity) && !(this instanceof SignupActivity)) {
-            Log.e("onc", "check");
             if (ProfileManager.getPlayer() == null) {
-                Log.e("onc", "reset");
                 restartApp();
             }
         }
@@ -165,7 +156,6 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
 
     @Override
     public void onDestroy() {
-        Log.e("bas", "onDestroy");
         lastActivityClass = getClass();
         clearReferences();
         super.onDestroy();

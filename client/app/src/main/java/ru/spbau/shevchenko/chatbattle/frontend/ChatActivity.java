@@ -506,7 +506,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     }
 
     void setupMenuItem(Menu menu, DrawerAction.LeaderAction action) {
-        Log.e("chat", "x");
         Button locButton = getItemButton(menu, action);
         locButton.setVisibility(View.INVISIBLE);
         locButton.setOnClickListener(new MenuItemListener(action));
@@ -528,24 +527,9 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         finish();
     }
 
-//    @Override
-//    protected void navigate(int id) {
-//        for (DrawerAction.SwitchActivityAction action : DrawerAction.SwitchActivityAction.values()) {
-//            if (action.getItemId() == id) {
-//                if (action.getCorrespondingClass().isInstance(this)) return;
-//                Intent intent = new Intent();
-//                intent.putExtra("goto", action.ordinal());
-//                setResult(RESULT_OK, intent);
-//                finish();
-//            }
-//        }
-//    }
-
     @Override
     protected boolean specialCheck(int id) {
-        Log.e("chat", "special check");
         if (DrawerAction.SwitchActivityAction.LEADERBOARD.getItemId() == id) {
-            Log.e("chat", "special check");
             final Intent intent = new Intent(this, LeaderboardActivity.class);
             startActivityForResult(intent, NO_MATTER_CODE);
             return true;
@@ -603,7 +587,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         }
 
         private void showPopup(View v) {
-            Log.e("chat", "showpopup");
             Context wrapper = new ContextThemeWrapper(ChatActivity.this, R.style.popupMenuStyle);
             PopupMenu popup = new PopupMenu(wrapper, v);
             popup.inflate(R.menu.popup_menu);
@@ -617,7 +600,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
                 if (!colors.contains(color)) {
                     menuItem.setVisible(false);
                 } else {
-                    //SpannableString s = new SpannableString(menuItem.getTitle());
                     final SpannableStringBuilder s = new SpannableStringBuilder(menuItem.getTitle());
                     final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD); // Span to make text bold
                     s.setSpan(bss, 0, s.length(), 0);
