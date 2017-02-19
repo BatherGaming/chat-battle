@@ -89,13 +89,15 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     protected EditText messageInput;
     protected MessageAdapter messageAdapter;
 
+    final private Handler handler = new Handler();
     private ImageButton whiteboardBtn;
     private int alreadyRead = 0;
     private String whiteboardEncoded = "";
 
-    final private Handler handler = new Handler();
     private boolean timerInitialized = false;
     private int timeLeft = 0;
+    private int chatId;
+    private boolean spectating;
 
     final private Handler chatStatusHandler = new Handler();
     final private Runnable chatStatusRunnable = new Runnable() {
@@ -110,7 +112,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
                 }
 
             }
-            RequestMaker.chatStatus(id, ProfileManager.getPlayer().getChatId(), chatStatusCallback);
+            RequestMaker.chatStatus(id, chatId, chatStatusCallback);
         }
     };
     final private Runnable getMessagesRunnable = new Runnable() {
@@ -254,15 +256,25 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         sendBtn.setOnClickListener(this);
         whiteboardBtn.setOnClickListener(this);
 
-        if (ProfileManager.getPlayer().getChatId() == -1) {
-            throw new RuntimeException("Created ChatActivity without providing chat id.");
+        spectating = getIntent().hasExtra("leader_id");
+        if (spectating) {
+            chatId = getIntent().getIntExtra("chat_id", -1);
+        }
+        else {
+            chatId = ProfileManager.getPlayer().getChatId();
+        }
+
+        if (spectating && ProfileManager.getPlayer().getChatId() != chatId) {
+            // if player is spectator hide input bar
+            View inputBar = findViewById(R.id.input_bar);
+            inputBar.setVisibility(View.GONE);
         }
 
         final Intent chatServiceIntent = new Intent(this, ChatService.class);
         bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
 
         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
-        RequestMaker.getTimeLeft(ProfileManager.getPlayer().getChatId(), timeLeftCallback);
+        RequestMaker.getTimeLeft(chatId, timeLeftCallback);
         chatStatusHandler.postDelayed(timerRunnable, 1000); // run each second
         Log.e("chat", "created");
     }
@@ -272,11 +284,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         spinner.setVisibility(View.GONE);
         messagesView.setVisibility(View.VISIBLE);
         sendBtn.setEnabled(true);
-        if (ProfileManager.getPlayerStatus() == ProfileManager.PlayerStatus.IDLE) {
-            // if player is spectator hide input bar
-            View inputBar = findViewById(R.id.input_bar);
-            inputBar.setVisibility(View.GONE);
-        }
     }
 
 
@@ -344,6 +351,9 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     final private RequestCallback chatStatusCallback = new RequestCallback() {
         @Override
         public void run(RequestResult requestResult) {
+            if (ChatActivity.this == null) {
+
+            }
             if (requestResult.getStatus() != RequestResult.Status.OK) {
                 chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
                 return;
@@ -391,7 +401,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
                         final Bundle bundle = new Bundle();
                         bundle.putSerializable("player_colors", (Serializable) playerColor);
                         bundle.putSerializable("player_ids", chatService.getPlayersId());
-                        bundle.putInt("chat_id", ProfileManager.getPlayer().getChatId());
+                        bundle.putInt("chat_id", chatId);
                         ProfileManager.getPlayer().setChatId(-1);
                         ProfileManager.setPlayerStatus(ProfileManager.PlayerStatus.IDLE);
                         final DialogFragment summaryFragment = new SummaryFragment();
@@ -413,7 +423,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e("chat", "onActivityResult");
         if (requestCode == DRAW_WHITEBOARD) {
             if (resultCode != RESULT_OK) {
                 return;
@@ -422,7 +431,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
             final byte[] whiteboardBytes = data.getByteArrayExtra("whiteboard");
 
             whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
-            Log.d("ChatAct", "whiteboardEncoded: " + whiteboardEncoded);
 
             // Change it to display that whiteboard is attached
             whiteboardBtn.setImageResource(R.drawable.whiteboard_red);
@@ -462,10 +470,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         if (color != null) return color;
         color = Color.values()[usedColors++];
         playerColor.put(playerId, color);
-        Log.e("entry", ")))");
-        for (Map.Entry<Integer, Color> entry : playerColor.entrySet()) {
-            Log.e("entry", entry.getKey() + "-" + entry.getValue());
-        }
         return color;
     }
 
@@ -490,7 +494,8 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         navigationView.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationView.getMenu();
-        if (ProfileManager.getPlayerStatus() != ProfileManager.PlayerStatus.CHATTING_AS_LEADER) {
+        if (ProfileManager.getPlayerStatus() != ProfileManager.PlayerStatus.CHATTING_AS_LEADER
+                || (spectating && ProfileManager.getPlayer().getChatId() != chatId)) {
             navigationView.getMenu().setGroupVisible(R.id.chat_actions_group, false);
         } else {
             for (DrawerAction.LeaderAction action : DrawerAction.LeaderAction.values())
@@ -547,7 +552,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     }
 
     private void kick(final int playerId) {
-        RequestMaker.kick(playerId, ProfileManager.getPlayer().getChatId(), new RequestCallback() {
+        RequestMaker.kick(playerId, chatId, new RequestCallback() {
             @Override
             public void run(RequestResult result) {
                 try {
@@ -566,7 +571,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     }
 
     private void mute(int playerId) {
-        RequestMaker.mute(playerId, ProfileManager.getPlayer().getChatId(), MUTE_TIME);
+        RequestMaker.mute(playerId, chatId, MUTE_TIME);
         //Toast.makeText(ChatActivity.this, "muted" + playerId, Toast.LENGTH_LONG).show();
     }
 

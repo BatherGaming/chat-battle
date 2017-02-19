@@ -56,9 +56,9 @@ public class BattleListFragment extends Fragment {
         rootView.findViewById(R.id.spectate_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Intent intent = new Intent((BattleListActivity) getActivity(), ChatActivity.class);
+                final Intent intent = new Intent(getActivity(), ChatActivity.class);
                 intent.putExtra("leader_id", chat.getLeaderId());
-                ProfileManager.getPlayer().setChatId(chat.id);
+                intent.putExtra("chat_id", chat.getId());
                 startActivityForResult(intent, BasicActivity.NO_MATTER_CODE);
             }
         });

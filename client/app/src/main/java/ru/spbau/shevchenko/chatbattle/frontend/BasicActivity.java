@@ -98,6 +98,7 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
     }
 
 
+
     public boolean visible() {
         return isVisible;
     }
