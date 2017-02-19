@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Region;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -24,9 +22,6 @@ public class DrawingView extends View {
     private Canvas drawCanvas;
     private Bitmap canvasBitmap;
     private float brushSize;
-    private float lastBrushSize;
-
-    private boolean erase = false;
 
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,7 +29,6 @@ public class DrawingView extends View {
     }
 
     public void setBrushSize(float newSize) {
-        lastBrushSize = brushSize;
         brushSize = newSize;
         drawPaint.setStrokeWidth(brushSize);
     }
@@ -64,31 +58,14 @@ public class DrawingView extends View {
         return true;
     }
 
-    public void setColor(String newColor) {
+    public void setColor(int newColor) {
         invalidate();
-        paintColor = Color.parseColor(newColor);
+        paintColor = newColor;
         drawPaint.setColor(paintColor);
-    }
-
-    public void setErase(boolean erase) {
-        this.erase = erase;
-        if (erase) {
-            drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        } else {
-            drawPaint.setXfermode(null);
-        }
-    }
-
-    public boolean isErase() {
-        return erase;
     }
 
     public Bitmap getCanvasBitmap() {
         return canvasBitmap;
-    }
-
-    public float getLastBrushSize() {
-        return lastBrushSize;
     }
 
     @Override
@@ -118,7 +95,7 @@ public class DrawingView extends View {
 
     private void setupDrawing() {
         //get drawing area setup for interaction
-        lastBrushSize = brushSize = getResources().getInteger(R.integer.medium_size);
+        brushSize = 1;
 
         drawPath = new Path();
         drawPaint = new Paint();

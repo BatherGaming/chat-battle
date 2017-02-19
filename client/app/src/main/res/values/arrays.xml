@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="palette_top_row">
+        <item>@color/blue</item>
+        <item>@color/red</item>
+        <item>@color/orange500</item>
+        <item>@color/yellow500</item>
+        <item>@color/green900</item>
+        <item>@color/teal500</item>
+    </array>
+    <array name="palette_bottom_row">
+        <item>@color/purple500</item>
+        <item>@color/pink500</item>
+        <item>@color/brown</item>
+        <item>@color/black</item>
+        <item>@color/gray600</item>
+        <item>@color/white</item>
+    </array>
+</resources>
