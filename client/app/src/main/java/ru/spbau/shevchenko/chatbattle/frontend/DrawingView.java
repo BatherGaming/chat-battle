@@ -20,7 +20,7 @@ public class DrawingView extends View {
     private Paint drawPaint, canvasPaint;
     private int paintColor = ContextCompat.getColor(getContext(), R.color.black);
     private Canvas drawCanvas;
-    private Bitmap canvasBitmap;
+    private Bitmap canvasBitmap = null;
     private float brushSize;
 
     public DrawingView(Context context, AttributeSet attrs) {
@@ -64,6 +64,9 @@ public class DrawingView extends View {
         drawPaint.setColor(paintColor);
     }
 
+    public void setCanvasBitmap(Bitmap bitmap) {
+        this.canvasBitmap = bitmap;
+    }
     public Bitmap getCanvasBitmap() {
         return canvasBitmap;
     }
@@ -71,20 +74,25 @@ public class DrawingView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        boolean fill = false;
+        if (canvasBitmap == null) { // wasn't set
+            canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            fill = true;
+        }
         drawCanvas = new Canvas(canvasBitmap);
-
         int minX = getPaddingLeft();
         int maxX = getWidth() - getPaddingRight();
         int minY = getPaddingTop();
         int maxY = getHeight() - getPaddingTop();
         drawCanvas.clipRect(minX, minY, maxX, maxY, Region.Op.REPLACE);
+        if (fill) {
+            // Fill canvas with white
+            Paint fillWhite = new Paint();
+            fillWhite.setColor(Color.WHITE);
+            fillWhite.setStyle(Paint.Style.FILL);
+            drawCanvas.drawPaint(fillWhite);
+        }
 
-        // Fill canvas with white
-        Paint fillWhite = new Paint();
-        fillWhite.setColor(Color.WHITE);
-        fillWhite.setStyle(Paint.Style.FILL);
-        drawCanvas.drawPaint(fillWhite);
     }
 
     @Override
@@ -110,4 +118,5 @@ public class DrawingView extends View {
 
 
     }
+
 }

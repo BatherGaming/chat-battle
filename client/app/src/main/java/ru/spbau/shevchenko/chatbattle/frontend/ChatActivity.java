@@ -199,6 +199,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
             throw new IllegalArgumentException();
         }
 
+
         static public Color getColorByItem(int id) {
             switch (id) {
                 case R.id.item_red:
@@ -421,6 +422,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
             final byte[] whiteboardBytes = data.getByteArrayExtra("whiteboard");
 
             whiteboardEncoded = Base64.encodeToString(whiteboardBytes, Base64.NO_WRAP);
+            Log.d("ChatAct", "whiteboardEncoded: " + whiteboardEncoded);
 
             // Change it to display that whiteboard is attached
             whiteboardBtn.setImageResource(R.drawable.whiteboard_red);
@@ -439,6 +441,9 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
             }
             case R.id.whiteboard_btn: {
                 final Intent intent = new Intent(this, WhiteboardActivity.class);
+                if (!whiteboardEncoded.isEmpty()) {
+                    intent.putExtra("whiteboard", whiteboardEncoded);
+                }
                 startActivityForResult(intent, DRAW_WHITEBOARD);
                 break;
             }

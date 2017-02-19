@@ -2,8 +2,10 @@ package ru.spbau.shevchenko.chatbattle.frontend;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -45,6 +47,15 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
 
         brushSizeBar.setProgress(maxBrush / 2);
         drawView.setBrushSize(initBrushSize);
+
+        final Intent intent = getIntent();
+        if (intent.hasExtra("whiteboard")) {
+            final String whiteboardEncoded = intent.getStringExtra("whiteboard");
+            byte[] whiteboardBytes = Base64.decode(whiteboardEncoded, Base64.NO_WRAP);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(whiteboardBytes, 0, whiteboardBytes.length);
+            Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            drawView.setCanvasBitmap(mutableBitmap);
+        }
     }
 
 
