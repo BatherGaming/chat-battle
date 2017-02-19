@@ -11,7 +11,7 @@ public class Player {
     private int rating;
     private int chatId;
 
-    public Player(int id, String login, int chatId, int rating) {
+    public Player(int id, String login, int rating, int chatId) {
         this.id = id;
         this.login = login;
         this.chatId = chatId;
@@ -26,8 +26,7 @@ public class Player {
         try {
             return new Player(playerObject.getInt("id"),
                     playerObject.getString("login"),
-                    playerObject.optInt("chatId", -1),
-                    playerObject.getInt("rating")
+                    playerObject.getInt("rating"), playerObject.optInt("chatId", -1)
             );
         } catch (JSONException e) {
             Log.e("Player.fromJSON", "Failed to initialize player from JSON: " + e.getMessage());

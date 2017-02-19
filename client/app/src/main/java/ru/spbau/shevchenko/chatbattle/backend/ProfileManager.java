@@ -1,13 +1,21 @@
 package ru.spbau.shevchenko.chatbattle.backend;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import ru.spbau.shevchenko.chatbattle.Player;
+import ru.spbau.shevchenko.chatbattle.frontend.BasicActivity;
 import ru.spbau.shevchenko.chatbattle.frontend.LoginActivity;
 import ru.spbau.shevchenko.chatbattle.frontend.SignupActivity;
+
+import static ru.spbau.shevchenko.chatbattle.frontend.BasicActivity.PREFS_FILE_NAME;
 
 public class ProfileManager {
     private static Player currentPlayer = null;
@@ -42,6 +50,10 @@ public class ProfileManager {
 
 
         RequestMaker.signUp(jsonPlayer.toString(), new SignUpCallback(signupActivity));
+    }
+
+    public static void setCurrentPlayer(Player player) {
+        currentPlayer = player;
     }
 
     public static Player getPlayer() {

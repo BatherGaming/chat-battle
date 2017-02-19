@@ -92,7 +92,8 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
                     default: {
                         startActivityForResult(new Intent(this, ChatActivity.class), NO_MATTER_CODE);
                     }
-                }
+
+                  }
                 break;
             }
             case R.id.menu_drawer_button: {

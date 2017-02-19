@@ -1,13 +1,18 @@
 package ru.spbau.shevchenko.chatbattle.frontend;
 
+import android.app.AlarmManager;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +25,14 @@ import ru.spbau.shevchenko.chatbattle.backend.MyApplication;
 import ru.spbau.shevchenko.chatbattle.backend.ProfileManager;
 
 public class BasicActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private final static String ARG_ID = "player_id";
+    private final static String ARG_LOGIN = "player_login";
+    private final static String ARG_RATING = "player_rating";
+    private final static String ARG_CHAT_ID = "player_chat_id";
+
+    public static final String PREFS_FILE_NAME = "MyPrefsFile";
+
 
     public static final long BATTLE_FOUND_HANDLE_DELAY = 100;
     public static final int NO_MATTER_CODE = 0;
@@ -106,10 +119,26 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if (!(this instanceof LoginActivity) && !(this instanceof SignupActivity)) {
+            Log.e("onc", "check");
+            if (ProfileManager.getPlayer() == null) {
+                Log.e("onc", "reset");
+                restartApp();
+            }
+        }
         super.onCreate(savedInstanceState);
         myApplication = (MyApplication) getApplicationContext();
         myApplication.setCurrentActivity(this);
         isVisible = true;
+    }
+
+    public void restartApp() {
+        Intent mStartActivity = new Intent(this, LoginActivity.class);
+        int mPendingIntentId = NO_MATTER_CODE;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
     }
 
     @Override
@@ -117,7 +146,10 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
         super.onResume();
         myApplication.setCurrentActivity(this);
         isVisible = true;
+
     }
+
+
 
     @Override
     protected void onPause() {
@@ -133,6 +165,7 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
 
     @Override
     public void onDestroy() {
+        Log.e("bas", "onDestroy");
         lastActivityClass = getClass();
         clearReferences();
         super.onDestroy();
@@ -146,6 +179,54 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
         if (gravity != null) child.setGravity(gravity);
         if (textColor != null) child.setTextColor(textColor);
         viewGroup.addView(child);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
+        if (DrawerAction.CHANGE_PASSWORD.getItemId() == menuItem.getItemId()) {
+            ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog();
+            changePasswordDialog.show(getFragmentManager(), "");
+        } else if (!specialCheck(menuItem.getItemId())) {
+            navigate(menuItem.getItemId());
+        }
+        menuItem.setChecked(false);
+        createDrawer();
+        return true;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) return;
+        setResult(resultCode, data);
+        finish();
+    }
+
+    protected void navigate(int id) {
+        for (DrawerAction.SwitchActivityAction action : DrawerAction.SwitchActivityAction.values()) {
+            if (action.getItemId() == id) {
+                if (action.getCorrespondingClass().isInstance(this)) return;
+                Intent intent = new Intent();
+                intent.putExtra("goto", action.ordinal());
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        }
+    }
+
+    protected boolean specialCheck(int id) { return false; }
+
+    protected void createDrawer() {
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().setGroupVisible(R.id.chat_actions_group, false);
+
+        final View headerLayout = navigationView.getHeaderView(0);
+        final TextView loginView = (TextView) headerLayout.findViewById(R.id.menu_header_login);
+        final TextView ratingView = (TextView) headerLayout.findViewById(R.id.menu_header_rating);
+        final TextView timerView = (TextView) headerLayout.findViewById(R.id.timer_view);
+
+        loginView.setText(ProfileManager.getPlayer().getLogin());
+        ratingView.setText(String.valueOf(ProfileManager.getPlayer().getRating()));
+        timerView.setVisibility(View.INVISIBLE);
     }
 
     private void clearReferences() {
@@ -175,53 +256,8 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data == null) return;
-        setResult(resultCode, data);
-        finish();
-    }
 
-    protected void navigate(int id) {
-        for (DrawerAction.SwitchActivityAction action : DrawerAction.SwitchActivityAction.values()) {
-            if (action.getItemId() == id) {
-                if (action.getCorrespondingClass().isInstance(this)) return;
-                Intent intent = new Intent();
-                intent.putExtra("goto", action.ordinal());
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        }
-    }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
-        if (DrawerAction.CHANGE_PASSWORD.getItemId() == menuItem.getItemId()) {
-            ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog();
-            changePasswordDialog.show(getFragmentManager(), "");
-        } else if (!specialCheck(menuItem.getItemId())) {
-            navigate(menuItem.getItemId());
-        }
-        menuItem.setChecked(false);
-        createDrawer();
-        return true;
-    }
-
-    protected boolean specialCheck(int id) { return false; }
-
-    protected void createDrawer() {
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().setGroupVisible(R.id.chat_actions_group, false);
-
-        final View headerLayout = navigationView.getHeaderView(0);
-        final TextView loginView = (TextView) headerLayout.findViewById(R.id.menu_header_login);
-        final TextView ratingView = (TextView) headerLayout.findViewById(R.id.menu_header_rating);
-        final TextView timerView = (TextView) headerLayout.findViewById(R.id.timer_view);
-
-        loginView.setText(ProfileManager.getPlayer().getLogin());
-        ratingView.setText(String.valueOf(ProfileManager.getPlayer().getRating()));
-        timerView.setVisibility(View.INVISIBLE);
-    }
 
 }
 

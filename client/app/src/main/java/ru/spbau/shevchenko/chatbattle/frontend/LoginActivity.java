@@ -24,7 +24,6 @@ import ru.spbau.shevchenko.chatbattle.backend.RequestResult;
 
 public class LoginActivity extends BasicActivity implements View.OnClickListener {
 
-    private static final String PREFS_FILE_NAME = "MyPrefsFile";
     private static boolean triedAutoLogin = true;
     private static Thread SearcherThread;
 

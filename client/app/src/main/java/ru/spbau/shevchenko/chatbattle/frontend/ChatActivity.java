@@ -506,6 +506,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     }
 
     void setupMenuItem(Menu menu, DrawerAction.LeaderAction action) {
+        Log.e("chat", "x");
         Button locButton = getItemButton(menu, action);
         locButton.setVisibility(View.INVISIBLE);
         locButton.setOnClickListener(new MenuItemListener(action));
@@ -527,18 +528,18 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         finish();
     }
 
-    @Override
-    protected void navigate(int id) {
-        for (DrawerAction.SwitchActivityAction action : DrawerAction.SwitchActivityAction.values()) {
-            if (action.getItemId() == id) {
-                if (action.getCorrespondingClass().isInstance(this)) return;
-                Intent intent = new Intent();
-                intent.putExtra("goto", action.ordinal());
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        }
-    }
+//    @Override
+//    protected void navigate(int id) {
+//        for (DrawerAction.SwitchActivityAction action : DrawerAction.SwitchActivityAction.values()) {
+//            if (action.getItemId() == id) {
+//                if (action.getCorrespondingClass().isInstance(this)) return;
+//                Intent intent = new Intent();
+//                intent.putExtra("goto", action.ordinal());
+//                setResult(RESULT_OK, intent);
+//                finish();
+//            }
+//        }
+//    }
 
     @Override
     protected boolean specialCheck(int id) {
@@ -548,6 +549,15 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
             final Intent intent = new Intent(this, LeaderboardActivity.class);
             startActivityForResult(intent, NO_MATTER_CODE);
             return true;
+        }
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        final Menu menu = navigationView.getMenu();
+        for (DrawerAction.LeaderAction action : DrawerAction.LeaderAction.values()) {
+            if (action.getItemId() == id) {
+                getItemButton(menu,action).performClick();
+                return true;
+            }
+
         }
         return false;
     }
@@ -593,6 +603,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         }
 
         private void showPopup(View v) {
+            Log.e("chat", "showpopup");
             Context wrapper = new ContextThemeWrapper(ChatActivity.this, R.style.popupMenuStyle);
             PopupMenu popup = new PopupMenu(wrapper, v);
             popup.inflate(R.menu.popup_menu);
