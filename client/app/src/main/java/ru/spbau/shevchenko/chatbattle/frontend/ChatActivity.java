@@ -271,6 +271,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
         }
 
         final Intent chatServiceIntent = new Intent(this, ChatService.class);
+        chatServiceIntent.putExtra("chat_id", chatId);
         bindService(chatServiceIntent, chatServiceConection, Context.BIND_AUTO_CREATE);
 
         chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
@@ -351,8 +352,9 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     final private RequestCallback chatStatusCallback = new RequestCallback() {
         @Override
         public void run(RequestResult requestResult) {
-            if (ChatActivity.this == null) {
-
+            if (!isVisible) {
+                // Player's not in ChatActivity
+                return;
             }
             if (requestResult.getStatus() != RequestResult.Status.OK) {
                 chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
@@ -384,8 +386,8 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
                         break;
                     case "muted":
                         if (!muted) {
-                            Toast.makeText(ChatActivity.this, "You were muted", Toast.LENGTH_LONG).show();
                             muted = true;
+                            Toast.makeText(ChatActivity.this, "You were muted", Toast.LENGTH_LONG).show();
                             sendBtn.setEnabled(false);
                             messageInput.setEnabled(false);
                         }

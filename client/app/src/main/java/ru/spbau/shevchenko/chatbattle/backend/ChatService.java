@@ -38,6 +38,7 @@ public class ChatService extends Service {
     private final IBinder chatBinder = new ChatBinder();
     private boolean messagesInitialized = false; // becomes true after first server response
     private boolean playersIdsInitialized = false; // becomes true after first server response
+    private int chatId;
 
     public static Uri getWhiteboardURI(final String whiteboardTag, RequestCallback callback) {
         final File whiteboard = new File(MyApplication.storageDir, whiteboardTag);
@@ -65,7 +66,7 @@ public class ChatService extends Service {
         try {
             jsonMessage = new JSONObject().put("authorId", ProfileManager.getPlayer().getId())
                     .put("text", messageText)
-                    .put("chatId", ProfileManager.getPlayer().getChatId())
+                    .put("chatId", chatId)
                     .put("whiteboard", whiteboard);
         } catch (JSONException e) {
             Log.e("sendMessage()", e.getMessage()); // TODO: handle this
@@ -77,7 +78,10 @@ public class ChatService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-
+        if (!intent.hasExtra("chat_id")) {
+            throw new RuntimeException("Trying to bind to ChatService without providing chat id.");
+        }
+        this.chatId = intent.getIntExtra("chat_id", -1);
         messageCount = 0;
         messages = new ArrayList<>();
         getMessagesRunnable = new Runnable() {
@@ -92,7 +96,7 @@ public class ChatService extends Service {
         handler = new Handler();
         handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
 
-        RequestMaker.getPlayersIds(ProfileManager.getPlayer().getChatId(), getPlayersIdsCallback);
+        RequestMaker.getPlayersIds(chatId, getPlayersIdsCallback);
         return chatBinder;
     }
 
@@ -148,6 +152,7 @@ public class ChatService extends Service {
             handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
             return;
         }
+        Log.d("onSR", requestResult.getResponse());
         try {
             JSONArray jsonMessages = new JSONArray(requestResult.getResponse());
             for (int i = 0; i < jsonMessages.length(); i++) {
@@ -190,7 +195,7 @@ public class ChatService extends Service {
     };
 
     private void pullMessages() {
-        RequestMaker.pullMessages(ProfileManager.getPlayer().getChatId(), messageCount, pullMessagesCallback);
+        RequestMaker.pullMessages(chatId, messageCount, pullMessagesCallback);
     }
 
     public class ChatBinder extends Binder {

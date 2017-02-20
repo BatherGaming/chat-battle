@@ -30,10 +30,11 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
     public static final long BATTLE_FOUND_HANDLE_DELAY = 100;
     public static final int NO_MATTER_CODE = 0;
 
+    protected boolean isVisible = false;
+
     private static Class<?> lastActivityClass = null;
     private final Handler battleFoundHandler = new Handler();
     private MyApplication myApplication;
-    private boolean isVisible = false;
 
     public enum DrawerAction {
 
