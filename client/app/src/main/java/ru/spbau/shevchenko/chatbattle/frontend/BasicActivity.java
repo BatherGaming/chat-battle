@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -195,7 +197,11 @@ public class BasicActivity extends AppCompatActivity implements NavigationView.O
     protected void navigate(int id) {
         for (DrawerAction.SwitchActivityAction action : DrawerAction.SwitchActivityAction.values()) {
             if (action.getItemId() == id) {
-                if (action.getCorrespondingClass().isInstance(this)) return;
+                if (action.getCorrespondingClass().isInstance(this)) {
+                    final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    return;
+                }
                 Intent intent = new Intent();
                 intent.putExtra("goto", action.ordinal());
                 setResult(RESULT_OK, intent);

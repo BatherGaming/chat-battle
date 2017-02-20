@@ -147,14 +147,27 @@ public class MenuActivity extends BasicActivity implements View.OnClickListener 
     }
 
     private void goTo(int ord) {
-        if (ord == DrawerAction.SwitchActivityAction.LEADERBOARD.ordinal()) {
-            final Intent intent = new Intent(this, LeaderboardActivity.class);
-            startActivityForResult(intent, ord);
-        } else if (ord == DrawerAction.SwitchActivityAction.SPECTATE.ordinal()) {
-            final Intent intent = new Intent(this, BattleListActivity.class);
-            startActivityForResult(intent, ord);
-        } else if (ord == DrawerAction.SwitchActivityAction.LOG_OUT.ordinal()) {
-            finish();
+        DrawerAction.SwitchActivityAction action = DrawerAction.SwitchActivityAction.values()[ord];
+        switch (action) {
+            case HOME: {
+                final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            }
+            case LEADERBOARD: {
+                final Intent intent = new Intent(this, LeaderboardActivity.class);
+                startActivityForResult(intent, ord);
+                break;
+            }
+            case SPECTATE: {
+                final Intent intent = new Intent(this, BattleListActivity.class);
+                startActivityForResult(intent, ord);
+                break;
+            }
+            case LOG_OUT: {
+                finish();
+                break;
+            }
         }
     }
 
