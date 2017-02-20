@@ -579,7 +579,6 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
     private void choose(int playerId) {
         RequestMaker.chooseWinner(playerId, RequestCallback.DO_NOTHING);
-        Toast.makeText(ChatActivity.this, "choose" + playerId, Toast.LENGTH_LONG).show();
     }
 
     private class MenuItemListener implements View.OnClickListener {
