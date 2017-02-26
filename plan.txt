@@ -1,0 +1,8 @@
+Whiteboard creation:
+  - Whiteboard button
+  - Generate URI
+
+Whiteboard retrieval:
+  - Display grey square
+  - Download
+  - Show

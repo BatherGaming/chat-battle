@@ -1,0 +1,45 @@
+======================
+====== Frontend ======
+======================
+
+* Menu (1)
+
+* Battle
+  * Search screen
+  * Chat (1)
+    * Leader's POV (1)
+    * Whiteboard
+
+* Profile (1)
+* Achievments
+* Settings
+* Hall of Fame
+* Shop
+
+======================
+====== Backend =======
+======================
+
+* Chatter (1)
+* Settings master
+* Achievments/Hall of Fame/Profile data loader (1)
+* Client/server bridge (1)
+* EZ shop
+
+======================
+======= Server =======
+======================
+
+* Battle maker (1)
+* Chat backend (1)
+* Profile manager (1)
+
+======================
+======== Data ========
+======================
+
+* Profiles (DB)
+* Chats (DB/temporary files)
+* Achievments (DB)
+* Images (server)
+* Friends graph (DB?)

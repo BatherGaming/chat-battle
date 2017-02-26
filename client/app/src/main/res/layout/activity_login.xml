@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sand"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="ru.spbau.shevchenko.chatbattle.frontend.LoginActivity">
+
+    <TextView
+        android:id="@+id/chat_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="90dp"
+        android:gravity="center_horizontal"
+        android:text="@string/chat"
+        android:textColor="@color/black"
+        android:textSize="25pt" />
+
+    <TextView
+        android:id="@+id/battle_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp"
+        android:gravity="center_horizontal"
+        android:text="@string/battle"
+        android:textColor="@color/black"
+        android:textSize="20pt" />
+
+    <EditText
+        android:id="@+id/login_edit"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dp"
+        android:background="@drawable/rounded_rect"
+        android:hint="@string/login"
+        android:inputType="text"
+        android:paddingEnd="0dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="0dp"
+        android:paddingStart="8dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:textSize="8pt"
+        app:theme="@android:style/Widget.EditText" />
+
+    <EditText
+        android:id="@+id/password_edit"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/login_edit"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_rect"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:paddingEnd="0dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="0dp"
+        android:paddingStart="8dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:textSize="8pt"
+        app:theme="@android:style/Widget.EditText" />
+
+    <Button
+        android:id="@+id/signin_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/password_edit"
+        android:layout_alignLeft="@id/password_edit"
+        android:layout_alignRight="@id/password_edit"
+        android:layout_alignStart="@id/password_edit"
+        android:layout_below="@+id/password_edit"
+        android:layout_marginTop="5dp"
+        android:background="@color/red500"
+        android:text="@string/signin_button"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/signup_button"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/signin_button"
+        android:layout_centerHorizontal="true"
+        android:text="@string/signup_button"
+        android:textColor="@color/blue900" />
+
+    <Button
+        android:id="@+id/reset_password_button"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/signup_button"
+        android:layout_centerHorizontal="true"
+        android:text="@string/reset_password_button"
+        android:textColor="@color/blue900" />
+
+    <ProgressBar
+        android:id="@+id/login_initializing_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:progressDrawable="@drawable/waiting_circular_bar" />
+
+    <TextView
+        android:id="@+id/status_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/reset_password_button" />
+
+</RelativeLayout>

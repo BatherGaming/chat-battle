@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/gray250">
+
+    <TextView
+        android:id="@+id/message_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/message_text_size" />
+
+    <ImageButton
+        android:id="@+id/alert"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignBottom="@id/message_body"
+        android:layout_marginEnd="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toLeftOf="@+id/message_body"
+        android:layout_toStartOf="@+id/message_body"
+        android:background="@drawable/alert"
+        android:contentDescription="@string/alert_btn_desc"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/delivering_progress_bar"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignBottom="@id/message_body"
+        android:layout_marginEnd="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toLeftOf="@+id/message_body"
+        android:layout_toStartOf="@+id/message_body"
+        android:progressDrawable="@drawable/waiting_circular_bar"
+        android:visibility="gone" />
+
+</RelativeLayout>

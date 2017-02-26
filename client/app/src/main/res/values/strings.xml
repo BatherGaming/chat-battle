@@ -1,0 +1,113 @@
+<resources>
+
+    <string name="app_name" translatable="false">Chat Battle</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_play_button">Play!</string>
+    <string name="menu_profile_button">Profile</string>
+    <string name="search_screen_search_as_player_button">Search as player</string>
+    <string name="search_screen_search_as_leader_button">Search as leader</string>
+    <string name="not_loaded">Not loaded</string>
+    <string name="login_view">Login:</string>
+    <string name="age_view">Age:</string>
+    <string name="sex_view">Sex:</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="login_button">Sign in</string>
+    <string name="signin_button">Sign in</string>
+    <string name="signup_button">Sign up</string>
+    <string name="signin_in">Signing in&#8230;</string>
+    <string name="age">Age</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="password_dont_match">Passwords do not match</string>
+    <string name="signin_up">Signing up&#8230;</string>
+    <string name="send_button">Send</string>
+    <string name="choose_button">Choose winner</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="ok_button">OK</string>
+    <string name="choice_demand">Choose please</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="battle_found">Battle for you has been found</string>
+    <string name="search_as_player">You are searching as player</string>
+    <string name="search_as_leader">You are searching as leader</string>
+    <string name="search_screen_stop_searching_button">Stop searching</string>
+
+    <string name="start_new">New</string>
+    <string name="brush">Brush</string>
+    <string name="erase">Erase</string>
+    <string name="save">Save</string>
+    <string name="paint">Paint</string>
+    <string name="sml">Small</string>
+    <string name="med">Medium</string>
+    <string name="lrg">Large</string>
+    <string name="whiteboard">Whiteboard</string>
+    <string name="send">Send</string>
+    <string name="rating_view">Rating:</string>
+    <string name="exit_question">Do you want to exit?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="hello">"Hello, "</string>
+    <string name="profile">Profile</string>
+    <string name="log_out">Log out</string>
+    <string name="old_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm password</string>
+    <string name="change_password">Change password</string>
+    <string name="internet_troubles">Internet connection troubles</string>
+    <string name="unknown_error">UNKNOWN ERROR</string>
+    <string name="passwords_dont_match">passwords don\'t match</string>
+    <string name="change_success">Password has been changed</string>
+    <string name="chat" translatable="false">chat</string>
+    <string name="battle" translatable="false">battle</string>
+    <string name="name">Name</string>
+    <string name="rating">Rating</string>
+    <string name="leaderboard">Leaderboard</string>
+    <string name="search">SEARCH AS</string>
+    <string name="email">Email</string>
+    <string name="reset_password_button">Reset password</string>
+    <string name="invalid_login">Invalid login</string>
+    <string name="success_reset">New password has been sent</string>
+    <string name="kick">Kick</string>
+    <string name="mute">Mute</string>
+    <string name="choose">Choose</string>
+    <string name="green">Green</string>
+    <string name="yellow">Yellow</string>
+    <string name="purple">Purple</string>
+    <string name="red">Red</string>
+    <string name="desc_menu_drawer_button">Menu drawer button</string>
+    <string name="desc_play_button">Play button</string>
+    <string name="play" translatable="false">Play!</string>
+    <string name="leader_caps" translatable="false">LEADER</string>
+    <string name="leader">Leader</string>
+    <string name="winner">Winner</string>
+    <string name="player" translatable="false">PLAYER</string>
+    <string name="want_to_play">I want to play as</string>
+    <string name="summary">Summary</string>
+    <string name="ok_caps">OK</string>
+    <string name="type_here">Type message here</string>
+    <string name="time">Time left: </string>
+    <string name="delete">Delete</string>
+    <string name="retry">Retry</string>
+    <string name="spectate">Spectate</string>
+    <string name="whiteboard_btn_desc" translatable="false">whiteboard button</string>
+    <string name="send_btn_desc" translatable="false">send button</string>
+    <string name="message_image_desc" translatable="false">message image</string>
+    <string name="alert_btn_desc" translatable="false">alert exclamation point</string>
+    <string name="KeyCapsFont" translatable="false">fonts/KeyCapsFLF.ttf</string>
+    <string name="ImmortalFont" translatable="false">fonts/IMMORTAL.ttf</string>
+    <string name="eraser_size">Eraser size:</string>
+    <string name="brush_size">Brush size:</string>
+    <string name="home">Home</string>
+    <string name="battle_list">Top 10 running battles</string>
+    <string name="spectate_desc" translatable="false">spectate button (eye pic)</string>
+    <string name="update">Update</string>
+    <string name="no_chats">There are no running chats now :(</string>
+    <string name="players">Players</string>
+    <string name="average_rating">Average rating</string>
+    <string name="battle2">Battle</string>
+    <string name="enter_login">Enter login, please</string>
+    <string name="enter_password">Enter password, please</string>
+
+</resources>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_battle_summary"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <TextView
+        android:id="@+id/summary_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/sand"
+        android:gravity="center"
+        android:text="@string/summary"
+        android:textColor="@color/black"
+        android:textSize="@dimen/summary_title_font_size" />
+
+    <TextView
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/summary_text"
+        android:background="@color/black" />
+
+    <TableLayout
+        android:id="@+id/summary_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider"
+        android:divider="@drawable/divider_2dp"
+        android:paddingEnd="@dimen/small_padding"
+        android:paddingLeft="@dimen/small_padding"
+        android:paddingRight="@dimen/small_padding"
+        android:paddingStart="@dimen/small_padding"
+        android:showDividers="middle" />
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/summary_view"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/button_summary_ok"
+        android:text="@string/ok_caps"
+        android:textColor="@color/black" />
+
+    <ProgressBar
+        android:id="@+id/initializing_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:progressDrawable="@drawable/waiting_circular_bar" />
+
+</RelativeLayout>

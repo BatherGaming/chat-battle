@@ -1,0 +1,55 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group
+        android:id="@+id/chat_actions_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/kick_item"
+            android:icon="@drawable/kick"
+            android:title="@string/kick"
+            app:actionViewClass="android.widget.Button"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/mute_item"
+            android:icon="@drawable/mute"
+            android:title="@string/mute"
+            app:actionViewClass="android.widget.Button"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/choose_item"
+            android:icon="@drawable/choose"
+            android:title="@string/choose"
+            app:actionViewClass="android.widget.Button"
+            app:showAsAction="ifRoom" />
+    </group>
+
+    <group
+        android:id="@+id/basic_functions_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/home_item"
+            android:icon="@drawable/drawer_home"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/leaderboard_item"
+            android:icon="@drawable/drawer_pedestal"
+            android:title="@string/leaderboard" />
+        <item
+            android:id="@+id/spectate_item"
+            android:icon="@drawable/drawer_spectate"
+            android:title="@string/spectate" />
+        <item
+            android:id="@+id/change_password_item"
+            android:icon="@drawable/drawer_settings"
+            android:title="@string/change_password" />
+        <item
+            android:id="@+id/log_out_item"
+            android:icon="@drawable/drawer_logout"
+            android:title="@string/log_out" />
+    </group>
+
+
+</menu>
+
+
