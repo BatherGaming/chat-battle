@@ -82,9 +82,19 @@
     <string name="eraser_size">Размер ластика:</string>
     <string name="enter_password">Введите пароль, пожалуйста</string>
     <string name="no_chats">Сейчас нет активных чатов :(</string>
-    <string name="ok_caps"></string>
+    <string name="ok_caps">OK</string>
     <string name="summary">Итог</string>
     <string name="time">Осталось:</string>
     <string name="type_here">Введите сообщение</string>
+    <string name="leaderboard">Доска рекордов</string>
+    <string name="home">Меню</string>
+    <string name="spectate">Смотреть</string>
+    <string name="want_to_play">Хочу играть как</string>
+    <string name="update">Обновить</string>
+    <string name="leader">Лидер</string>
+    <string name="players">Игроки</string>
+    <string name="battle2">Баттл</string>
+    <string name="winner">Победитель</string>
+    <string name="retry">Заново</string>
 
 </resources>
