@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +66,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     private ListView messagesView;
     private ImageButton sendBtn;
     private TextView timerView;
+    private boolean destroyed = false;
 
     @SuppressLint("UseSparseArrays")
     private final Map<Integer, Color> playerColor = new HashMap<>();
@@ -152,6 +154,9 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     private RequestCallback timeLeftCallback = new RequestCallback() {
         @Override
         public void run(RequestResult result) {
+            if (destroyed) {
+                return;
+            }
             if (result.getStatus() != RequestResult.Status.OK) {
                 Log.e("timeLeftC", "FAIL");
                 return;
@@ -337,6 +342,7 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
 
     @Override
     public void onDestroy() {
+        destroyed = true;
         super.onDestroy();
         Log.d("onDestroy()", "called");
         stopService();
@@ -352,10 +358,14 @@ public class ChatActivity extends BasicActivity implements View.OnClickListener,
     final private RequestCallback chatStatusCallback = new RequestCallback() {
         @Override
         public void run(RequestResult requestResult) {
-            if (!isVisible) {
-                // Player's not in ChatActivity
+            if (destroyed) {
                 return;
             }
+            if (!isVisible) {
+                chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
+                return;
+            }
+            Log.d("chatStatus", "enter");
             if (requestResult.getStatus() != RequestResult.Status.OK) {
                 chatStatusHandler.postDelayed(chatStatusRunnable, HANDLER_DELAY);
                 return;

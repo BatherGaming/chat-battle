@@ -152,7 +152,6 @@ public class ChatService extends Service {
             handler.postDelayed(getMessagesRunnable, UPDATE_DELAY);
             return;
         }
-        Log.d("onSR", requestResult.getResponse());
         try {
             JSONArray jsonMessages = new JSONArray(requestResult.getResponse());
             for (int i = 0; i < jsonMessages.length(); i++) {
