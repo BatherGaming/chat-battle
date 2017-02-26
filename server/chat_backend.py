@@ -315,5 +315,5 @@ def get_chats():
         chat_list.append({"chat_id": chat.id, "leader_id": leader.id,
                           "leader": leader.login, "players": player_logins,
                           "sum_rating": sum_rating})
-    chat_list.sort(key=lambda chat: chat["sum_rating"], reverse=True)
+    chat_list.sort(key=lambda chat: chat["sum_rating"] / len(chat["players"]), reverse=True)
     return chat_list, 200
