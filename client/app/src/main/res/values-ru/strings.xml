@@ -74,5 +74,17 @@
     <string name="red">Красный</string>
     <string name="success_reset">Новый пароль был выслан на почту</string>
     <string name="yellow">Жёлтый</string>
+    <string name="average_rating">Средний рейтинг</string>
+    <string name="battle_list">Топ-10 идущих баттлов</string>
+    <string name="brush_size">Размер кисти:</string>
+    <string name="delete">Удалить</string>
+    <string name="enter_login">Введите логин, пожалуйста</string>
+    <string name="eraser_size">Размер ластика:</string>
+    <string name="enter_password">Введите пароль, пожалуйста</string>
+    <string name="no_chats">Сейчас нет активных чатов :(</string>
+    <string name="ok_caps"></string>
+    <string name="summary">Итог</string>
+    <string name="time">Осталось:</string>
+    <string name="type_here">Введите сообщение</string>
 
 </resources>

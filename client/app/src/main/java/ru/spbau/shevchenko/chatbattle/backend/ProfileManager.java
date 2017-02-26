@@ -76,7 +76,7 @@ public class ProfileManager {
             loginActivity.completeLogin();
         } catch (Exception e) {
             Log.e("onSignInResponse()", e.getMessage());
-            loginActivity.failedLogin(e.getMessage()); // TODO: change this somehow
+            loginActivity.loginResponse(RequestResult.Status.ERROR); // TODO: change this somehow
         }
     }
 
@@ -96,7 +96,7 @@ public class ProfileManager {
             signupActivity.completeSignup();
         } catch (Exception e) {
             Log.e("onSignUpResponse()", e.getMessage());
-            signupActivity.failedSignup(e.getMessage()); // TODO: change this somehow
+            signupActivity.signupResponse(RequestResult.Status.ERROR);
         }
     }
 

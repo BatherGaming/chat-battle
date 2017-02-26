@@ -58,6 +58,8 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
     }
 
     public void completeLogin() {
+        final View signInBtn = findViewById(R.id.signin_button);
+        signInBtn.setEnabled(true);
         ((TextView) findViewById(R.id.login_edit)).setText("");
         ((TextView) findViewById(R.id.password_edit)).setText("");
         ((TextView) findViewById(R.id.status_view)).setText("");
@@ -84,6 +86,8 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
     }
 
     public void failedLogin(CharSequence reason) {
+        final View signInBtn = findViewById(R.id.signin_button);
+        signInBtn.setEnabled(true);
         if (triedAutoLogin) {
             triedAutoLogin = false;
             showLayout(View.GONE, View.VISIBLE);
@@ -106,7 +110,18 @@ public class LoginActivity extends BasicActivity implements View.OnClickListener
                 final TextView statusView = (TextView) findViewById(R.id.status_view);
                 statusView.setText(R.string.signin_in);
                 final String login = ((TextView) findViewById(R.id.login_edit)).getText().toString().trim();
+                if (login.isEmpty()) {
+                    statusView.setText(R.string.enter_login);
+                    return;
+                }
                 final String password = ((TextView) findViewById(R.id.password_edit)).getText().toString().trim();
+                if (password.isEmpty()) {
+                    statusView.setText(R.string.enter_password);
+                    return;
+                }
+                final View signInBtn = findViewById(R.id.signin_button);
+                signInBtn.setEnabled(false);
+                statusView.setText(R.string.signin_in);
                 ProfileManager.signIn(login, password, this);
                 save(login, password);
                 break;

@@ -34,19 +34,31 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.signup_button: {
+                final TextView statusView = (TextView) findViewById(R.id.status_view);
                 // Getting all the data from form
                 final String login = ((TextView) findViewById(R.id.login_edit)).getText().toString();
+                if (login.isEmpty()) {
+                    statusView.setText(R.string.enter_login);
+                    return;
+                }
                 final String password = ((TextView) findViewById(R.id.password_edit)).getText().toString();
+                if (password.isEmpty()) {
+                    statusView.setText(R.string.enter_password);
+                    return;
+                }
                 final String passwordConfirm = ((TextView) findViewById(R.id.password_confirm_edit)).getText().toString();
                 final String email = ((TextView) findViewById(R.id.email_edit)).getText().toString();
 
+                final View signUpBtn = findViewById(R.id.signup_button);
+                signUpBtn.setEnabled(false);
+
                 // Check password equality
                 if (!password.equals(passwordConfirm)) {
-                    ((TextView) findViewById(R.id.status_view)).setText(R.string.password_dont_match);
+                    statusView.setText(R.string.password_dont_match);
                     return;
                 }
                 // Set status
-                ((TextView) findViewById(R.id.status_view)).setText(R.string.signin_up);
+                statusView.setText(R.string.signin_up);
                 // Sign up
                 ProfileManager.signUp(new Player(0, login, -1, -1), password, email, this);
                 break;
@@ -56,6 +68,8 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
     }
 
     public void completeSignup() {
+        final View signUpBtn = findViewById(R.id.signup_button);
+        signUpBtn.setEnabled(true);
         ((TextView) findViewById(R.id.status_view)).setText("");
         ((TextView) findViewById(R.id.login_edit)).setText("");
         ((TextView) findViewById(R.id.password_edit)).setText("");
@@ -64,6 +78,8 @@ public class SignupActivity extends BasicActivity implements View.OnClickListene
     }
 
     public void failedSignup(CharSequence reason) {
+        final View signUpBtn = findViewById(R.id.signup_button);
+        signUpBtn.setEnabled(true);
         final TextView statusView = (TextView) findViewById(R.id.status_view);
         statusView.setText(reason);
     }

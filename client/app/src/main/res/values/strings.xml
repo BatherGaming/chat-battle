@@ -94,9 +94,9 @@
     <string name="whiteboard_btn_desc">whiteboard button</string>
     <string name="send_btn_desc">send button</string>
     <string name="message_image_desc">message image</string>
-    <string name="alert_btn_desc">alert exclamation point</string>
-    <string name="KeyCapsFont">fonts/KeyCapsFLF.ttf</string>
-    <string name="ImmortalFont">fonts/IMMORTAL.ttf</string>
+    <string name="alert_btn_desc" translatable="false">alert exclamation point</string>
+    <string name="KeyCapsFont" translatable="false">fonts/KeyCapsFLF.ttf</string>
+    <string name="ImmortalFont" translatable="false">fonts/IMMORTAL.ttf</string>
     <string name="eraser_size">Eraser size:</string>
     <string name="brush_size">Brush size:</string>
     <string name="home">Home</string>
@@ -107,5 +107,7 @@
     <string name="players">Players</string>
     <string name="average_rating">Average rating</string>
     <string name="battle2">Battle</string>
+    <string name="enter_login">Enter login, please</string>
+    <string name="enter_password">Enter password, please</string>
 
 </resources>
